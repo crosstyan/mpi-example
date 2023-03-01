@@ -73,7 +73,7 @@ pub fn build(b: *std.Build) !void {
     };
     var last_hash:u32 = read_file_as_hash(b.allocator, last_hash_path) catch |err| switch (err) {
         error.FileNotFound => (Temp{.path = last_hash_path}).call(),
-        else => (Temp{.path = last_hash_path}).call(),
+        else => unreachable,
     };
     var c_dst = std.fs.path.join(b.allocator, &[_][]const u8{cwd.path.?, "src/bindings/common.zig"}) catch unreachable;
     var exist_flag = true;
