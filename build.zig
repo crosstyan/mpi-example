@@ -47,6 +47,7 @@ pub fn build(b: *std.Build) !void {
     var opt = std.build.TranslateCStep.Options{.source_file = src, .optimize = optimize, .target = target};
     const c = b.addTranslateC(opt);
     c.addIncludeDir("include");
+    c.addIncludeDir("/usr/include/EGL");
     var cwd = b.build_root;
     var last_hash_path = cwd.join(b.allocator, &.{"src/bindings/common.xxhash"}) catch unreachable;
     var src_path = cwd.join(b.allocator, &.{src.path}) catch unreachable;
@@ -100,6 +101,9 @@ pub fn build(b: *std.Build) !void {
     // librkgfx_avs.so
     // No idea what this is. Looks like it relates to the AVS
     exe.linkSystemLibrary("rkgfx_avs");
+    // OpenGL
+    exe.linkSystemLibrary("EGL");
+    exe.linkSystemLibrary("GLESv2");
     exe.linkLibC();
     exe.install();
 
