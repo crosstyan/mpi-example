@@ -1,11 +1,12 @@
 const std = @import("std");
 const hash = std.hash;
 
-fn read_file_hash(allocator: std.mem.Allocator, path: []const u8) !u32 {
+fn calc_file_hash(allocator: std.mem.Allocator, path: []const u8) !u32 {
     const MAX_FILE_SIZE = 102400;
     var file = try std.fs.cwd().openFile(path, .{});
     defer file.close();
     var content = try file.readToEndAlloc(allocator, MAX_FILE_SIZE);
+    defer allocator.free(content);
     return hash.XxHash32.hash(content);
 }
 
@@ -14,6 +15,7 @@ fn read_file_as_hash(allocator:std.mem.Allocator, path: []const u8) !u32 {
     var file = try std.fs.cwd().openFile(path, .{});
     defer file.close();
     var content = try file.readToEndAlloc(allocator, MAX_FILE_SIZE);
+    defer allocator.free(content);
     if (content.len < 4) {
         return 0;
     }
@@ -51,7 +53,7 @@ pub fn build(b: *std.Build) !void {
     var cwd = b.build_root;
     var last_hash_path = cwd.join(b.allocator, &.{"src/bindings/common.xxhash"}) catch unreachable;
     var src_path = cwd.join(b.allocator, &.{src.path}) catch unreachable;
-    var src_hash = read_file_hash(b.allocator, src_path) catch |err| switch (err) {
+    var src_hash = calc_file_hash(b.allocator, src_path) catch |err| switch (err) {
         error.FileNotFound => {
             std.debug.print("{s} does not exist. Exit. \n", .{src_path});
             unreachable;
