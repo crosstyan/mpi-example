@@ -5,7 +5,7 @@ pub fn main() !void {
     // No idea what rockchip have done in RK_MPI_SYS_Init()
     // Must execute it in root (su) but not in sudo, why?
     var err = common.RK_MPI_SYS_Init();
-    defer _ = common.RK_MPI_SYS_Exit;
+    defer _ = common.RK_MPI_SYS_Exit();
     std.debug.print("Init status {}.\n", .{err});
 }
 
