@@ -48,7 +48,7 @@ pub fn build(b: *std.Build) !void {
     const c = b.addTranslateC(opt);
     c.addIncludeDir("include");
     var cwd = b.build_root;
-    var last_hash_path = cwd.join(b.allocator, &.{"src/bindings/last_hash.xxhash"}) catch unreachable;
+    var last_hash_path = cwd.join(b.allocator, &.{"src/bindings/common.xxhash"}) catch unreachable;
     var src_path = cwd.join(b.allocator, &.{src.path}) catch unreachable;
     var src_hash = read_file_hash(b.allocator, src_path) catch |err| switch (err) {
         error.FileNotFound => {
