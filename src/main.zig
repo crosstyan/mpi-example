@@ -3,13 +3,14 @@ const common = @import("bindings/common.zig");
 
 pub fn main() !void {
     // Root user Response
-    // libEGL warning: DRI2: failed to create dri screen
-    // libEGL warning: DRI2: failed to create dri screen
     // Init status 1. Version 1.5
     // 
     // Non-root user Response
     // Init status 0. Version 0.0
     // Weired, why?
+    // Okay I got it. It's nothing to do with root but the Display can not be
+    // obtained when using ssh with default user whose display is used by X11
+    // so ssh session is not a valid display. (something like that shit)
     var display = common.eglGetDisplay(common.EGL_DEFAULT_DISPLAY);
     var minor:i32 = 0;
     var major:i32 = 0;
