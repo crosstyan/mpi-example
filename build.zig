@@ -1,4 +1,6 @@
 const std = @import("std");
+const Pkg = std.build.Pkg;
+const Module = std.build.Module;
 const hash = std.hash;
 
 fn calc_file_hash(allocator: std.mem.Allocator, path: []const u8) !u32 {
@@ -10,7 +12,7 @@ fn calc_file_hash(allocator: std.mem.Allocator, path: []const u8) !u32 {
     return hash.XxHash32.hash(content);
 }
 
-fn read_file_as_hash(allocator:std.mem.Allocator, path: []const u8) !u32 {
+fn read_file_as_hash(allocator: std.mem.Allocator, path: []const u8) !u32 {
     const MAX_FILE_SIZE = 102400;
     var file = try std.fs.cwd().openFile(path, .{});
     defer file.close();
@@ -23,8 +25,8 @@ fn read_file_as_hash(allocator:std.mem.Allocator, path: []const u8) !u32 {
     return val;
 }
 
-fn write_hash_into_file(path:[]const u8, h:u32)!void {
-    var file = try std.fs.cwd().openFile(path, .{.mode=std.fs.File.OpenMode.write_only});
+fn write_hash_into_file(path: []const u8, h: u32) !void {
+    var file = try std.fs.cwd().openFile(path, .{ .mode = std.fs.File.OpenMode.write_only });
     defer file.close();
     var p = std.mem.toBytes(h);
     try file.writeAll(&p);
@@ -46,7 +48,7 @@ pub fn build(b: *std.Build) !void {
     var src = std.Build.FileSource{
         .path = "include/common.h",
     };
-    var opt = std.build.TranslateCStep.Options{.source_file = src, .optimize = optimize, .target = target};
+    var opt = std.build.TranslateCStep.Options{ .source_file = src, .optimize = optimize, .target = target };
     const c = b.addTranslateC(opt);
     c.addIncludeDir("include");
     c.addIncludeDir("/usr/include/EGL");
@@ -60,31 +62,31 @@ pub fn build(b: *std.Build) !void {
         },
         else => unreachable,
     };
-    // no field named 'call' in struct 
+    // no field named 'call' in struct
     // dumb compiler needs explicit call.
     // https://github.com/ziglang/zig/issues/1048#issuecomment-778574881
     const Temp = struct {
         const Self = @This();
         path: []const u8,
-        pub fn call(self:Self) u32 {
+        pub fn call(self: Self) u32 {
             std.debug.print("{s} does not exist. Create new one.\n", .{self.path});
-            var f = std.fs.createFileAbsolute(self.path, .{.read = true, .truncate=true}) catch unreachable;
+            var f = std.fs.createFileAbsolute(self.path, .{ .read = true, .truncate = true }) catch unreachable;
             defer f.close();
             f.writeAll(&[1]u8{0}) catch unreachable;
             return 0;
         }
     };
-    var last_hash:u32 = read_file_as_hash(b.allocator, last_hash_path) catch |err| switch (err) {
-        error.FileNotFound => (Temp{.path = last_hash_path}).call(),
+    var last_hash: u32 = read_file_as_hash(b.allocator, last_hash_path) catch |err| switch (err) {
+        error.FileNotFound => (Temp{ .path = last_hash_path }).call(),
         else => unreachable,
     };
-    var c_dst = std.fs.path.join(b.allocator, &[_][]const u8{cwd.path.?, "src/bindings/common.zig"}) catch unreachable;
+    var c_dst = std.fs.path.join(b.allocator, &[_][]const u8{ cwd.path.?, "src/bindings/common.zig" }) catch unreachable;
     var exist_flag = true;
     std.fs.accessAbsolute(c_dst, .{}) catch {
         exist_flag = false;
     };
 
-    if (src_hash != last_hash  or !exist_flag) {
+    if (src_hash != last_hash or !exist_flag) {
         std.debug.print("Content of {s} has changed. Generate new C binding.\n", .{src_path});
         c.step.make() catch unreachable;
         var c_output = c.output_file.path.?;
@@ -94,6 +96,13 @@ pub fn build(b: *std.Build) !void {
     } else {
         std.debug.print("Header file {s} has not changed. \n", .{src_path});
     }
+    // https://github.com/ziglang/zig/issues/14278
+    // https://github.com/ziglang/zig/issues/14307
+    // https://github.com/natecraddock/ziglua
+    var clap_module = std.build.CreateModuleOptions{
+        .source_file = .{ .path = "lib/zig-args/args.zig" },
+    };
+    exe.addAnonymousModule("args", clap_module);
 
     // librockit.so
     exe.linkSystemLibrary("rockit");
