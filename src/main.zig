@@ -26,6 +26,10 @@ fn egl_test() void {
     // Give up. No idea what Rockchip has done to EGL.
     // Weird
     // https://stackoverflow.com/questions/15064685/does-ldd-also-show-dependencies-of-dependencies/15064784#15064784
+    // https://github.com/rockchip-linux/mpp
+    // https://github.com/dv1/eglinfo
+    // http://rockchip.wikidot.com/graphics
+    // https://wiki.t-firefly.com/en/Firefly-Linux-Guide/manual_ubuntu.html#opengl-es
     log.info("Reserved for EGL testing. Not implemented.", .{});
 }
 
