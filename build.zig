@@ -113,8 +113,8 @@ pub fn build(b: *std.Build) !void {
     // No idea what this is. Looks like it relates to the AVS
     exe.linkSystemLibrary("rkgfx_avs");
     // OpenGL
-    exe.linkSystemLibrary("EGL");
-    exe.linkSystemLibrary("GLESv2");
+    // exe.linkSystemLibrary("EGL");
+    // exe.linkSystemLibrary("GLESv2");
     exe.linkLibC();
     exe.install();
 

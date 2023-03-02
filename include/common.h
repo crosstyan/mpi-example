@@ -7,4 +7,4 @@
 #include "rk_mpi_vpss.h"
 #include "rk_mpi_avs.h"
 #include "rk_mpi_vo.h"
-#include <EGL/egl.h>
+// #include <EGL/egl.h>
