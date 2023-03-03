@@ -1,6 +1,7 @@
 const std = @import("std");
 const mb = @import("mb.zig");
 const c = @import("bindings/common.zig");
+const log = std.log.scoped(.rockit);
 
 pub const sucess: i32 = c.RK_SUCCESS;
 pub const failure: i32 = c.RK_FAILURE;
@@ -69,6 +70,9 @@ pub fn mmzAllocCached(blk: *c.MB_BLK, len: u32) SysError!void {
 
 pub fn fileWriteOneFrame(file: *std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void {
     const v_frame = frame.stVFrame;
+    if (frame.stVFrame.enPixelFormat != c.RK_FMT_YUV420SP) {
+        log.warn("Should be RK_FMT_YUV420SP, got 0x{x}. ", .{frame.stVFrame.enPixelFormat});
+    }
     const buf_attr = c.PIC_BUF_ATTR_S{
         .u32Width = v_frame.u32VirWidth,
         .u32Height = v_frame.u32VirHeight,

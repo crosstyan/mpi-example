@@ -190,7 +190,6 @@ pub const Avs = struct {
 
     /// See `create_avs()` in `firefly_test_mpi_avs.cpp`
     pub fn init(self: *@This()) AvsError!void {
-        // std.debug.print("{any}", .{self.grpAttr});
         try setModParam(&self.modParm);
         try createGrp(self.grpId, &self.grpAttr);
         try setChnAttr(self.grpId, self.chnId, &self.chnAttr[0]);
@@ -216,7 +215,7 @@ fn getFrameFiles(allocator: std.mem.Allocator, src_path: []const u8, flags: std.
     for (0..pipe_count) |i| {
         const name = try std.fmt.allocPrint(allocator, "camera{}_2560x1520_nv12.yuv", .{i});
         const path = try std.fs.path.join(allocator, &.{ src_path, name });
-        std.debug.print("file path: {s}\n", .{path});
+        log.info("file path: {s}", .{path});
         defer {
             allocator.free(name);
             allocator.free(path);
@@ -278,7 +277,7 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_p
             defer allocator.free(file_name);
             const write_path = try std.fs.path.join(allocator, &.{ dst_path, file_name });
             defer allocator.free(write_path);
-            std.debug.print("write path: {s}\n", .{write_path});
+            log.info("write path: {s}", .{write_path});
             const file = try std.fs.cwd().createFile(write_path, .{ .read = true });
             defer file.close();
             try rk.fileWriteOneFrame(@constCast(&file), frame);
