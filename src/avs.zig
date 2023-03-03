@@ -270,18 +270,18 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_p
     }
 
     for (chn_frame_infos, 0..) |*frame, idx_u| {
-        var idx = @intCast(i32, idx_u);
-        try getChnFrame(ctx.grpId, @intCast(i32, idx), frame, -1);
+        const idx = @intCast(i32, idx_u);
+        try getChnFrame(ctx.grpId, idx, frame, -1);
         if (frame.stVFrame.pMbBlk != null) {
             const file_name = try std.fmt.allocPrint(allocator, "chn-{}.yuv", .{idx});
             defer allocator.free(file_name);
             const write_path = try std.fs.path.join(allocator, &.{ dst_path, file_name });
             defer allocator.free(write_path);
             log.info("write path: {s}", .{write_path});
-            const file = try std.fs.cwd().createFile(write_path, .{ .read = true });
+            var file = try std.fs.cwd().createFile(write_path, .{ .read = true });
             defer file.close();
-            try rk.fileWriteOneFrame(@constCast(&file), frame);
-            try releaseChnFrame(ctx.grpId, @intCast(i32, idx), frame);
+            try rk.fileWriteOneFrame(&file, frame);
+            try releaseChnFrame(ctx.grpId, idx, frame);
         }
     }
 }
