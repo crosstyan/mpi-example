@@ -5,6 +5,7 @@ const log = std.log.scoped(.main);
 const argsParser = @import("args");
 const common = @import("bindings/common.zig");
 const rk = @import("rockit.zig");
+const avs = @import("avs.zig");
 
 fn eglTest() void {
     // RK_MPI_SYS_Init hasn't use external EGL?
@@ -39,8 +40,10 @@ pub fn main() !u8 {
         }
     } else {
         try rk.init();
+        var avs_ctx = avs.Avs.new();
+        var test_path = "avs/6x_rectlinear";
+        try avs.test_avs_6_rectlinear(allocator, &avs_ctx, test_path);
         defer rk.deinit() catch unreachable;
-        errdefer rk.deinit() catch unreachable;
     }
     return 0;
 }

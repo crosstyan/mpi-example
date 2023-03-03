@@ -15,20 +15,19 @@ pub const MBError = error{
     TwoMemPools,
 };
 
-pub fn cvtErr(err: c_int) !void {
+pub fn cvtErr(err: c_int) MBError {
     switch (err) {
-        0 => return,
-        c.RK_ERR_MB_NULL_PTR => return error.NullPtr,
-        c.RK_ERR_MB_NOMEM => return error.NoMem,
-        c.RK_ERR_MB_NOBUF => return error.NoBuf,
-        c.RK_ERR_MB_UNEXIST => return error.Unexist,
-        c.RK_ERR_MB_ILLEGAL_PARAM => return error.IllegalParam,
-        c.RK_ERR_MB_NOTREADY => return error.NotReady,
-        c.RK_ERR_MB_BUSY => return error.Busy,
-        c.RK_ERR_MB_NOT_PERM => return error.NotPerm,
-        c.RK_ERR_MB_SIZE_NOT_ENOUGH => return error.SizeNotEnough,
-        c.RK_ERR_MB_2MPOOLS => return error.TwoMemPools,
-        else => return error.Unexpected,
+        c.RK_ERR_MB_NULL_PTR => return MBError.NullPtr,
+        c.RK_ERR_MB_NOMEM => return MBError.NoMem,
+        c.RK_ERR_MB_NOBUF => return MBError.NoBuf,
+        c.RK_ERR_MB_UNEXIST => return MBError.Unexist,
+        c.RK_ERR_MB_ILLEGAL_PARAM => return MBError.IllegalParam,
+        c.RK_ERR_MB_NOTREADY => return MBError.NotReady,
+        c.RK_ERR_MB_BUSY => return MBError.Busy,
+        c.RK_ERR_MB_NOT_PERM => return MBError.NotPerm,
+        c.RK_ERR_MB_SIZE_NOT_ENOUGH => return MBError.SizeNotEnough,
+        c.RK_ERR_MB_2MPOOLS => return MBError.TwoMemPools,
+        else => unreachable,
     }
 }
 
@@ -41,5 +40,5 @@ pub fn releaseMB(blk: c.MB_BLK) MBError!void {
 pub fn handle_to_virAddr(handle: c.MB_BLK) MBError![*]u8 {
     const addr = c.RK_MPI_MB_Handle2VirAddr(handle);
     if (addr == null) return error.NullPtr;
-    return addr;
+    return @ptrCast([*]u8, addr);
 }

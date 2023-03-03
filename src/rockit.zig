@@ -44,7 +44,7 @@ pub fn deinit() SysError!void {
 }
 
 /// 计算VGS、VPSS输出所需图像buffer大小
-pub fn getPicBufferSize(pic_buf_attr: *const c.PIC_BUF_ATTR_S, pic_cal: *c.MB_PIC_CAL_S) CustomError.General!void {
+pub fn getPicBufferSize(pic_buf_attr: *const c.PIC_BUF_ATTR_S, pic_cal: *c.MB_PIC_CAL_S) CustomError!void {
     const err = c.RK_MPI_CAL_VGS_GetPicBufferSize(pic_buf_attr, pic_cal);
     if (err != sucess) return CustomError.General;
 }
@@ -62,6 +62,11 @@ pub fn mmzFlushCache(blk: c.MB_BLK, is_readonly: bool) SysError!void {
     if (err != sucess) return cvtErr(err);
 }
 
+pub fn mmzAllocCached(blk: *c.MB_BLK, len: u32) SysError!void {
+    const err = c.RK_MPI_SYS_MmzAlloc_Cached(blk, c.RK_NULL, c.RK_NULL, len);
+    if (err != sucess) return cvtErr(err);
+}
+
 pub fn fileWriteOneFrame(file: *std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void {
     const v_frame = frame.stVFrame;
     const buf_attr = c.PIC_BUF_ATTR_S{
@@ -70,10 +75,39 @@ pub fn fileWriteOneFrame(file: *std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void
         .enPixelFormat = v_frame.enPixelFormat,
         .enCompMode = v_frame.enCompressMode,
     };
-    var cal = c.MB_PIC_CAL_S{};
-    try getPicBufferSize(buf_attr, cal);
+    var cal = std.mem.zeroes(c.MB_PIC_CAL_S);
+    try getPicBufferSize(&buf_attr, &cal);
     try mmzFlushCache(v_frame.pMbBlk, true);
     const addr = try mb.handle_to_virAddr(v_frame.pMbBlk);
-    const data: []const u8 = @intToPtr([*]u8, addr)[0..cal.u32Size];
-    try file.write(data);
+    const len = cal.u32MBSize;
+    const data: []const u8 = addr[0..len];
+    _ = try file.write(data);
+}
+
+pub fn fileReadOneFrame(file: *const std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void {
+    const v_frame = frame.stVFrame;
+    const buf_attr = c.PIC_BUF_ATTR_S{
+        .u32Width = v_frame.u32VirWidth,
+        .u32Height = v_frame.u32VirHeight,
+        .enPixelFormat = v_frame.enPixelFormat,
+        .enCompMode = v_frame.enCompressMode,
+    };
+    var cal = std.mem.zeroes(c.MB_PIC_CAL_S);
+    try getPicBufferSize(@constCast(&buf_attr), &cal);
+    const addr = try mb.handle_to_virAddr(v_frame.pMbBlk);
+    var len = cal.u32MBSize;
+    var s: []u8 = addr[0..len];
+    _ = try file.readAll(s);
+}
+
+pub fn createVideoFrame(buf_attr: *const c.PIC_BUF_ATTR_S, frame: *c.VIDEO_FRAME_INFO_S) !void {
+    var cal = std.mem.zeroes(c.MB_PIC_CAL_S);
+    try getPicBufferSize(buf_attr, &cal);
+    try mmzAllocCached(&frame.stVFrame.pMbBlk, cal.u32MBSize);
+    frame.stVFrame.u32Width = buf_attr.u32Width;
+    frame.stVFrame.u32Height = buf_attr.u32Height;
+    frame.stVFrame.u32VirWidth = cal.u32VirWidth;
+    frame.stVFrame.u32VirHeight = cal.u32VirHeight;
+    frame.stVFrame.enPixelFormat = buf_attr.enPixelFormat;
+    frame.stVFrame.enCompressMode = buf_attr.enCompMode;
 }
