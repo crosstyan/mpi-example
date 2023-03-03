@@ -255,14 +255,14 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_p
     defer allocator.free(chn_frame_infos);
     std.debug.assert(ctx.compressMode == CompressMode.none);
     var files = try getFrameFiles(allocator, src_path, .{}, ctx.pipeCnt);
-    defer files.deinit();
     // https://www.reddit.com/r/Zig/comments/mea1ks/memory_leak_help/
     const file_slice = try files.toOwnedSlice();
-    defer allocator.free(file_slice);
     for (pipe_frame_infos, file_slice) |*frame, *file| {
         try createFrame(ctx, file, frame);
         file.close();
     }
+    allocator.free(file_slice);
+    files.deinit();
 
     for (pipe_frame_infos, 0..) |*frame, idx_u| {
         const idx = @intCast(i32, idx_u);
