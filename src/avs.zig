@@ -256,33 +256,31 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_p
     defer allocator.free(chn_frame_infos);
     std.debug.assert(ctx.compressMode == CompressMode.none);
     var files = try getFrameFiles(allocator, src_path, .{}, ctx.pipeCnt);
+    defer files.deinit();
+    // https://www.reddit.com/r/Zig/comments/mea1ks/memory_leak_help/
     const file_slice = try files.toOwnedSlice();
-    // NOTE: here's the problem. frame is captured but not by reference but by
-    // value/copy
-    for (pipe_frame_infos, file_slice) |frame, file| {
-        try createFrame(ctx, &file, @constCast(&frame));
+    defer allocator.free(file_slice);
+    for (pipe_frame_infos, file_slice) |*frame, *file| {
+        try createFrame(ctx, file, frame);
         file.close();
     }
-    files.deinit();
 
-    for (pipe_frame_infos, 0..) |frame_c, idx_u| {
+    for (pipe_frame_infos, 0..) |*frame, idx_u| {
         const idx = @intCast(i32, idx_u);
-        var frame = @constCast(&frame_c);
         try sendPipeFrame(ctx.grpId, idx, frame, -1);
     }
-    for (chn_frame_infos, 0..) |frame_const, idx_u| {
-        var frame = @constCast(&frame_const);
+
+    for (chn_frame_infos, 0..) |*frame, idx_u| {
         var idx = @intCast(i32, idx_u);
         try getChnFrame(ctx.grpId, @intCast(i32, idx), frame, -1);
         if (frame.stVFrame.pMbBlk != null) {
             const file_name = try std.fmt.allocPrint(allocator, "chn-{}.yuv", .{idx});
+            defer allocator.free(file_name);
             const write_path = try std.fs.path.join(allocator, &.{ dst_path, file_name });
+            defer allocator.free(write_path);
+            std.debug.print("write path: {s}\n", .{write_path});
             const file = try std.fs.cwd().createFile(write_path, .{ .read = true });
-            defer {
-                allocator.free(file_name);
-                allocator.free(write_path);
-                file.close();
-            }
+            defer file.close();
             try rk.fileWriteOneFrame(@constCast(&file), frame);
             try releaseChnFrame(ctx.grpId, @intCast(i32, idx), frame);
         }

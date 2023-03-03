@@ -45,8 +45,8 @@ pub fn deinit() SysError!void {
 
 /// 计算VGS、VPSS输出所需图像buffer大小
 pub fn getPicBufferSize(pic_buf_attr: *const c.PIC_BUF_ATTR_S, pic_cal: *c.MB_PIC_CAL_S) CustomError!void {
-    const err = c.RK_MPI_CAL_VGS_GetPicBufferSize(pic_buf_attr, pic_cal);
-    if (err != sucess) return CustomError.General;
+    const ret = c.RK_MPI_CAL_VGS_GetPicBufferSize(pic_buf_attr, pic_cal);
+    if (ret < 0) return CustomError.General;
 }
 
 pub fn getPicBufferSizeAlloc(allocator: std.mem.Allocator, pic_buf_attr: *const c.PIC_BUF_ATTR_S) !c.MB_PIC_CAL_S {
@@ -72,10 +72,12 @@ pub fn fileWriteOneFrame(file: *std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void
     const buf_attr = c.PIC_BUF_ATTR_S{
         .u32Width = v_frame.u32VirWidth,
         .u32Height = v_frame.u32VirHeight,
-        .enPixelFormat = v_frame.enPixelFormat,
+        // NOTE: hack here. What's going on with the pixel format?
+        .enPixelFormat = c.RK_FMT_YUV420SP,
         .enCompMode = v_frame.enCompressMode,
     };
     var cal = std.mem.zeroes(c.MB_PIC_CAL_S);
+    std.debug.print("buf_attr: {?}\n", .{buf_attr});
     try getPicBufferSize(&buf_attr, &cal);
     try mmzFlushCache(v_frame.pMbBlk, true);
     const addr = try mb.handle_to_virAddr(v_frame.pMbBlk);
@@ -93,7 +95,7 @@ pub fn fileReadOneFrame(file: *const std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) 
         .enCompMode = v_frame.enCompressMode,
     };
     var cal = std.mem.zeroes(c.MB_PIC_CAL_S);
-    try getPicBufferSize(@constCast(&buf_attr), &cal);
+    try getPicBufferSize(&buf_attr, &cal);
     const addr = try mb.handle_to_virAddr(v_frame.pMbBlk);
     var len = cal.u32MBSize;
     var s: []u8 = addr[0..len];
