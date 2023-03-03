@@ -3,7 +3,6 @@ const c = @import("bindings/common.zig");
 const rk = @import("rockit.zig");
 const log = std.log.scoped(.avs);
 
-// See also TEST_AVS_6_NoBlend_Hor
 const sucess = rk.sucess;
 
 const AvsError = error{
@@ -85,6 +84,28 @@ pub fn destroyGrp(grpId: i32) AvsError!void {
     if (err != sucess) return cvtErr(err);
 }
 
+/// timeout:
+/// 超时参数 s32MilliSec 设为-1 时，为阻塞接口; 0 时为非阻塞接口;
+/// 大于 0 时为超时等待时间，超时时间的单位为毫秒(ms)
+pub fn sendPipeFrame(grpId: i32, pipeId: i32, frame: *c.VIDEO_FRAME_INFO_S, timeout: i32) AvsError!void {
+    const err = c.RK_MPI_AVS_SendPipeFrame(grpId, pipeId, frame, timeout);
+    if (err != sucess) return cvtErr(err);
+}
+
+/// timeout:
+/// 超时参数 s32MilliSec 设为-1 时，为阻塞接口; 0 时为非阻塞接口;
+/// 大于 0 时为超时等待时间，超时时间的单位为毫秒(ms)
+pub fn getChnFrame(grpId: i32, chnId: i32, frame: *c.VIDEO_FRAME_INFO_S, timeout: i32) AvsError!void {
+    const err = c.RK_MPI_AVS_GetChnFrame(grpId, chnId, frame, timeout);
+    if (err != sucess) return cvtErr(err);
+}
+
+pub fn releaseChnFrame(grpId: i32, chnId: i32, frame: *c.VIDEO_FRAME_INFO_S) AvsError!void {
+    const err = c.RK_MPI_AVS_ReleaseChnFrame(grpId, chnId, frame);
+    if (err != sucess) return cvtErr(err);
+}
+
+// See also TEST_AVS_6_NoBlend_Hor
 pub const Avs = struct {
     grpId: i32,
     chnId: i32,
