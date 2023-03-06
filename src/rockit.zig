@@ -91,7 +91,7 @@ pub fn fileWriteOneFrame(file: *std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void
         .enCompMode = v_frame.enCompressMode,
     };
     var cal = std.mem.zeroes(c.MB_PIC_CAL_S);
-    std.debug.print("buf_attr: {?}\n", .{buf_attr});
+    log.debug("buf_attr: {?}\n", .{buf_attr});
     try calPicBufferSizeVgs(&buf_attr, &cal);
     try mmzFlushCache(v_frame.pMbBlk, true);
     const addr = try mb.handle2VirAddr(v_frame.pMbBlk);
