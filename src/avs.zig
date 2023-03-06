@@ -183,7 +183,8 @@ pub const Avs = struct {
         ctx.grpAttr.u32PipeNum = ctx.pipeCnt;
         ctx.grpAttr.stGainAttr.enMode = c.AVS_GAIN_MODE_AUTO;
 
-        ctx.grpAttr.stOutAttr.enPrjMode = c.AVS_PROJECTION_RECTILINEAR;
+        // chose wrong mode
+        ctx.grpAttr.stOutAttr.enPrjMode = c.AVS_PROJECTION_EQUIRECTANGULAR;
         ctx.grpAttr.stOutAttr.stCenter.s32X = 4220;
         ctx.grpAttr.stOutAttr.stCenter.s32Y = 2124;
         ctx.grpAttr.stOutAttr.stFOV.u32FOVX = 28000;
