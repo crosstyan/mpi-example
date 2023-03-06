@@ -50,46 +50,46 @@ pub fn setModParam(param: *c.AVS_MOD_PARAM_S) AvsError!void {
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn createGrp(grpId: i32, grp_attr: *c.AVS_GRP_ATTR_S) AvsError!void {
-    const err = c.RK_MPI_AVS_CreateGrp(grpId, grp_attr);
+pub fn createGrp(grp_id: i32, grp_attr: *c.AVS_GRP_ATTR_S) AvsError!void {
+    const err = c.RK_MPI_AVS_CreateGrp(grp_id, grp_attr);
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn setChnAttr(grpId: i32, chnId: i32, chn_attr: *c.AVS_CHN_ATTR_S) AvsError!void {
-    const err = c.RK_MPI_AVS_SetChnAttr(grpId, chnId, chn_attr);
+pub fn setChnAttr(grp_id: i32, chn_id: i32, chn_attr: *c.AVS_CHN_ATTR_S) AvsError!void {
+    const err = c.RK_MPI_AVS_SetChnAttr(grp_id, chn_id, chn_attr);
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn enableChn(grpId: i32, chnId: i32) AvsError!void {
-    const err = c.RK_MPI_AVS_EnableChn(grpId, chnId);
+pub fn enableChn(grp_id: i32, chn_id: i32) AvsError!void {
+    const err = c.RK_MPI_AVS_EnableChn(grp_id, chn_id);
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn startGrp(grpId: i32) AvsError!void {
-    const err = c.RK_MPI_AVS_StartGrp(grpId);
+pub fn startGrp(grp_id: i32) AvsError!void {
+    const err = c.RK_MPI_AVS_StartGrp(grp_id);
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn disableChn(grpId: i32, chnId: i32) AvsError!void {
-    const err = c.RK_MPI_AVS_DisableChn(grpId, chnId);
+pub fn disableChn(grp_id: i32, chn_id: i32) AvsError!void {
+    const err = c.RK_MPI_AVS_DisableChn(grp_id, chn_id);
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn stopGrp(grpId: i32) AvsError!void {
-    const err = c.RK_MPI_AVS_StopGrp(grpId);
+pub fn stopGrp(grp_id: i32) AvsError!void {
+    const err = c.RK_MPI_AVS_StopGrp(grp_id);
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn destroyGrp(grpId: i32) AvsError!void {
-    const err = c.RK_MPI_AVS_DestroyGrp(grpId);
+pub fn destroyGrp(grp_id: i32) AvsError!void {
+    const err = c.RK_MPI_AVS_DestroyGrp(grp_id);
     if (err != sucess) return cvtErr(err);
 }
 
 /// timeout:
 /// 超时参数 s32MilliSec 设为-1 时，为阻塞接口; 0 时为非阻塞接口;
 /// 大于 0 时为超时等待时间，超时时间的单位为毫秒(ms)
-pub fn sendPipeFrame(grpId: i32, pipeId: i32, frame: *c.VIDEO_FRAME_INFO_S, timeout: i32) AvsError!void {
-    const err = c.RK_MPI_AVS_SendPipeFrame(grpId, pipeId, frame, timeout);
+pub fn sendPipeFrame(grp_id: i32, pipeId: i32, frame: *c.VIDEO_FRAME_INFO_S, timeout: i32) AvsError!void {
+    const err = c.RK_MPI_AVS_SendPipeFrame(grp_id, pipeId, frame, timeout);
     errdefer mb.releaseMB(frame.stVFrame.pMbBlk) catch unreachable;
     if (err != sucess) return cvtErr(err);
 }
@@ -97,21 +97,21 @@ pub fn sendPipeFrame(grpId: i32, pipeId: i32, frame: *c.VIDEO_FRAME_INFO_S, time
 /// timeout:
 /// 超时参数 s32MilliSec 设为-1 时，为阻塞接口; 0 时为非阻塞接口;
 /// 大于 0 时为超时等待时间，超时时间的单位为毫秒(ms)
-pub fn getChnFrame(grpId: i32, chnId: i32, frame: *c.VIDEO_FRAME_INFO_S, timeout: i32) AvsError!void {
-    const err = c.RK_MPI_AVS_GetChnFrame(grpId, chnId, frame, timeout);
+pub fn getChnFrame(grp_id: i32, chn_id: i32, frame: *c.VIDEO_FRAME_INFO_S, timeout: i32) AvsError!void {
+    const err = c.RK_MPI_AVS_GetChnFrame(grp_id, chn_id, frame, timeout);
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn releaseChnFrame(grpId: i32, chnId: i32, frame: *c.VIDEO_FRAME_INFO_S) AvsError!void {
-    const err = c.RK_MPI_AVS_ReleaseChnFrame(grpId, chnId, frame);
+pub fn releaseChnFrame(grp_id: i32, chn_id: i32, frame: *c.VIDEO_FRAME_INFO_S) AvsError!void {
+    const err = c.RK_MPI_AVS_ReleaseChnFrame(grp_id, chn_id, frame);
     if (err != sucess) return cvtErr(err);
 }
 
 pub fn createInFrameByFile(ctx: *Avs, file: *const std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void {
     var pic_buf_attr = c.PIC_BUF_ATTR_S{
-        .u32Width = ctx.inWidth,
-        .u32Height = ctx.inHeight,
-        .enCompMode = @enumToInt(ctx.compressMode),
+        .u32Width = ctx.in_width,
+        .u32Height = ctx.in_height,
+        .enCompMode = @enumToInt(ctx.compress_mode),
         .enPixelFormat = c.RK_FMT_YUV420SP,
     };
     try rk.createVideoFrame(&pic_buf_attr, frame);
@@ -121,9 +121,9 @@ pub fn createInFrameByFile(ctx: *Avs, file: *const std.fs.File, frame: *c.VIDEO_
 
 pub fn createOutFrame(ctx: *Avs, frame: *c.VIDEO_FRAME_INFO_S) !void {
     var pic_buf_attr = c.PIC_BUF_ATTR_S{
-        .u32Width = ctx.outWidth,
-        .u32Height = ctx.outHeight,
-        .enCompMode = @enumToInt(ctx.compressMode),
+        .u32Width = ctx.out_width,
+        .u32Height = ctx.out_height,
+        .enCompMode = @enumToInt(ctx.compress_mode),
         .enPixelFormat = c.RK_FMT_YUV420SP,
     };
     try rk.createVideoFrame(&pic_buf_attr, frame);
@@ -137,23 +137,23 @@ const avs_max_chn_num = 2;
 pub const Avs = struct {
     /// VPSS i.e. Video Porcess Sub-System
     /// 各 GROUP 分时复用硬件设备。每个 AVS GROUP 包含多个 PIPE 和多个 CHANNEL。
-    grpId: i32,
+    grp_id: i32,
     /// AVS 组的通道。用于输出拼接的结果图像。
-    chnId: i32,
+    chn_id: i32,
     /// 管道(PIPE)，以下均称为管道，AVS 组的 PIPE。用于输入拼接源图像。PIPE 的数目即拼接路数。用户可以通过系统绑定 和前端相连或者发送图像到 PIPE 中。
-    pipeCnt: u32,
-    chnCnt: u32,
-    inWidth: u32,
-    inHeight: u32,
-    outWidth: u32,
-    outHeight: u32,
+    pipe_cnt: u32,
+    chn_cnt: u32,
+    in_width: u32,
+    in_height: u32,
+    out_width: u32,
+    out_height: u32,
     /// 支持AFBC解压缩
     /// Only support `RK_FMT_YUV420SP`
-    compressMode: CompressMode,
-    modParm: c.AVS_MOD_PARAM_S,
-    grpAttr: c.AVS_GRP_ATTR_S,
-    outAttr: c.AVS_OUTPUT_ATTR_S,
-    chnAttr: [avs_max_chn_num]c.AVS_CHN_ATTR_S,
+    compress_mode: CompressMode,
+    mod_parm: c.AVS_MOD_PARAM_S,
+    grp_attr: c.AVS_GRP_ATTR_S,
+    out_attr: c.AVS_OUTPUT_ATTR_S,
+    chn_attr: [avs_max_chn_num]c.AVS_CHN_ATTR_S,
 
     pub fn new() Avs {
         return std.mem.zeroes(Avs);
@@ -162,70 +162,70 @@ pub const Avs = struct {
     /// set with default value
     pub fn with_default(ctx: *@This()) void {
         const is_frame_sync = false;
-        ctx.grpId = 0;
-        ctx.chnId = 0;
-        ctx.pipeCnt = 6;
-        ctx.chnCnt = 1;
-        ctx.inWidth = 2560;
-        ctx.inHeight = 1520;
-        ctx.outWidth = 8192;
-        ctx.outHeight = 2700;
+        ctx.grp_id = 0;
+        ctx.chn_id = 0;
+        ctx.pipe_cnt = 6;
+        ctx.chn_cnt = 1;
+        ctx.in_width = 2560;
+        ctx.in_height = 1520;
+        ctx.out_width = 8192;
+        ctx.out_height = 2700;
         // maybe not?
-        ctx.compressMode = CompressMode.none;
+        ctx.compress_mode = CompressMode.none;
 
-        ctx.grpAttr.stLUT.enAccuracy = c.AVS_LUT_ACCURACY_HIGH;
+        ctx.grp_attr.stLUT.enAccuracy = c.AVS_LUT_ACCURACY_HIGH;
         // AVS 工作空间的大小 (maybe not used)
-        ctx.modParm.u32WorkingSetSize = 67 * 1027;
+        ctx.mod_parm.u32WorkingSetSize = 67 * 1027;
         // 视频缓存池类型
         // 默认为私有缓冲池
-        ctx.modParm.enMBSource = c.MB_SOURCE_PRIVATE;
-        ctx.grpAttr.enMode = c.AVS_MODE_BLEND;
-        ctx.grpAttr.u32PipeNum = ctx.pipeCnt;
-        ctx.grpAttr.stGainAttr.enMode = c.AVS_GAIN_MODE_AUTO;
+        ctx.mod_parm.enMBSource = c.MB_SOURCE_PRIVATE;
+        ctx.grp_attr.enMode = c.AVS_MODE_BLEND;
+        ctx.grp_attr.u32PipeNum = ctx.pipe_cnt;
+        ctx.grp_attr.stGainAttr.enMode = c.AVS_GAIN_MODE_AUTO;
 
         // chose wrong mode
-        ctx.grpAttr.stOutAttr.enPrjMode = c.AVS_PROJECTION_EQUIRECTANGULAR;
-        ctx.grpAttr.stOutAttr.stCenter.s32X = 4220;
-        ctx.grpAttr.stOutAttr.stCenter.s32Y = 2124;
-        ctx.grpAttr.stOutAttr.stFOV.u32FOVX = 28000;
-        ctx.grpAttr.stOutAttr.stFOV.u32FOVY = 9500;
-        ctx.grpAttr.stOutAttr.stORIRotation.s32Roll = 0;
-        ctx.grpAttr.stOutAttr.stORIRotation.s32Pitch = 0;
-        ctx.grpAttr.stOutAttr.stORIRotation.s32Yaw = 0;
-        ctx.grpAttr.stOutAttr.stRotation.s32Roll = 0;
-        ctx.grpAttr.stOutAttr.stRotation.s32Pitch = 0;
-        ctx.grpAttr.stOutAttr.stRotation.s32Yaw = 0;
+        ctx.grp_attr.stOutAttr.enPrjMode = c.AVS_PROJECTION_EQUIRECTANGULAR;
+        ctx.grp_attr.stOutAttr.stCenter.s32X = 4220;
+        ctx.grp_attr.stOutAttr.stCenter.s32Y = 2124;
+        ctx.grp_attr.stOutAttr.stFOV.u32FOVX = 28000;
+        ctx.grp_attr.stOutAttr.stFOV.u32FOVY = 9500;
+        ctx.grp_attr.stOutAttr.stORIRotation.s32Roll = 0;
+        ctx.grp_attr.stOutAttr.stORIRotation.s32Pitch = 0;
+        ctx.grp_attr.stOutAttr.stORIRotation.s32Yaw = 0;
+        ctx.grp_attr.stOutAttr.stRotation.s32Roll = 0;
+        ctx.grp_attr.stOutAttr.stRotation.s32Pitch = 0;
+        ctx.grp_attr.stOutAttr.stRotation.s32Yaw = 0;
 
         // 是否通过 SeqID 进行各路图像的同步
         // 如果打开，AVS 会根据各路输入图像 SeqID 进行同步，找出 SeqID 一致的一组图像进行拼接，会导致 AVS 占用的 MB
         // 数目增多，如果有同步要求的拼接使能同步，如果对拼接同步要求不高关闭同步可以达到节省内存的目的
-        ctx.grpAttr.bSyncPipe = @boolToInt(is_frame_sync);
+        ctx.grp_attr.bSyncPipe = @boolToInt(is_frame_sync);
         // 帧率属性
-        ctx.grpAttr.stFrameRate.s32SrcFrameRate = -1;
-        ctx.grpAttr.stFrameRate.s32DstFrameRate = -1;
+        ctx.grp_attr.stFrameRate.s32SrcFrameRate = -1;
+        ctx.grp_attr.stFrameRate.s32DstFrameRate = -1;
 
-        ctx.chnAttr[0].enCompressMode = @intCast(c_uint, @enumToInt(ctx.compressMode));
-        ctx.chnAttr[0].stFrameRate.s32SrcFrameRate = -1;
-        ctx.chnAttr[0].stFrameRate.s32DstFrameRate = -1;
-        ctx.chnAttr[0].u32Depth = 3;
-        ctx.chnAttr[0].u32Width = ctx.outWidth;
-        ctx.chnAttr[0].u32Height = ctx.outHeight;
-        ctx.chnAttr[0].enDynamicRange = c.DYNAMIC_RANGE_SDR8;
+        ctx.chn_attr[0].enCompressMode = @intCast(c_uint, @enumToInt(ctx.compress_mode));
+        ctx.chn_attr[0].stFrameRate.s32SrcFrameRate = -1;
+        ctx.chn_attr[0].stFrameRate.s32DstFrameRate = -1;
+        ctx.chn_attr[0].u32Depth = 3;
+        ctx.chn_attr[0].u32Width = ctx.out_width;
+        ctx.chn_attr[0].u32Height = ctx.out_height;
+        ctx.chn_attr[0].enDynamicRange = c.DYNAMIC_RANGE_SDR8;
     }
 
     /// See `create_avs()` in `firefly_test_mpi_avs.cpp`
     pub fn init(self: *@This()) AvsError!void {
-        try setModParam(&self.modParm);
-        try createGrp(self.grpId, &self.grpAttr);
-        try setChnAttr(self.grpId, self.chnId, &self.chnAttr[0]);
-        try enableChn(self.grpId, self.chnId);
-        try startGrp(self.grpId);
+        try setModParam(&self.mod_parm);
+        try createGrp(self.grp_id, &self.grp_attr);
+        try setChnAttr(self.grp_id, self.chn_id, &self.chn_attr[0]);
+        try enableChn(self.grp_id, self.chn_id);
+        try startGrp(self.grp_id);
     }
 
     pub fn deinit(self: *@This()) AvsError!void {
-        try disableChn(self.grpId, self.chnId);
-        try stopGrp(self.grpId);
-        try destroyGrp(self.grpId);
+        try disableChn(self.grp_id, self.chn_id);
+        try stopGrp(self.grp_id);
+        try destroyGrp(self.grp_id);
     }
 };
 
@@ -271,19 +271,19 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, ctx: *Avs, test_path:
     }
     ctx.with_default();
     // 标定文件地址
-    ctx.grpAttr.stOutAttr.stCalib.aCalibFilePath = calib_buf;
+    ctx.grp_attr.stOutAttr.stCalib.aCalibFilePath = calib_buf;
     // 输出查找表文件地址
     // This is output mesh file path
-    ctx.grpAttr.stOutAttr.stCalib.aMeshAlphaPath = mesh_buf;
+    ctx.grp_attr.stOutAttr.stCalib.aMeshAlphaPath = mesh_buf;
     try ctx.init();
     defer ctx.deinit() catch unreachable;
 
-    var pipe_frame_infos = try allocator.alloc(c.VIDEO_FRAME_INFO_S, ctx.pipeCnt);
+    var pipe_frame_infos = try allocator.alloc(c.VIDEO_FRAME_INFO_S, ctx.pipe_cnt);
     defer allocator.free(pipe_frame_infos);
-    var chn_frame_infos = try allocator.alloc(c.VIDEO_FRAME_INFO_S, ctx.chnCnt);
+    var chn_frame_infos = try allocator.alloc(c.VIDEO_FRAME_INFO_S, ctx.chn_cnt);
     defer allocator.free(chn_frame_infos);
-    std.debug.assert(ctx.compressMode == CompressMode.none);
-    var files = try getFrameFiles(allocator, src_path, .{}, ctx.pipeCnt);
+    std.debug.assert(ctx.compress_mode == CompressMode.none);
+    var files = try getFrameFiles(allocator, src_path, .{}, ctx.pipe_cnt);
     // https://www.reddit.com/r/Zig/comments/mea1ks/memory_leak_help/
     const file_slice = try files.toOwnedSlice();
     // fill frames with initial data
@@ -299,13 +299,13 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, ctx: *Avs, test_path:
 
     for (pipe_frame_infos, 0..) |*frame, idx_u| {
         const idx = @intCast(i32, idx_u);
-        try sendPipeFrame(ctx.grpId, idx, frame, -1);
+        try sendPipeFrame(ctx.grp_id, idx, frame, -1);
     }
 
     for (chn_frame_infos, 0..) |*frame, idx_u| {
         const idx = @intCast(i32, idx_u);
-        try getChnFrame(ctx.grpId, idx, frame, -1);
-        defer releaseChnFrame(ctx.grpId, idx, frame) catch unreachable;
+        try getChnFrame(ctx.grp_id, idx, frame, -1);
+        defer releaseChnFrame(ctx.grp_id, idx, frame) catch unreachable;
         if (frame.stVFrame.pMbBlk != null) {
             const file_name = try std.fmt.allocPrint(allocator, "chn-{}.yuv", .{idx});
             defer allocator.free(file_name);
