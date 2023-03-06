@@ -174,8 +174,12 @@ pub const Avs = struct {
         ctx.compressMode = CompressMode.none;
 
         ctx.grpAttr.stLUT.enAccuracy = c.AVS_LUT_ACCURACY_HIGH;
+        // AVS 工作空间的大小 (maybe not used)
         ctx.modParm.u32WorkingSetSize = 67 * 1027;
+        // 视频缓存池类型
+        // 默认为私有缓冲池
         ctx.modParm.enMBSource = c.MB_SOURCE_PRIVATE;
+        ctx.grpAttr.enMode = c.AVS_MODE_BLEND;
         ctx.grpAttr.u32PipeNum = ctx.pipeCnt;
         ctx.grpAttr.stGainAttr.enMode = c.AVS_GAIN_MODE_AUTO;
 
@@ -191,7 +195,11 @@ pub const Avs = struct {
         ctx.grpAttr.stOutAttr.stRotation.s32Pitch = 0;
         ctx.grpAttr.stOutAttr.stRotation.s32Yaw = 0;
 
+        // 是否通过 SeqID 进行各路图像的同步
+        // 如果打开，AVS 会根据各路输入图像 SeqID 进行同步，找出 SeqID 一致的一组图像进行拼接，会导致 AVS 占用的 MB
+        // 数目增多，如果有同步要求的拼接使能同步，如果对拼接同步要求不高关闭同步可以达到节省内存的目的
         ctx.grpAttr.bSyncPipe = @boolToInt(is_frame_sync);
+        // 帧率属性
         ctx.grpAttr.stFrameRate.s32SrcFrameRate = -1;
         ctx.grpAttr.stFrameRate.s32DstFrameRate = -1;
 
@@ -244,8 +252,7 @@ fn getFrameFiles(allocator: std.mem.Allocator, src_path: []const u8, flags: std.
 
 /// AVS 支持的投影模式有 Equirectangular、Cylindrical、Rectilinear、Cube map 和
 /// Transverse-Equirectangular 五种投影模式。
-pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_path: []const u8) !void {
-    var ctx = context;
+pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, ctx: *Avs, test_path: []const u8) !void {
     const src_path = try std.fs.path.join(allocator, &.{ test_path, "/input_image/image_data/" });
     const dst_path = try std.fs.path.join(allocator, &.{ test_path, "/output_res/" });
     const calib_path = try std.fs.path.join(allocator, &.{ test_path, "/avs_calib/calib_file.pto" });
@@ -262,7 +269,10 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_p
         allocator.free(mesh_path);
     }
     ctx.with_default();
+    // 标定文件地址
     ctx.grpAttr.stOutAttr.stCalib.aCalibFilePath = calib_buf;
+    // 输出查找表文件地址
+    // This is output mesh file path
     ctx.grpAttr.stOutAttr.stCalib.aMeshAlphaPath = mesh_buf;
     try ctx.init();
     defer ctx.deinit() catch unreachable;
