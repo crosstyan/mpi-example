@@ -107,7 +107,7 @@ pub fn releaseChnFrame(grpId: i32, chnId: i32, frame: *c.VIDEO_FRAME_INFO_S) Avs
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn createFrame(ctx: *Avs, file: *const std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void {
+pub fn createInFrameByFile(ctx: *Avs, file: *const std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void {
     var pic_buf_attr = c.PIC_BUF_ATTR_S{
         .u32Width = ctx.inWidth,
         .u32Height = ctx.inHeight,
@@ -119,20 +119,36 @@ pub fn createFrame(ctx: *Avs, file: *const std.fs.File, frame: *c.VIDEO_FRAME_IN
     try rk.mmzFlushCache(frame.stVFrame.pMbBlk, false);
 }
 
+pub fn createOutFrame(ctx: *Avs, frame: *c.VIDEO_FRAME_INFO_S) !void {
+    var pic_buf_attr = c.PIC_BUF_ATTR_S{
+        .u32Width = ctx.outWidth,
+        .u32Height = ctx.outHeight,
+        .enCompMode = @enumToInt(ctx.compressMode),
+        .enPixelFormat = c.RK_FMT_YUV420SP,
+    };
+    try rk.createVideoFrame(&pic_buf_attr, frame);
+    try rk.mmzFlushCache(frame.stVFrame.pMbBlk, false);
+}
+
 const avs_pipe_num = 8;
 const avs_max_chn_num = 2;
 
-// See also TEST_AVS_6_NoBlend_Hor
+/// Any View Stitching
 pub const Avs = struct {
+    /// VPSS i.e. Video Porcess Sub-System
+    /// 各 GROUP 分时复用硬件设备。每个 AVS GROUP 包含多个 PIPE 和多个 CHANNEL。
     grpId: i32,
+    /// AVS 组的通道。用于输出拼接的结果图像。
     chnId: i32,
-    pipeId: i32,
+    /// 管道(PIPE)，以下均称为管道，AVS 组的 PIPE。用于输入拼接源图像。PIPE 的数目即拼接路数。用户可以通过系统绑定 和前端相连或者发送图像到 PIPE 中。
     pipeCnt: u32,
     chnCnt: u32,
     inWidth: u32,
     inHeight: u32,
     outWidth: u32,
     outHeight: u32,
+    /// 支持AFBC解压缩
+    /// Only support `RK_FMT_YUV420SP`
     compressMode: CompressMode,
     modParm: c.AVS_MOD_PARAM_S,
     grpAttr: c.AVS_GRP_ATTR_S,
@@ -197,7 +213,7 @@ pub const Avs = struct {
         try startGrp(self.grpId);
     }
 
-    pub fn deinit(self: @This()) AvsError!void {
+    pub fn deinit(self: *@This()) AvsError!void {
         try disableChn(self.grpId, self.chnId);
         try stopGrp(self.grpId);
         try destroyGrp(self.grpId);
@@ -226,6 +242,8 @@ fn getFrameFiles(allocator: std.mem.Allocator, src_path: []const u8, flags: std.
     return files;
 }
 
+/// AVS 支持的投影模式有 Equirectangular、Cylindrical、Rectilinear、Cube map 和
+/// Transverse-Equirectangular 五种投影模式。
 pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_path: []const u8) !void {
     var ctx = context;
     const src_path = try std.fs.path.join(allocator, &.{ test_path, "/input_image/image_data/" });
@@ -257,12 +275,16 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_p
     var files = try getFrameFiles(allocator, src_path, .{}, ctx.pipeCnt);
     // https://www.reddit.com/r/Zig/comments/mea1ks/memory_leak_help/
     const file_slice = try files.toOwnedSlice();
+    // fill frames with initial data
     for (pipe_frame_infos, file_slice) |*frame, *file| {
-        try createFrame(ctx, file, frame);
+        try createInFrameByFile(ctx, file, frame);
         file.close();
     }
     allocator.free(file_slice);
     files.deinit();
+    for (chn_frame_infos) |*frame| {
+        try createOutFrame(ctx, frame);
+    }
 
     for (pipe_frame_infos, 0..) |*frame, idx_u| {
         const idx = @intCast(i32, idx_u);
@@ -272,6 +294,7 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_p
     for (chn_frame_infos, 0..) |*frame, idx_u| {
         const idx = @intCast(i32, idx_u);
         try getChnFrame(ctx.grpId, idx, frame, -1);
+        defer releaseChnFrame(ctx.grpId, idx, frame) catch unreachable;
         if (frame.stVFrame.pMbBlk != null) {
             const file_name = try std.fmt.allocPrint(allocator, "chn-{}.yuv", .{idx});
             defer allocator.free(file_name);
@@ -281,7 +304,6 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, context: *Avs, test_p
             var file = try std.fs.cwd().createFile(write_path, .{ .read = true });
             defer file.close();
             try rk.fileWriteOneFrame(&file, frame);
-            try releaseChnFrame(ctx.grpId, idx, frame);
         }
     }
 }

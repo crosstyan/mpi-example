@@ -32,12 +32,14 @@ pub fn cvtErr(err: c_int) MBError {
 }
 
 /// 释放一个已经获取的缓存块
+///
+/// MB means Memory Buffer
 pub fn releaseMB(blk: c.MB_BLK) MBError!void {
     const err = c.RK_MPI_MB_ReleaseMB(blk);
     if (err != sucess) return cvtErr(err);
 }
 
-pub fn handle_to_virAddr(handle: c.MB_BLK) MBError![*]u8 {
+pub fn handle2VirAddr(handle: c.MB_BLK) MBError![*]u8 {
     const addr = c.RK_MPI_MB_Handle2VirAddr(handle);
     if (addr == null) return error.NullPtr;
     return @ptrCast([*]u8, addr);
