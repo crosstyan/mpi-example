@@ -1395,6 +1395,918 @@ pub extern fn RK_MPI_VI_DisableUserPic(ViPipe: VI_PIPE, ViChn: VI_CHN) RK_S32;
 pub extern fn RK_MPI_VI_GetChnConnectInfo(ViPipe: VI_PIPE, ViChn: VI_CHN, pstConnectInfo: [*c]VI_CONNECT_INFO_S) RK_S32;
 pub extern fn RK_MPI_VI_SetChnEdid(ViPipe: VI_PIPE, ViChn: VI_CHN, pstEdid: [*c]const VI_EDID_S) RK_S32;
 pub extern fn RK_MPI_VI_GetChnEdid(ViPipe: VI_PIPE, ViChn: VI_CHN, pstEdid: [*c]VI_EDID_S) RK_S32;
+pub const VENC_RC_QUALITY_HIGHEST: c_int = 0;
+pub const VENC_RC_QUALITY_HIGHER: c_int = 1;
+pub const VENC_RC_QUALITY_HIGH: c_int = 2;
+pub const VENC_RC_QUALITY_MEDIUM: c_int = 3;
+pub const VENC_RC_QUALITY_LOW: c_int = 4;
+pub const VENC_RC_QUALITY_LOWER: c_int = 5;
+pub const VENC_RC_QUALITY_LOWEST: c_int = 6;
+pub const VENC_RC_QUALITY_BUTT: c_int = 7;
+pub const enum_rkVENC_RC_QUALITY_E = c_uint;
+pub const VENC_RC_QUALITY_E = enum_rkVENC_RC_QUALITY_E;
+pub const VENC_RC_MODE_H264CBR: c_int = 1;
+pub const VENC_RC_MODE_H264VBR: c_int = 2;
+pub const VENC_RC_MODE_H264AVBR: c_int = 3;
+pub const VENC_RC_MODE_H264FIXQP: c_int = 4;
+pub const VENC_RC_MODE_MJPEGCBR: c_int = 5;
+pub const VENC_RC_MODE_MJPEGVBR: c_int = 6;
+pub const VENC_RC_MODE_MJPEGFIXQP: c_int = 7;
+pub const VENC_RC_MODE_H265CBR: c_int = 8;
+pub const VENC_RC_MODE_H265VBR: c_int = 9;
+pub const VENC_RC_MODE_H265AVBR: c_int = 10;
+pub const VENC_RC_MODE_H265FIXQP: c_int = 11;
+pub const VENC_RC_MODE_BUTT: c_int = 12;
+pub const enum_rkVENC_RC_MODE_E = c_uint;
+pub const VENC_RC_MODE_E = enum_rkVENC_RC_MODE_E;
+pub const VENC_NALU_BSLICE: c_int = 1;
+pub const VENC_NALU_PSLICE: c_int = 2;
+pub const VENC_NALU_ISLICE: c_int = 3;
+pub const VENC_NALU_IDRSLICE: c_int = 4;
+pub const VENC_NALU_SEI: c_int = 5;
+pub const VENC_NALU_VPS: c_int = 6;
+pub const VENC_NALU_SPS: c_int = 7;
+pub const VENC_NALU_PPS: c_int = 8;
+pub const VENC_NALU_BUTT: c_int = 9;
+pub const enum_rkVENC_NALU_TYPE_E = c_uint;
+pub const VENC_NALU_TYPE_E = enum_rkVENC_NALU_TYPE_E;
+pub const struct_rkVENC_H264_CBR_S = extern struct {
+    u32Gop: RK_U32,
+    u32SrcFrameRateNum: RK_U32,
+    u32SrcFrameRateDen: RK_U32,
+    fr32DstFrameRateNum: RK_U32,
+    fr32DstFrameRateDen: RK_U32,
+    u32BitRate: RK_U32,
+    u32StatTime: RK_U32,
+};
+pub const VENC_H264_CBR_S = struct_rkVENC_H264_CBR_S;
+pub const struct_rkVENC_H264_VBR_S = extern struct {
+    u32Gop: RK_U32,
+    u32SrcFrameRateNum: RK_U32,
+    u32SrcFrameRateDen: RK_U32,
+    fr32DstFrameRateNum: RK_U32,
+    fr32DstFrameRateDen: RK_U32,
+    u32BitRate: RK_U32,
+    u32MaxBitRate: RK_U32,
+    u32MinBitRate: RK_U32,
+    u32StatTime: RK_U32,
+};
+pub const VENC_H264_VBR_S = struct_rkVENC_H264_VBR_S;
+pub const struct_rkVENC_H264_AVBR_S = extern struct {
+    u32Gop: RK_U32,
+    u32SrcFrameRateNum: RK_U32,
+    u32SrcFrameRateDen: RK_U32,
+    fr32DstFrameRateNum: RK_U32,
+    fr32DstFrameRateDen: RK_U32,
+    u32BitRate: RK_U32,
+    u32MaxBitRate: RK_U32,
+    u32MinBitRate: RK_U32,
+    u32StatTime: RK_U32,
+};
+pub const VENC_H264_AVBR_S = struct_rkVENC_H264_AVBR_S;
+pub const struct_rkVENC_H264_FIXQP_S = extern struct {
+    u32Gop: RK_U32,
+    u32SrcFrameRateNum: RK_U32,
+    u32SrcFrameRateDen: RK_U32,
+    fr32DstFrameRateNum: RK_U32,
+    fr32DstFrameRateDen: RK_U32,
+    u32IQp: RK_U32,
+    u32PQp: RK_U32,
+    u32BQp: RK_U32,
+};
+pub const VENC_H264_FIXQP_S = struct_rkVENC_H264_FIXQP_S;
+pub const struct_rkVENC_MJPEG_CBR_S = extern struct {
+    u32SrcFrameRateNum: RK_U32,
+    u32SrcFrameRateDen: RK_U32,
+    fr32DstFrameRateNum: RK_U32,
+    fr32DstFrameRateDen: RK_U32,
+    u32BitRate: RK_U32,
+    u32StatTime: RK_U32,
+};
+pub const VENC_MJPEG_CBR_S = struct_rkVENC_MJPEG_CBR_S;
+pub const struct_rkVENC_MJPEG_VBR_S = extern struct {
+    u32SrcFrameRateNum: RK_U32,
+    u32SrcFrameRateDen: RK_U32,
+    fr32DstFrameRateNum: RK_U32,
+    fr32DstFrameRateDen: RK_U32,
+    u32BitRate: RK_U32,
+    u32MaxBitRate: RK_U32,
+    u32MinBitRate: RK_U32,
+    u32StatTime: RK_U32,
+};
+pub const VENC_MJPEG_VBR_S = struct_rkVENC_MJPEG_VBR_S;
+pub const struct_rkVENC_MJPEG_FIXQP_S = extern struct {
+    u32SrcFrameRateNum: RK_U32,
+    u32SrcFrameRateDen: RK_U32,
+    fr32DstFrameRateNum: RK_U32,
+    fr32DstFrameRateDen: RK_U32,
+    u32Qfactor: RK_U32,
+};
+pub const VENC_MJPEG_FIXQP_S = struct_rkVENC_MJPEG_FIXQP_S;
+pub const VENC_H265_CBR_S = struct_rkVENC_H264_CBR_S;
+pub const VENC_H265_VBR_S = struct_rkVENC_H264_VBR_S;
+pub const VENC_H265_AVBR_S = struct_rkVENC_H264_AVBR_S;
+pub const VENC_H265_FIXQP_S = struct_rkVENC_H264_FIXQP_S;
+const union_unnamed_3 = extern union {
+    stH264Cbr: VENC_H264_CBR_S,
+    stH264Vbr: VENC_H264_VBR_S,
+    stH264Avbr: VENC_H264_AVBR_S,
+    stH264FixQp: VENC_H264_FIXQP_S,
+    stMjpegCbr: VENC_MJPEG_CBR_S,
+    stMjpegVbr: VENC_MJPEG_VBR_S,
+    stMjpegFixQp: VENC_MJPEG_FIXQP_S,
+    stH265Cbr: VENC_H265_CBR_S,
+    stH265Vbr: VENC_H265_VBR_S,
+    stH265Avbr: VENC_H265_AVBR_S,
+    stH265FixQp: VENC_H265_FIXQP_S,
+};
+pub const struct_rkVENC_RC_ATTR_S = extern struct {
+    enRcMode: VENC_RC_MODE_E,
+    unnamed_0: union_unnamed_3,
+};
+pub const VENC_RC_ATTR_S = struct_rkVENC_RC_ATTR_S;
+pub const struct_rkVENC_PARAM_H264_S = extern struct {
+    u32StepQp: RK_U32,
+    u32MaxQp: RK_U32,
+    u32MinQp: RK_U32,
+    u32MaxIQp: RK_U32,
+    u32MinIQp: RK_U32,
+    s32DeltIpQp: RK_S32,
+    s32MaxReEncodeTimes: RK_S32,
+};
+pub const VENC_PARAM_H264_S = struct_rkVENC_PARAM_H264_S;
+pub const struct_rkVENC_PARAM_H265_S = extern struct {
+    u32StepQp: RK_U32,
+    u32MaxQp: RK_U32,
+    u32MinQp: RK_U32,
+    u32MaxIQp: RK_U32,
+    u32MinIQp: RK_U32,
+    s32DeltIpQp: RK_S32,
+    s32MaxReEncodeTimes: RK_S32,
+};
+pub const VENC_PARAM_H265_S = struct_rkVENC_PARAM_H265_S;
+pub const struct_rkVENC_PARAM_MJPEG_S = extern struct {
+    u32Qfactor: RK_U32,
+    u32MaxQfactor: RK_U32,
+    u32MinQfactor: RK_U32,
+};
+pub const VENC_PARAM_MJPEG_S = struct_rkVENC_PARAM_MJPEG_S;
+const union_unnamed_4 = extern union {
+    stParamH264: VENC_PARAM_H264_S,
+    stParamH265: VENC_PARAM_H265_S,
+    stParamMjpeg: VENC_PARAM_MJPEG_S,
+};
+pub const struct_rkVENC_RC_PARAM_S = extern struct {
+    s32FirstFrameStartQp: RK_U32,
+    unnamed_0: union_unnamed_4,
+};
+pub const VENC_RC_PARAM_S = struct_rkVENC_RC_PARAM_S;
+pub const H264E_NALU_BSLICE: c_int = 0;
+pub const H264E_NALU_PSLICE: c_int = 1;
+pub const H264E_NALU_ISLICE: c_int = 2;
+pub const H264E_NALU_IDRSLICE: c_int = 5;
+pub const H264E_NALU_SEI: c_int = 6;
+pub const H264E_NALU_SPS: c_int = 7;
+pub const H264E_NALU_PPS: c_int = 8;
+pub const H264E_NALU_BUTT: c_int = 9;
+pub const enum_rkH264E_NALU_TYPE_E = c_uint;
+pub const H264E_NALU_TYPE_E = enum_rkH264E_NALU_TYPE_E;
+pub const H265E_NALU_BSLICE: c_int = 0;
+pub const H265E_NALU_PSLICE: c_int = 1;
+pub const H265E_NALU_ISLICE: c_int = 2;
+pub const H265E_NALU_IDRSLICE: c_int = 19;
+pub const H265E_NALU_VPS: c_int = 32;
+pub const H265E_NALU_SPS: c_int = 33;
+pub const H265E_NALU_PPS: c_int = 34;
+pub const H265E_NALU_SEI: c_int = 39;
+pub const H265E_NALU_BUTT: c_int = 40;
+pub const enum_rkH265E_NALU_TYPE_E = c_uint;
+pub const H265E_NALU_TYPE_E = enum_rkH265E_NALU_TYPE_E;
+pub const H264E_REFSLICE_FOR_1X: c_int = 1;
+pub const H264E_REFSLICE_FOR_2X: c_int = 2;
+pub const H264E_REFSLICE_FOR_4X: c_int = 5;
+pub const H264E_REFSLICE_FOR_BUTT: c_int = 6;
+pub const enum_rkH264E_REFSLICE_TYPE_E = c_uint;
+pub const H264E_REFSLICE_TYPE_E = enum_rkH264E_REFSLICE_TYPE_E;
+pub const JPEGE_PACK_ECS: c_int = 5;
+pub const JPEGE_PACK_APP: c_int = 6;
+pub const JPEGE_PACK_VDO: c_int = 7;
+pub const JPEGE_PACK_PIC: c_int = 8;
+pub const JPEGE_PACK_DCF: c_int = 9;
+pub const JPEGE_PACK_DCF_PIC: c_int = 10;
+pub const JPEGE_PACK_BUTT: c_int = 11;
+pub const enum_rkJPEGE_PACK_TYPE_E = c_uint;
+pub const JPEGE_PACK_TYPE_E = enum_rkJPEGE_PACK_TYPE_E;
+pub const H264E_PROFILE_BASELINE: c_int = 66;
+pub const H264E_PROFILE_MAIN: c_int = 77;
+pub const H264E_PROFILE_HIGH: c_int = 100;
+pub const H264E_PROFILE__BUTT: c_int = 101;
+pub const enum_rkH264E_PROFILE_E = c_uint;
+pub const H264E_PROFILE_E = enum_rkH264E_PROFILE_E;
+pub const H265E_PROFILE_MAIN: c_int = 0;
+pub const H265E_PROFILE_MAIN10: c_int = 1;
+pub const H265E_PROFILE__BUTT: c_int = 2;
+pub const enum_rkH265E_PROFILE_E = c_uint;
+pub const H265E_PROFILE_E = enum_rkH265E_PROFILE_E;
+pub const PRORES_PACK_PIC: c_int = 1;
+pub const PRORES_PACK_BUTT: c_int = 2;
+pub const enum_rkPRORES_PACK_TYPE_E = c_uint;
+pub const PRORES_PACK_TYPE_E = enum_rkPRORES_PACK_TYPE_E;
+pub const union_rkVENC_DATA_TYPE_U = extern union {
+    enH264EType: H264E_NALU_TYPE_E,
+    enJPEGEType: JPEGE_PACK_TYPE_E,
+    enH265EType: H265E_NALU_TYPE_E,
+    enPRORESType: PRORES_PACK_TYPE_E,
+};
+pub const VENC_DATA_TYPE_U = union_rkVENC_DATA_TYPE_U;
+pub const struct_rkVENC_PACK_INFO_S = extern struct {
+    u32PackType: VENC_DATA_TYPE_U,
+    u32PackOffset: RK_U32,
+    u32PackLength: RK_U32,
+};
+pub const VENC_PACK_INFO_S = struct_rkVENC_PACK_INFO_S;
+pub const struct_rkVENC_PACK_S = extern struct {
+    pMbBlk: MB_BLK,
+    u32Len: RK_U32,
+    u64PTS: RK_U64,
+    bFrameEnd: RK_BOOL,
+    bStreamEnd: RK_BOOL,
+    DataType: VENC_DATA_TYPE_U,
+    u32Offset: RK_U32,
+    u32DataNum: RK_U32,
+    stPackInfo: [8]VENC_PACK_INFO_S,
+};
+pub const VENC_PACK_S = struct_rkVENC_PACK_S;
+pub const BASE_IDRSLICE: c_int = 0;
+pub const BASE_PSLICE_REFTOIDR: c_int = 1;
+pub const BASE_PSLICE_REFBYBASE: c_int = 2;
+pub const BASE_PSLICE_REFBYENHANCE: c_int = 3;
+pub const ENHANCE_PSLICE_REFBYENHANCE: c_int = 4;
+pub const ENHANCE_PSLICE_NOTFORREF: c_int = 5;
+pub const ENHANCE_PSLICE_BUTT: c_int = 6;
+pub const enum_rkH264E_REF_TYPE_E = c_uint;
+pub const H264E_REF_TYPE_E = enum_rkH264E_REF_TYPE_E;
+pub const H265E_REF_TYPE_E = enum_rkH264E_REF_TYPE_E;
+pub const struct_rkVENC_STREAM_INFO_H264_S = extern struct {
+    u32PicBytesNum: RK_U32,
+    u32Inter16x16MbNum: RK_U32,
+    u32Inter8x8MbNum: RK_U32,
+    u32Intra16MbNum: RK_U32,
+    u32Intra8MbNum: RK_U32,
+    u32Intra4MbNum: RK_U32,
+    enRefType: H264E_REF_TYPE_E,
+    u32UpdateAttrCnt: RK_U32,
+    u32StartQp: RK_U32,
+    u32MeanQp: RK_U32,
+    bPSkip: RK_BOOL,
+};
+pub const VENC_STREAM_INFO_H264_S = struct_rkVENC_STREAM_INFO_H264_S;
+pub const struct_rkVENC_STREAM_INFO_H265_S = extern struct {
+    u32PicBytesNum: RK_U32,
+    u32Inter64x64CuNum: RK_U32,
+    u32Inter32x32CuNum: RK_U32,
+    u32Inter16x16CuNum: RK_U32,
+    u32Inter8x8CuNum: RK_U32,
+    u32Intra32x32CuNum: RK_U32,
+    u32Intra16x16CuNum: RK_U32,
+    u32Intra8x8CuNum: RK_U32,
+    u32Intra4x4CuNum: RK_U32,
+    enRefType: H265E_REF_TYPE_E,
+    u32UpdateAttrCnt: RK_U32,
+    u32StartQp: RK_U32,
+    u32MeanQp: RK_U32,
+    bPSkip: RK_BOOL,
+};
+pub const VENC_STREAM_INFO_H265_S = struct_rkVENC_STREAM_INFO_H265_S;
+pub const struct_rkVENC_SSE_INFO_S = extern struct {
+    bSSEEn: RK_BOOL,
+    u32SSEVal: RK_U32,
+};
+pub const VENC_SSE_INFO_S = struct_rkVENC_SSE_INFO_S;
+pub const struct_rkVENC_STREAM_ADVANCE_INFO_H264_S = extern struct {
+    u32ResidualBitNum: RK_U32,
+    u32HeadBitNum: RK_U32,
+    u32MadiVal: RK_U32,
+    u32MadpVal: RK_U32,
+    dPSNRVal: RK_DOUBLE,
+    u32MseLcuCnt: RK_U32,
+    u32MseSum: RK_U32,
+    stSSEInfo: [8]VENC_SSE_INFO_S,
+    u32QpHstgrm: [52]RK_U32,
+    u32MoveScene16x16Num: RK_U32,
+    u32MoveSceneBits: RK_U32,
+};
+pub const VENC_STREAM_ADVANCE_INFO_H264_S = struct_rkVENC_STREAM_ADVANCE_INFO_H264_S;
+pub const struct_rkVENC_STREAM_ADVANCE_INFO_JPEG_S = extern struct {};
+pub const VENC_STREAM_ADVANCE_INFO_JPEG_S = struct_rkVENC_STREAM_ADVANCE_INFO_JPEG_S;
+pub const struct_rkVENC_STREAM_ADVANCE_INFO_PRORES_S = extern struct {};
+pub const VENC_STREAM_ADVANCE_INFO_PRORES_S = struct_rkVENC_STREAM_ADVANCE_INFO_PRORES_S;
+pub const struct_rkVENC_STREAM_ADVANCE_INFO_H265_S = extern struct {
+    u32ResidualBitNum: RK_U32,
+    u32HeadBitNum: RK_U32,
+    u32MadiVal: RK_U32,
+    u32MadpVal: RK_U32,
+    dPSNRVal: RK_DOUBLE,
+    u32MseLcuCnt: RK_U32,
+    u32MseSum: RK_U32,
+    stSSEInfo: [8]VENC_SSE_INFO_S,
+    u32QpHstgrm: [52]RK_U32,
+    u32MoveScene32x32Num: RK_U32,
+    u32MoveSceneBits: RK_U32,
+};
+pub const VENC_STREAM_ADVANCE_INFO_H265_S = struct_rkVENC_STREAM_ADVANCE_INFO_H265_S;
+pub const struct_rkVENC_STREAM_INFO_PRORES_S = extern struct {
+    u32PicBytesNum: RK_U32,
+    u32UpdateAttrCnt: RK_U32,
+};
+pub const VENC_STREAM_INFO_PRORES_S = struct_rkVENC_STREAM_INFO_PRORES_S;
+pub const struct_rkVENC_STREAM_INFO_JPEG_S = extern struct {
+    u32PicBytesNum: RK_U32,
+    u32UpdateAttrCnt: RK_U32,
+    u32Qfactor: RK_U32,
+};
+pub const VENC_STREAM_INFO_JPEG_S = struct_rkVENC_STREAM_INFO_JPEG_S;
+const union_unnamed_5 = extern union {
+    stH264Info: VENC_STREAM_INFO_H264_S,
+    stJpegInfo: VENC_STREAM_INFO_JPEG_S,
+    stH265Info: VENC_STREAM_INFO_H265_S,
+    stProresInfo: VENC_STREAM_INFO_PRORES_S,
+};
+const union_unnamed_6 = extern union {
+    stAdvanceH264Info: VENC_STREAM_ADVANCE_INFO_H264_S,
+    stAdvanceJpegInfo: VENC_STREAM_ADVANCE_INFO_JPEG_S,
+    stAdvanceH265Info: VENC_STREAM_ADVANCE_INFO_H265_S,
+    stAdvanceProresInfo: VENC_STREAM_ADVANCE_INFO_PRORES_S,
+};
+pub const struct_rkVENC_STREAM_S = extern struct {
+    pstPack: [*c]VENC_PACK_S align(16),
+    u32PackCount: RK_U32 align(16),
+    u32Seq: RK_U32,
+    unnamed_0: union_unnamed_5,
+    unnamed_1: union_unnamed_6,
+};
+pub const VENC_STREAM_S = struct_rkVENC_STREAM_S;
+pub const struct_rkVENC_STREAM_INFO_S = extern struct {
+    enRefType: H265E_REF_TYPE_E,
+    u32PicBytesNum: RK_U32,
+    u32PicCnt: RK_U32,
+    u32StartQp: RK_U32,
+    u32MeanQp: RK_U32,
+    bPSkip: RK_BOOL,
+    u32ResidualBitNum: RK_U32,
+    u32HeadBitNum: RK_U32,
+    u32MadiVal: RK_U32,
+    u32MadpVal: RK_U32,
+    u32MseSum: RK_U32,
+    u32MseLcuCnt: RK_U32,
+    dPSNRVal: RK_DOUBLE,
+};
+pub const VENC_STREAM_INFO_S = struct_rkVENC_STREAM_INFO_S;
+pub const VENC_GOPMODE_INIT: c_int = 0;
+pub const VENC_GOPMODE_NORMALP: c_int = 1;
+pub const VENC_GOPMODE_TSVC2: c_int = 2;
+pub const VENC_GOPMODE_TSVC3: c_int = 3;
+pub const VENC_GOPMODE_TSVC4: c_int = 4;
+pub const VENC_GOPMODE_SMARTP: c_int = 5;
+pub const VENC_GOPMODE_BUTT: c_int = 6;
+pub const enum_rkVENC_GOP_MODE_E = c_uint;
+pub const VENC_GOP_MODE_E = enum_rkVENC_GOP_MODE_E;
+pub const VENC_ROTATION_0: c_int = 0;
+pub const VENC_ROTATION_90: c_int = 90;
+pub const VENC_ROTATION_180: c_int = 180;
+pub const VENC_ROTATION_270: c_int = 270;
+pub const VENC_ROTATION_BUTT: c_int = 271;
+pub const enum_rkVENC_ROTATION_E = c_uint;
+pub const VENC_ROTATION_E = enum_rkVENC_ROTATION_E;
+pub const struct_rkVENC_MPF_CFG_S = extern struct {
+    u8LargeThumbNailNum: RK_U8,
+    astLargeThumbNailSize: [2]SIZE_S,
+};
+pub const VENC_MPF_CFG_S = struct_rkVENC_MPF_CFG_S;
+pub const VENC_PIC_RECEIVE_SINGLE: c_int = 0;
+pub const VENC_PIC_RECEIVE_MULTI: c_int = 1;
+pub const VENC_PIC_RECEIVE_BUTT: c_int = 2;
+pub const enum_rkVENC_PIC_RECEIVE_MODE_E = c_uint;
+pub const VENC_PIC_RECEIVE_MODE_E = enum_rkVENC_PIC_RECEIVE_MODE_E;
+pub const struct_rkVENC_ATTR_JPEG_S = extern struct {
+    bSupportDCF: RK_BOOL,
+    stMPFCfg: VENC_MPF_CFG_S,
+    enReceiveMode: VENC_PIC_RECEIVE_MODE_E,
+};
+pub const VENC_ATTR_JPEG_S = struct_rkVENC_ATTR_JPEG_S;
+pub const struct_rkVENC_ATTR_MJPEG_S = extern struct {};
+pub const VENC_ATTR_MJPEG_S = struct_rkVENC_ATTR_MJPEG_S;
+pub const struct_rkVENC_ATTR_H264_S = extern struct {
+    u32Level: RK_U32,
+};
+pub const VENC_ATTR_H264_S = struct_rkVENC_ATTR_H264_S;
+pub const struct_rkVENC_ATTR_H265_S = extern struct {};
+pub const VENC_ATTR_H265_S = struct_rkVENC_ATTR_H265_S;
+const union_unnamed_7 = extern union {
+    stAttrH264e: VENC_ATTR_H264_S,
+    stAttrH265e: VENC_ATTR_H265_S,
+    stAttrMjpege: VENC_ATTR_MJPEG_S,
+    stAttrJpege: VENC_ATTR_JPEG_S,
+};
+pub const struct_rkVENC_ATTR_S = extern struct {
+    enType: RK_CODEC_ID_E,
+    enPixelFormat: PIXEL_FORMAT_E,
+    enMirror: MIRROR_E,
+    u32BufSize: RK_U32,
+    u32Profile: RK_U32,
+    bByFrame: RK_BOOL,
+    u32PicWidth: RK_U32,
+    u32PicHeight: RK_U32,
+    u32VirWidth: RK_U32,
+    u32VirHeight: RK_U32,
+    u32StreamBufCnt: RK_U32,
+    unnamed_0: union_unnamed_7,
+};
+pub const VENC_ATTR_S = struct_rkVENC_ATTR_S;
+pub const struct_rkVENC_GOP_ATTR_S = extern struct {
+    enGopMode: VENC_GOP_MODE_E,
+    s32VirIdrLen: RK_S32,
+};
+pub const VENC_GOP_ATTR_S = struct_rkVENC_GOP_ATTR_S;
+pub const struct_rkVENC_CHN_ATTR_S = extern struct {
+    stVencAttr: VENC_ATTR_S,
+    stRcAttr: VENC_RC_ATTR_S,
+    stGopAttr: VENC_GOP_ATTR_S,
+};
+pub const VENC_CHN_ATTR_S = struct_rkVENC_CHN_ATTR_S;
+pub const struct_rkVENC_RECV_PIC_PARAM_S = extern struct {
+    s32RecvPicNum: RK_S32,
+};
+pub const VENC_RECV_PIC_PARAM_S = struct_rkVENC_RECV_PIC_PARAM_S;
+pub const struct_rkVENC_CHN_STATUS_S = extern struct {
+    u32LeftPics: RK_U32,
+    u32LeftStreamBytes: RK_U32,
+    u32LeftStreamFrames: RK_U32,
+    u32CurPacks: RK_U32,
+    u32LeftRecvPics: RK_U32,
+    u32LeftEncPics: RK_U32,
+    bJpegSnapEnd: RK_BOOL,
+    stVencStrmInfo: VENC_STREAM_INFO_S,
+};
+pub const VENC_CHN_STATUS_S = struct_rkVENC_CHN_STATUS_S;
+pub const struct_rkVENC_SLICE_SPLIT_S = extern struct {
+    bSplitEnable: RK_BOOL,
+    u32SplitMode: RK_U32,
+    u32SplitSize: RK_U32,
+};
+pub const VENC_SLICE_SPLIT_S = struct_rkVENC_SLICE_SPLIT_S;
+pub const struct_rkVENC_H264_INTRA_PRED_S = extern struct {
+    constrained_intra_pred_flag: RK_U32,
+};
+pub const VENC_H264_INTRA_PRED_S = struct_rkVENC_H264_INTRA_PRED_S;
+pub const struct_rkVENC_H264_TRANS_S = extern struct {
+    u32TransMode: RK_U32,
+    bScalingListValid: RK_BOOL,
+    InterScalingList8X8: [64]RK_U8,
+    IntraScalingList8X8: [64]RK_U8,
+    chroma_qp_index_offset: RK_S32,
+};
+pub const VENC_H264_TRANS_S = struct_rkVENC_H264_TRANS_S;
+pub const struct_rkVENC_H264_ENTROPY_S = extern struct {
+    u32EntropyEncMode: RK_U32,
+    cabac_init_idc: RK_U32,
+};
+pub const VENC_H264_ENTROPY_S = struct_rkVENC_H264_ENTROPY_S;
+pub const struct_rkVENC_H264_POC_S = extern struct {
+    pic_order_cnt_type: RK_U32,
+};
+pub const VENC_H264_POC_S = struct_rkVENC_H264_POC_S;
+pub const struct_rkVENC_H264_DBLK_S = extern struct {
+    disable_deblocking_filter_idc: RK_U32,
+    slice_alpha_c0_offset_div2: RK_S32,
+    slice_beta_offset_div2: RK_S32,
+};
+pub const VENC_H264_DBLK_S = struct_rkVENC_H264_DBLK_S;
+pub const struct_rkVENC_H264_VUI_TIME_INFO_S = extern struct {
+    timing_info_present_flag: RK_U8,
+    fixed_frame_rate_flag: RK_U8,
+    num_units_in_tick: RK_U32,
+    time_scale: RK_U32,
+};
+pub const VENC_VUI_H264_TIME_INFO_S = struct_rkVENC_H264_VUI_TIME_INFO_S;
+pub const struct_rkVENC_VUI_ASPECT_RATIO_S = extern struct {
+    aspect_ratio_info_present_flag: RK_U8,
+    aspect_ratio_idc: RK_U8,
+    overscan_info_present_flag: RK_U8,
+    overscan_appropriate_flag: RK_U8,
+    sar_width: RK_U16,
+    sar_height: RK_U16,
+};
+pub const VENC_VUI_ASPECT_RATIO_S = struct_rkVENC_VUI_ASPECT_RATIO_S;
+pub const struct_rkVENC_VUI_VIDEO_SIGNAL_S = extern struct {
+    video_signal_type_present_flag: RK_U8,
+    video_format: RK_U8,
+    video_full_range_flag: RK_U8,
+    colour_description_present_flag: RK_U8,
+    colour_primaries: RK_U8,
+    transfer_characteristics: RK_U8,
+    matrix_coefficients: RK_U8,
+};
+pub const VENC_VUI_VIDEO_SIGNAL_S = struct_rkVENC_VUI_VIDEO_SIGNAL_S;
+pub const struct_rkVENC_VUI_BITSTREAM_RESTRIC_S = extern struct {
+    bitstream_restriction_flag: RK_U8,
+};
+pub const VENC_VUI_BITSTREAM_RESTRIC_S = struct_rkVENC_VUI_BITSTREAM_RESTRIC_S;
+pub const struct_rkVENC_H264_VUI_S = extern struct {
+    stVuiAspectRatio: VENC_VUI_ASPECT_RATIO_S,
+    stVuiTimeInfo: VENC_VUI_H264_TIME_INFO_S,
+    stVuiVideoSignal: VENC_VUI_VIDEO_SIGNAL_S,
+    stVuiBitstreamRestric: VENC_VUI_BITSTREAM_RESTRIC_S,
+};
+pub const VENC_H264_VUI_S = struct_rkVENC_H264_VUI_S;
+pub const struct_rkVENC_VUI_H265_TIME_INFO_S = extern struct {
+    timing_info_present_flag: RK_U32,
+    num_units_in_tick: RK_U32,
+    time_scale: RK_U32,
+    num_ticks_poc_diff_one_minus1: RK_U32,
+};
+pub const VENC_VUI_H265_TIME_INFO_S = struct_rkVENC_VUI_H265_TIME_INFO_S;
+pub const struct_rkVENC_H265_VUI_S = extern struct {
+    stVuiAspectRatio: VENC_VUI_ASPECT_RATIO_S,
+    stVuiTimeInfo: VENC_VUI_H265_TIME_INFO_S,
+    stVuiVideoSignal: VENC_VUI_VIDEO_SIGNAL_S,
+    stVuiBitstreamRestric: VENC_VUI_BITSTREAM_RESTRIC_S,
+};
+pub const VENC_H265_VUI_S = struct_rkVENC_H265_VUI_S;
+pub const struct_rkVENC_JPEG_PARAM_S = extern struct {
+    u32Qfactor: RK_U32,
+    u8YQt: [64]RK_U8,
+    u8CbQt: [64]RK_U8,
+    u8CrQt: [64]RK_U8,
+    u32MCUPerECS: RK_U32,
+};
+pub const VENC_JPEG_PARAM_S = struct_rkVENC_JPEG_PARAM_S;
+pub const struct_rkVENC_MJPEG_PARAM_S = extern struct {
+    u8YQt: [64]RK_U8,
+    u8CbQt: [64]RK_U8,
+    u8CrQt: [64]RK_U8,
+    u32MCUPerECS: RK_U32,
+};
+pub const VENC_MJPEG_PARAM_S = struct_rkVENC_MJPEG_PARAM_S;
+pub const struct_rkVENC_PRORES_PARAM_S = extern struct {
+    u8LumaQt: [64]RK_U8,
+    u8ChromaQt: [64]RK_U8,
+    encoder_identifier: [4]RK_CHAR,
+};
+pub const VENC_PRORES_PARAM_S = struct_rkVENC_PRORES_PARAM_S;
+pub const struct_rkVENC_ROI_ATTR_S = extern struct {
+    u32Index: RK_U32,
+    bEnable: RK_BOOL,
+    bAbsQp: RK_BOOL,
+    s32Qp: RK_S32,
+    bIntra: RK_BOOL,
+    stRect: RECT_S,
+};
+pub const VENC_ROI_ATTR_S = struct_rkVENC_ROI_ATTR_S;
+pub const struct_rkVENC_ROI_ATTR_EX_S = extern struct {
+    u32Index: RK_U32,
+    bEnable: [3]RK_BOOL,
+    bAbsQp: [3]RK_BOOL,
+    s32Qp: [3]RK_S32,
+    stRect: [3]RECT_S,
+};
+pub const VENC_ROI_ATTR_EX_S = struct_rkVENC_ROI_ATTR_EX_S;
+pub const struct_rkVENC_ROIBG_FRAME_RATE_S = extern struct {
+    s32SrcFrmRate: RK_S32,
+    s32DstFrmRate: RK_S32,
+};
+pub const VENC_ROIBG_FRAME_RATE_S = struct_rkVENC_ROIBG_FRAME_RATE_S;
+pub const struct_rkVENC_REF_PARAM_S = extern struct {
+    u32Base: RK_U32,
+    u32Enhance: RK_U32,
+    bEnablePred: RK_BOOL,
+};
+pub const VENC_REF_PARAM_S = struct_rkVENC_REF_PARAM_S;
+pub const JPEG_ENCODE_ALL: c_int = 0;
+pub const JPEG_ENCODE_SNAP: c_int = 1;
+pub const JPEG_ENCODE_BUTT: c_int = 2;
+pub const enum_rkVENC_JPEG_ENCODE_MODE_E = c_uint;
+pub const VENC_JPEG_ENCODE_MODE_E = enum_rkVENC_JPEG_ENCODE_MODE_E;
+pub const struct_rkVENC_STREAM_BUF_INFO_S = extern struct {
+    u64PhyAddr: [1]RK_U64,
+    pUserAddr: [1]?*anyopaque align(16),
+    u64BufSize: [1]RK_U64 align(16),
+};
+pub const VENC_STREAM_BUF_INFO_S = struct_rkVENC_STREAM_BUF_INFO_S;
+pub const struct_rkVENC_H265_PU_S = extern struct {
+    constrained_intra_pred_flag: RK_U32,
+    strong_intra_smoothing_enabled_flag: RK_U32,
+};
+pub const VENC_H265_PU_S = struct_rkVENC_H265_PU_S;
+pub const struct_rkVENC_H265_TRANS_S = extern struct {
+    cb_qp_offset: RK_S32,
+    cr_qp_offset: RK_S32,
+    bScalingListEnabled: RK_BOOL,
+    bScalingListTu4Valid: RK_BOOL,
+    InterScalingList4X4: [2][16]RK_U8,
+    IntraScalingList4X4: [2][16]RK_U8,
+    bScalingListTu8Valid: RK_BOOL,
+    InterScalingList8X8: [2][64]RK_U8,
+    IntraScalingList8X8: [2][64]RK_U8,
+    bScalingListTu16Valid: RK_BOOL,
+    InterScalingList16X16: [2][64]RK_U8,
+    IntraScalingList16X16: [2][64]RK_U8,
+    bScalingListTu32Valid: RK_BOOL,
+    InterScalingList32X32: [64]RK_U8,
+    IntraScalingList32X32: [64]RK_U8,
+};
+pub const VENC_H265_TRANS_S = struct_rkVENC_H265_TRANS_S;
+pub const struct_rkVENC_H265_ENTROPY_S = extern struct {
+    cabac_init_flag: RK_U32,
+};
+pub const VENC_H265_ENTROPY_S = struct_rkVENC_H265_ENTROPY_S;
+pub const struct_rkVENC_H265_DBLK_S = extern struct {
+    slice_deblocking_filter_disabled_flag: RK_U32,
+    slice_beta_offset_div2: RK_S32,
+    slice_tc_offset_div2: RK_S32,
+};
+pub const VENC_H265_DBLK_S = struct_rkVENC_H265_DBLK_S;
+pub const struct_rkVENC_H265_SAO_S = extern struct {
+    slice_sao_luma_flag: RK_U32,
+    slice_sao_chroma_flag: RK_U32,
+};
+pub const VENC_H265_SAO_S = struct_rkVENC_H265_SAO_S;
+pub const INTRA_REFRESH_ROW: c_int = 0;
+pub const INTRA_REFRESH_COLUMN: c_int = 1;
+pub const INTRA_REFRESH_BUTT: c_int = 2;
+pub const enum_rkVENC_INTRA_REFRESH_MODE_E = c_uint;
+pub const VENC_INTRA_REFRESH_MODE_E = enum_rkVENC_INTRA_REFRESH_MODE_E;
+pub const struct_rkVENC_INTRA_REFRESH_S = extern struct {
+    bRefreshEnable: RK_BOOL,
+    enIntraRefreshMode: VENC_INTRA_REFRESH_MODE_E,
+    u32RefreshNum: RK_U32,
+    u32ReqIQp: RK_U32,
+};
+pub const VENC_INTRA_REFRESH_S = struct_rkVENC_INTRA_REFRESH_S;
+pub const MODTYPE_VENC: c_int = 1;
+pub const MODTYPE_H264E: c_int = 2;
+pub const MODTYPE_H265E: c_int = 3;
+pub const MODTYPE_JPEGE: c_int = 4;
+pub const MODTYPE_RC: c_int = 5;
+pub const MODTYPE_BUTT: c_int = 6;
+pub const enum_rkVENC_MODTYPE_E = c_uint;
+pub const VENC_MODTYPE_E = enum_rkVENC_MODTYPE_E;
+pub const struct_rkVENC_MOD_H264E_S = extern struct {
+    u32OneStreamBuffer: RK_U32,
+    u32H264eMiniBufMode: RK_U32,
+    u32H264ePowerSaveEn: RK_U32,
+    enH264eMBSource: MB_SOURCE_E,
+    bQpHstgrmEn: RK_BOOL,
+};
+pub const VENC_MOD_H264E_S = struct_rkVENC_MOD_H264E_S;
+pub const struct_rkVENC_MOD_H265E_S = extern struct {
+    u32OneStreamBuffer: RK_U32,
+    u32H265eMiniBufMode: RK_U32,
+    u32H265ePowerSaveEn: RK_U32,
+    enH265eMBSource: MB_SOURCE_E,
+    bQpHstgrmEn: RK_BOOL,
+};
+pub const VENC_MOD_H265E_S = struct_rkVENC_MOD_H265E_S;
+pub const struct_rkVENC_MOD_JPEGE_S = extern struct {
+    u32OneStreamBuffer: RK_U32,
+    u32JpegeMiniBufMode: RK_U32,
+    u32JpegClearStreamBuf: RK_U32,
+};
+pub const VENC_MOD_JPEGE_S = struct_rkVENC_MOD_JPEGE_S;
+pub const struct_rkVENC_MOD_RC_S = extern struct {
+    u32ClrStatAfterSetBr: RK_U32,
+};
+pub const VENC_MOD_RC_S = struct_rkVENC_MOD_RC_S;
+pub const struct_rkVENC_MOD_VENC_S = extern struct {
+    u32VencBufferCache: RK_U32,
+    u32FrameBufRecycle: RK_U32,
+};
+pub const VENC_MOD_VENC_S = struct_rkVENC_MOD_VENC_S;
+const union_unnamed_8 = extern union {
+    stVencModParam: VENC_MOD_VENC_S,
+    stH264eModParam: VENC_MOD_H264E_S,
+    stH265eModParam: VENC_MOD_H265E_S,
+    stJpegeModParam: VENC_MOD_JPEGE_S,
+    stRcModParam: VENC_MOD_RC_S,
+};
+pub const struct_rkVENC_MODPARAM_S = extern struct {
+    enVencModType: VENC_MODTYPE_E,
+    unnamed_0: union_unnamed_8,
+};
+pub const VENC_PARAM_MOD_S = struct_rkVENC_MODPARAM_S;
+pub const VENC_FRAME_TYPE_NONE: c_int = 1;
+pub const VENC_FRAME_TYPE_IDR: c_int = 2;
+pub const VENC_FRAME_TYPE_BUTT: c_int = 3;
+pub const enum_rkVENC_FRAME_TYPE_E = c_uint;
+pub const VENC_FRAME_TYPE_E = enum_rkVENC_FRAME_TYPE_E;
+pub const struct_rkUSER_RC_INFO_S = extern struct {
+    bQpMapValid: RK_BOOL,
+    bSkipWeightValid: RK_BOOL,
+    u32BlkStartQp: RK_U32,
+    pMbBlkQpMap: MB_BLK,
+    pMbBlkSkipWeight: MB_BLK,
+    enFrameType: VENC_FRAME_TYPE_E,
+};
+pub const USER_RC_INFO_S = struct_rkUSER_RC_INFO_S;
+pub const struct_rkUSER_FRAME_INFO_S = extern struct {
+    stUserFrame: VIDEO_FRAME_INFO_S,
+    stUserRcInfo: USER_RC_INFO_S,
+};
+pub const USER_FRAME_INFO_S = struct_rkUSER_FRAME_INFO_S;
+pub const struct_rkVENC_SSE_CFG_S = extern struct {
+    u32Index: RK_U32,
+    bEnable: RK_BOOL,
+    stRect: RECT_S,
+};
+pub const VENC_SSE_CFG_S = struct_rkVENC_SSE_CFG_S;
+pub const VENC_CROP_NONE: c_int = 0;
+pub const VENC_CROP_ONLY: c_int = 1;
+pub const VENC_CROP_SCALE: c_int = 2;
+pub const VENC_CROP_BUTT: c_int = 3;
+pub const enum_rkVENC_CROP_TYPE_E = c_uint;
+pub const VENC_CROP_TYPE_E = enum_rkVENC_CROP_TYPE_E;
+pub const struct_rkVENC_SCALE_RECT_S = extern struct {
+    stSrc: RECT_S,
+    stDst: RECT_S,
+};
+pub const VENC_SCALE_RECT_S = struct_rkVENC_SCALE_RECT_S;
+pub const struct_rkVENC_CROP_INFO_S = extern struct {
+    enCropType: VENC_CROP_TYPE_E,
+    stCropRect: RECT_S,
+    stScaleRect: VENC_SCALE_RECT_S,
+};
+pub const VENC_CROP_INFO_S = struct_rkVENC_CROP_INFO_S;
+pub const struct_rkVENC_FRAME_RATE_S = extern struct {
+    bEnable: RK_BOOL,
+    s32SrcFrmRateNum: RK_S32,
+    s32SrcFrmRateDen: RK_S32,
+    s32DstFrmRateNum: RK_S32,
+    s32DstFrmRateDen: RK_S32,
+};
+pub const VENC_FRAME_RATE_S = struct_rkVENC_FRAME_RATE_S;
+pub const struct_rkVENC_CHN_PARAM_S = extern struct {
+    bColor2Grey: RK_BOOL,
+    u32Priority: RK_U32,
+    u32MaxStrmCnt: RK_U32,
+    u32PollWakeUpFrmCnt: RK_U32,
+    stCropCfg: VENC_CROP_INFO_S,
+    stFrameRate: VENC_FRAME_RATE_S,
+};
+pub const VENC_CHN_PARAM_S = struct_rkVENC_CHN_PARAM_S;
+pub const struct_rkVENC_FOREGROUND_PROTECT_S = extern struct {
+    bForegroundCuRcEn: RK_BOOL,
+    u32ForegroundDirectionThresh: RK_U32,
+    u32ForegroundThreshGain: RK_U32,
+    u32ForegroundThreshOffset: RK_U32,
+    u32ForegroundThreshP: [16]RK_U32,
+    u32ForegroundThreshB: [16]RK_U32,
+};
+pub const VENC_FOREGROUND_PROTECT_S = struct_rkVENC_FOREGROUND_PROTECT_S;
+pub const SCENE_0: c_int = 0;
+pub const SCENE_1: c_int = 1;
+pub const SCENE_2: c_int = 2;
+pub const SCENE_BUTT: c_int = 3;
+pub const enum_rkVENC_SCENE_MODE_E = c_uint;
+pub const VENC_SCENE_MODE_E = enum_rkVENC_SCENE_MODE_E;
+pub const struct_rkVENC_DEBREATHEFFECT_S = extern struct {
+    bEnable: RK_BOOL,
+    s32Strength0: RK_S32,
+    s32Strength1: RK_S32,
+};
+pub const VENC_DEBREATHEFFECT_S = struct_rkVENC_DEBREATHEFFECT_S;
+pub const struct_rkVENC_CU_PREDICTION_S = extern struct {
+    enPredMode: OPERATION_MODE_E,
+    u32Intra32Cost: RK_U32,
+    u32Intra16Cost: RK_U32,
+    u32Intra8Cost: RK_U32,
+    u32Intra4Cost: RK_U32,
+    u32Inter64Cost: RK_U32,
+    u32Inter32Cost: RK_U32,
+    u32Inter16Cost: RK_U32,
+    u32Inter8Cost: RK_U32,
+};
+pub const VENC_CU_PREDICTION_S = struct_rkVENC_CU_PREDICTION_S;
+pub const struct_rkVENC_SKIP_BIAS_S = extern struct {
+    bSkipBiasEn: RK_BOOL,
+    u32SkipThreshGain: RK_U32,
+    u32SkipThreshOffset: RK_U32,
+    u32SkipBackgroundCost: RK_U32,
+    u32SkipForegroundCost: RK_U32,
+};
+pub const VENC_SKIP_BIAS_S = struct_rkVENC_SKIP_BIAS_S;
+pub const struct_rkVENC_HIERARCHICAL_QP_S = extern struct {
+    bHierarchicalQpEn: RK_BOOL,
+    s32HierarchicalQpDelta: [4]RK_S32,
+    s32HierarchicalFrameNum: [4]RK_S32,
+};
+pub const VENC_HIERARCHICAL_QP_S = struct_rkVENC_HIERARCHICAL_QP_S;
+pub const struct_rkVENC_CHN_POOL_S = extern struct {};
+pub const VENC_CHN_POOL_S = struct_rkVENC_CHN_POOL_S;
+pub const struct_rkVENC_RC_ADVPARAM_S = extern struct {
+    u32ClearStatAfterSetAttr: RK_U32,
+};
+pub const VENC_RC_ADVPARAM_S = struct_rkVENC_RC_ADVPARAM_S;
+pub const SUPERFRM_NONE: c_int = 0;
+pub const SUPERFRM_DISCARD: c_int = 1;
+pub const SUPERFRM_REENCODE: c_int = 2;
+pub const SUPERFRM_BUTT: c_int = 3;
+pub const enum_rkRC_SUPERFRM_MODE_E = c_uint;
+pub const VENC_SUPERFRM_MODE_E = enum_rkRC_SUPERFRM_MODE_E;
+pub const VENC_RC_PRIORITY_BITRATE_FIRST: c_int = 1;
+pub const VENC_RC_PRIORITY_FRAMEBITS_FIRST: c_int = 2;
+pub const VENC_RC_PRIORITY_BUTT: c_int = 3;
+pub const enum_rkVENC_RC_PRIORITY_E = c_uint;
+pub const VENC_RC_PRIORITY_E = enum_rkVENC_RC_PRIORITY_E;
+pub const struct_rkVENC_SUPERFRAME_CFG_S = extern struct {
+    enSuperFrmMode: VENC_SUPERFRM_MODE_E,
+    u32SuperIFrmBitsThr: RK_U32,
+    u32SuperPFrmBitsThr: RK_U32,
+    u32SuperBFrmBitsThr: RK_U32,
+    enRcPriority: VENC_RC_PRIORITY_E,
+};
+pub const VENC_SUPERFRAME_CFG_S = struct_rkVENC_SUPERFRAME_CFG_S;
+pub const FRMLOST_NORMAL: c_int = 0;
+pub const FRMLOST_PSKIP: c_int = 1;
+pub const FRMLOST_BUTT: c_int = 2;
+pub const enum_rkVENC_FRAMELOST_MODE_E = c_uint;
+pub const VENC_FRAMELOST_MODE_E = enum_rkVENC_FRAMELOST_MODE_E;
+pub const struct_rkVENC_FRAMELOST_S = extern struct {
+    bFrmLostOpen: RK_BOOL,
+    u32FrmLostBpsThr: RK_U32,
+    enFrmLostMode: VENC_FRAMELOST_MODE_E,
+    u32EncFrmGaps: RK_U32,
+};
+pub const VENC_FRAMELOST_S = struct_rkVENC_FRAMELOST_S;
+pub extern fn RK_MPI_VENC_CreateChn(VeChn: VENC_CHN, pstAttr: [*c]const VENC_CHN_ATTR_S) RK_S32;
+pub extern fn RK_MPI_VENC_DestroyChn(VeChn: VENC_CHN) RK_S32;
+pub extern fn RK_MPI_VENC_ResetChn(VeChn: VENC_CHN) RK_S32;
+pub extern fn RK_MPI_VENC_StartRecvFrame(VeChn: VENC_CHN, pstRecvParam: [*c]const VENC_RECV_PIC_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_StopRecvFrame(VeChn: VENC_CHN) RK_S32;
+pub extern fn RK_MPI_VENC_QueryStatus(VeChn: VENC_CHN, pstStatus: [*c]VENC_CHN_STATUS_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetChnAttr(VeChn: VENC_CHN, pstChnAttr: [*c]const VENC_CHN_ATTR_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetChnAttr(VeChn: VENC_CHN, pstChnAttr: [*c]VENC_CHN_ATTR_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetChnParam(VeChn: VENC_CHN, pstChnParam: [*c]const VENC_CHN_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetChnParam(VeChn: VENC_CHN, pstChnParam: [*c]VENC_CHN_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_SendFrame(VeChn: VENC_CHN, pstFrame: [*c]const VIDEO_FRAME_INFO_S, s32MilliSec: RK_S32) RK_S32;
+pub extern fn RK_MPI_VENC_SendFrameEx(VeChn: VENC_CHN, pstFrame: [*c]const USER_FRAME_INFO_S, s32MilliSec: RK_S32) RK_S32;
+pub extern fn RK_MPI_VENC_GetStream(VeChn: VENC_CHN, pstStream: [*c]VENC_STREAM_S, s32MilliSec: RK_S32) RK_S32;
+pub extern fn RK_MPI_VENC_ReleaseStream(VeChn: VENC_CHN, pstStream: [*c]VENC_STREAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_RequestIDR(VeChn: VENC_CHN, bInstant: RK_BOOL) RK_S32;
+pub extern fn RK_MPI_VENC_SetRoiAttr(VeChn: VENC_CHN, pstRoiAttr: [*c]const VENC_ROI_ATTR_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetRoiAttr(VeChn: VENC_CHN, u32Index: RK_U32, pstRoiAttr: [*c]VENC_ROI_ATTR_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetRcParam(VeChn: VENC_CHN, pstRcParam: [*c]const VENC_RC_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetRcParam(VeChn: VENC_CHN, pstRcParam: [*c]VENC_RC_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetRcAdvParam(VeChn: VENC_CHN, pstRcAdvParam: [*c]const VENC_RC_ADVPARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetRcAdvParam(VeChn: VENC_CHN, pstRcAdvParam: [*c]VENC_RC_ADVPARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetFrameLostStrategy(VeChn: VENC_CHN, pstFrmLostParam: [*c]const VENC_FRAMELOST_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetFrameLostStrategy(VeChn: VENC_CHN, pstFrmLostParam: [*c]VENC_FRAMELOST_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetSuperFrameStrategy(VeChn: VENC_CHN, pstSuperFrmParam: [*c]const VENC_SUPERFRAME_CFG_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetSuperFrameStrategy(VeChn: VENC_CHN, pstSuperFrmParam: [*c]VENC_SUPERFRAME_CFG_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetIntraRefresh(VeChn: VENC_CHN, pstIntraRefresh: [*c]const VENC_INTRA_REFRESH_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetIntraRefresh(VeChn: VENC_CHN, pstIntraRefresh: [*c]VENC_INTRA_REFRESH_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetHierarchicalQp(VeChn: VENC_CHN, pstHierarchicalQp: [*c]const VENC_HIERARCHICAL_QP_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetHierarchicalQp(VeChn: VENC_CHN, pstHierarchicalQp: [*c]VENC_HIERARCHICAL_QP_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetDeBreathEffect(VeChn: VENC_CHN, pstDeBreathEffect: [*c]const VENC_DEBREATHEFFECT_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetDeBreathEffect(VeChn: VENC_CHN, pstDeBreathEffect: [*c]VENC_DEBREATHEFFECT_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetJpegParam(VeChn: VENC_CHN, pstJpegParam: [*c]const VENC_JPEG_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetJpegParam(VeChn: VENC_CHN, pstJpegParam: [*c]VENC_JPEG_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetFd(VeChn: VENC_CHN) RK_S32;
+pub extern fn RK_MPI_VENC_CloseFd(VeChn: VENC_CHN) RK_S32;
+pub extern fn RK_MPI_VENC_InsertUserData(VeChn: VENC_CHN, pu8Data: [*c]RK_U8, u32Len: RK_U32) RK_S32;
+pub extern fn RK_MPI_VENC_SetChnRotation(VeChn: VENC_CHN, enRotation: ROTATION_E) RK_S32;
+pub extern fn RK_MPI_VENC_GetChnRotation(VeChn: VENC_CHN, enRotation: [*c]ROTATION_E) RK_S32;
+pub extern fn RK_MPI_VENC_SetQpmap(VeChn: VENC_CHN, blk: MB_BLK) RK_S32;
+pub extern fn RK_MPI_VENC_GetQpmap(VeChn: VENC_CHN, pBlk: [*c]MB_BLK) RK_S32;
+pub extern fn RK_MPI_VENC_AttachMbPool(VeChn: VENC_CHN, hMbPool: MB_POOL) RK_S32;
+pub extern fn RK_MPI_VENC_DetachMbPool(VeChn: VENC_CHN) RK_S32;
+pub extern fn RK_MPI_VENC_SetSliceSplit(VeChn: VENC_CHN, pstSliceSplit: [*c]const VENC_SLICE_SPLIT_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetSliceSplit(VeChn: VENC_CHN, pstSliceSplit: [*c]VENC_SLICE_SPLIT_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH264IntraPred(VeChn: VENC_CHN, pstH264IntraPred: [*c]const VENC_H264_INTRA_PRED_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH264IntraPred(VeChn: VENC_CHN, pstH264IntraPred: [*c]VENC_H264_INTRA_PRED_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH264Trans(VeChn: VENC_CHN, pstH264Trans: [*c]const VENC_H264_TRANS_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH264Trans(VeChn: VENC_CHN, pstH264Trans: [*c]VENC_H264_TRANS_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH264Entropy(VeChn: VENC_CHN, pstH264EntropyEnc: [*c]const VENC_H264_ENTROPY_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH264Entropy(VeChn: VENC_CHN, pstH264EntropyEnc: [*c]VENC_H264_ENTROPY_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH264Dblk(VeChn: VENC_CHN, pstH264Dblk: [*c]const VENC_H264_DBLK_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH264Dblk(VeChn: VENC_CHN, pstH264Dblk: [*c]VENC_H264_DBLK_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH264Vui(VeChn: VENC_CHN, pstH264Vui: [*c]const VENC_H264_VUI_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH264Vui(VeChn: VENC_CHN, pstH264Vui: [*c]VENC_H264_VUI_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH265Trans(VeChn: VENC_CHN, pstH265Trans: [*c]const VENC_H265_TRANS_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH265Trans(VeChn: VENC_CHN, pstH265Trans: [*c]VENC_H265_TRANS_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH265Entropy(VeChn: VENC_CHN, pstH265EntropyEnc: [*c]const VENC_H265_ENTROPY_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH265Entropy(VeChn: VENC_CHN, pstH265EntropyEnc: [*c]VENC_H265_ENTROPY_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH265Dblk(VeChn: VENC_CHN, pstH265Dblk: [*c]const VENC_H265_DBLK_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH265Dblk(VeChn: VENC_CHN, pstH265Dblk: [*c]VENC_H265_DBLK_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH265Sao(VeChn: VENC_CHN, pstH265Sao: [*c]const VENC_H265_SAO_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH265Sao(VeChn: VENC_CHN, pstH265Sao: [*c]VENC_H265_SAO_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH265PredUnit(VeChn: VENC_CHN, pstPredUnit: [*c]const VENC_H265_PU_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH265PredUnit(VeChn: VENC_CHN, pstPredUnit: [*c]VENC_H265_PU_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetH265Vui(VeChn: VENC_CHN, pstH265Vui: [*c]const VENC_H265_VUI_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetH265Vui(VeChn: VENC_CHN, pstH265Vui: [*c]VENC_H265_VUI_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetRefParam(VeChn: VENC_CHN, pstRefParam: [*c]const VENC_REF_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetRefParam(VeChn: VENC_CHN, pstRefParam: [*c]VENC_REF_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_SetMjpegParam(VeChn: VENC_CHN, pstMjpegParam: [*c]const VENC_MJPEG_PARAM_S) RK_S32;
+pub extern fn RK_MPI_VENC_GetMjpegParam(VeChn: VENC_CHN, pstMjpegParam: [*c]VENC_MJPEG_PARAM_S) RK_S32;
 pub const struct_rkVPSS_MOD_PARAM_S = extern struct {
     enVpssMBSource: MB_SOURCE_E,
 };
@@ -1831,13 +2743,13 @@ pub const struct_rkVO_ZOOM_RATIO_S = extern struct {
     u32HRatio: RK_U32,
 };
 pub const VO_ZOOM_RATIO_S = struct_rkVO_ZOOM_RATIO_S;
-const union_unnamed_3 = extern union {
+const union_unnamed_9 = extern union {
     stZoomRect: RECT_S,
     stZoomRatio: VO_ZOOM_RATIO_S,
 };
 pub const struct_rkVO_ZOOM_ATTR_S = extern struct {
     enZoomType: VO_ZOOM_IN_E,
-    unnamed_0: union_unnamed_3,
+    unnamed_0: union_unnamed_9,
 };
 pub const VO_ZOOM_ATTR_S = struct_rkVO_ZOOM_ATTR_S;
 pub const struct_rkVO_CSC_S = extern struct {
@@ -1884,13 +2796,13 @@ pub const struct_rkVO_USER_INTFSYNC_PLL_S = extern struct {
     u32Postdiv2: RK_U32,
 };
 pub const VO_USER_INTFSYNC_PLL_S = struct_rkVO_USER_INTFSYNC_PLL_S;
-const union_unnamed_4 = extern union {
+const union_unnamed_10 = extern union {
     stUserSyncPll: VO_USER_INTFSYNC_PLL_S,
     u32LcdMClkDiv: RK_U32,
 };
 pub const struct_rkVO_USER_INTFSYNC_ATTR_S = extern struct {
     enClkSource: VO_CLK_SOURCE_E,
-    unnamed_0: union_unnamed_4,
+    unnamed_0: union_unnamed_10,
 };
 pub const VO_USER_INTFSYNC_ATTR_S = struct_rkVO_USER_INTFSYNC_ATTR_S;
 pub const struct_rkVO_USER_INTFSYNC_INFO_S = extern struct {
@@ -3000,6 +3912,26 @@ pub const RK_ERR_VI_NOT_PERM = RK_DEF_ERR(RK_ID_VI, RK_ERR_LEVEL_ERROR, RK_ERR_N
 pub const RK_ERR_VI_NOT_CONFIG = RK_DEF_ERR(RK_ID_VI, RK_ERR_LEVEL_ERROR, RK_ERR_NOT_CONFIG);
 pub const RK_ERR_VI_EXIST = RK_DEF_ERR(RK_ID_VI, RK_ERR_LEVEL_ERROR, RK_ERR_EXIST);
 pub const RK_ERR_VI_UNEXIST = RK_DEF_ERR(RK_ID_VI, RK_ERR_LEVEL_ERROR, RK_ERR_UNEXIST);
+pub const INCLUDE_RT_MPI_MPI_VENC_H_ = "";
+pub const INCLUDE_RT_MPI_RK_COMM_VENC_H_ = "";
+pub const INCLUDE_RT_MPI_RK_COMM_RC_H_ = "";
+pub const RK_ERR_VENC_INVALID_CHNID = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_INVALID_CHNID);
+pub const RK_ERR_VENC_ILLEGAL_PARAM = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_ILLEGAL_PARAM);
+pub const RK_ERR_VENC_EXIST = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_EXIST);
+pub const RK_ERR_VENC_UNEXIST = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_UNEXIST);
+pub const RK_ERR_VENC_NULL_PTR = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_NULL_PTR);
+pub const RK_ERR_VENC_NOT_CONFIG = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_NOT_CONFIG);
+pub const RK_ERR_VENC_NOT_SUPPORT = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_NOT_SUPPORT);
+pub const RK_ERR_VENC_NOT_PERM = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_NOT_PERM);
+pub const RK_ERR_VENC_NOMEM = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_NOMEM);
+pub const RK_ERR_VENC_NOBUF = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_NOBUF);
+pub const RK_ERR_VENC_BUF_EMPTY = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_BUF_EMPTY);
+pub const RK_ERR_VENC_BUF_FULL = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_BUF_FULL);
+pub const RK_ERR_VENC_SYS_NOTREADY = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_NOTREADY);
+pub const RK_ERR_VENC_BUSY = RK_DEF_ERR(RK_ID_VENC, RK_ERR_LEVEL_ERROR, RK_ERR_BUSY);
+pub const VENC_QP_SGRM_NUM = @as(c_int, 52);
+pub const MAX_TILE_NUM = @as(c_int, 1);
+pub const RC_TEXTURE_THR_SIZE = @as(c_int, 16);
 pub const INCLUDE_RT_MPI_RK_MPI_VPSS_H_ = "";
 pub const INCLUDE_RT_MPI_RK_COMMON_VPSS_H_ = "";
 pub const RK_VPSS_OK = RK_SUCCESS;
@@ -3223,6 +4155,114 @@ pub const rkVI_USERPIC_ATTR_S = struct_rkVI_USERPIC_ATTR_S;
 pub const rkVI_CONNECT_STATE_E = enum_rkVI_CONNECT_STATE_E;
 pub const rkVI_CONNECT_INFO_S = struct_rkVI_CONNECT_INFO_S;
 pub const rkVI_EDID_S = struct_rkVI_EDID_S;
+pub const rkVENC_RC_QUALITY_E = enum_rkVENC_RC_QUALITY_E;
+pub const rkVENC_RC_MODE_E = enum_rkVENC_RC_MODE_E;
+pub const rkVENC_NALU_TYPE_E = enum_rkVENC_NALU_TYPE_E;
+pub const rkVENC_H264_CBR_S = struct_rkVENC_H264_CBR_S;
+pub const rkVENC_H264_VBR_S = struct_rkVENC_H264_VBR_S;
+pub const rkVENC_H264_AVBR_S = struct_rkVENC_H264_AVBR_S;
+pub const rkVENC_H264_FIXQP_S = struct_rkVENC_H264_FIXQP_S;
+pub const rkVENC_MJPEG_CBR_S = struct_rkVENC_MJPEG_CBR_S;
+pub const rkVENC_MJPEG_VBR_S = struct_rkVENC_MJPEG_VBR_S;
+pub const rkVENC_MJPEG_FIXQP_S = struct_rkVENC_MJPEG_FIXQP_S;
+pub const rkVENC_RC_ATTR_S = struct_rkVENC_RC_ATTR_S;
+pub const rkVENC_PARAM_H264_S = struct_rkVENC_PARAM_H264_S;
+pub const rkVENC_PARAM_H265_S = struct_rkVENC_PARAM_H265_S;
+pub const rkVENC_PARAM_MJPEG_S = struct_rkVENC_PARAM_MJPEG_S;
+pub const rkVENC_RC_PARAM_S = struct_rkVENC_RC_PARAM_S;
+pub const rkH264E_NALU_TYPE_E = enum_rkH264E_NALU_TYPE_E;
+pub const rkH265E_NALU_TYPE_E = enum_rkH265E_NALU_TYPE_E;
+pub const rkH264E_REFSLICE_TYPE_E = enum_rkH264E_REFSLICE_TYPE_E;
+pub const rkJPEGE_PACK_TYPE_E = enum_rkJPEGE_PACK_TYPE_E;
+pub const rkH264E_PROFILE_E = enum_rkH264E_PROFILE_E;
+pub const rkH265E_PROFILE_E = enum_rkH265E_PROFILE_E;
+pub const rkPRORES_PACK_TYPE_E = enum_rkPRORES_PACK_TYPE_E;
+pub const rkVENC_DATA_TYPE_U = union_rkVENC_DATA_TYPE_U;
+pub const rkVENC_PACK_INFO_S = struct_rkVENC_PACK_INFO_S;
+pub const rkVENC_PACK_S = struct_rkVENC_PACK_S;
+pub const rkH264E_REF_TYPE_E = enum_rkH264E_REF_TYPE_E;
+pub const rkVENC_STREAM_INFO_H264_S = struct_rkVENC_STREAM_INFO_H264_S;
+pub const rkVENC_STREAM_INFO_H265_S = struct_rkVENC_STREAM_INFO_H265_S;
+pub const rkVENC_SSE_INFO_S = struct_rkVENC_SSE_INFO_S;
+pub const rkVENC_STREAM_ADVANCE_INFO_H264_S = struct_rkVENC_STREAM_ADVANCE_INFO_H264_S;
+pub const rkVENC_STREAM_ADVANCE_INFO_JPEG_S = struct_rkVENC_STREAM_ADVANCE_INFO_JPEG_S;
+pub const rkVENC_STREAM_ADVANCE_INFO_PRORES_S = struct_rkVENC_STREAM_ADVANCE_INFO_PRORES_S;
+pub const rkVENC_STREAM_ADVANCE_INFO_H265_S = struct_rkVENC_STREAM_ADVANCE_INFO_H265_S;
+pub const rkVENC_STREAM_INFO_PRORES_S = struct_rkVENC_STREAM_INFO_PRORES_S;
+pub const rkVENC_STREAM_INFO_JPEG_S = struct_rkVENC_STREAM_INFO_JPEG_S;
+pub const rkVENC_STREAM_S = struct_rkVENC_STREAM_S;
+pub const rkVENC_STREAM_INFO_S = struct_rkVENC_STREAM_INFO_S;
+pub const rkVENC_GOP_MODE_E = enum_rkVENC_GOP_MODE_E;
+pub const rkVENC_ROTATION_E = enum_rkVENC_ROTATION_E;
+pub const rkVENC_MPF_CFG_S = struct_rkVENC_MPF_CFG_S;
+pub const rkVENC_PIC_RECEIVE_MODE_E = enum_rkVENC_PIC_RECEIVE_MODE_E;
+pub const rkVENC_ATTR_JPEG_S = struct_rkVENC_ATTR_JPEG_S;
+pub const rkVENC_ATTR_MJPEG_S = struct_rkVENC_ATTR_MJPEG_S;
+pub const rkVENC_ATTR_H264_S = struct_rkVENC_ATTR_H264_S;
+pub const rkVENC_ATTR_H265_S = struct_rkVENC_ATTR_H265_S;
+pub const rkVENC_ATTR_S = struct_rkVENC_ATTR_S;
+pub const rkVENC_GOP_ATTR_S = struct_rkVENC_GOP_ATTR_S;
+pub const rkVENC_CHN_ATTR_S = struct_rkVENC_CHN_ATTR_S;
+pub const rkVENC_RECV_PIC_PARAM_S = struct_rkVENC_RECV_PIC_PARAM_S;
+pub const rkVENC_CHN_STATUS_S = struct_rkVENC_CHN_STATUS_S;
+pub const rkVENC_SLICE_SPLIT_S = struct_rkVENC_SLICE_SPLIT_S;
+pub const rkVENC_H264_INTRA_PRED_S = struct_rkVENC_H264_INTRA_PRED_S;
+pub const rkVENC_H264_TRANS_S = struct_rkVENC_H264_TRANS_S;
+pub const rkVENC_H264_ENTROPY_S = struct_rkVENC_H264_ENTROPY_S;
+pub const rkVENC_H264_POC_S = struct_rkVENC_H264_POC_S;
+pub const rkVENC_H264_DBLK_S = struct_rkVENC_H264_DBLK_S;
+pub const rkVENC_H264_VUI_TIME_INFO_S = struct_rkVENC_H264_VUI_TIME_INFO_S;
+pub const rkVENC_VUI_ASPECT_RATIO_S = struct_rkVENC_VUI_ASPECT_RATIO_S;
+pub const rkVENC_VUI_VIDEO_SIGNAL_S = struct_rkVENC_VUI_VIDEO_SIGNAL_S;
+pub const rkVENC_VUI_BITSTREAM_RESTRIC_S = struct_rkVENC_VUI_BITSTREAM_RESTRIC_S;
+pub const rkVENC_H264_VUI_S = struct_rkVENC_H264_VUI_S;
+pub const rkVENC_VUI_H265_TIME_INFO_S = struct_rkVENC_VUI_H265_TIME_INFO_S;
+pub const rkVENC_H265_VUI_S = struct_rkVENC_H265_VUI_S;
+pub const rkVENC_JPEG_PARAM_S = struct_rkVENC_JPEG_PARAM_S;
+pub const rkVENC_MJPEG_PARAM_S = struct_rkVENC_MJPEG_PARAM_S;
+pub const rkVENC_PRORES_PARAM_S = struct_rkVENC_PRORES_PARAM_S;
+pub const rkVENC_ROI_ATTR_S = struct_rkVENC_ROI_ATTR_S;
+pub const rkVENC_ROI_ATTR_EX_S = struct_rkVENC_ROI_ATTR_EX_S;
+pub const rkVENC_ROIBG_FRAME_RATE_S = struct_rkVENC_ROIBG_FRAME_RATE_S;
+pub const rkVENC_REF_PARAM_S = struct_rkVENC_REF_PARAM_S;
+pub const rkVENC_JPEG_ENCODE_MODE_E = enum_rkVENC_JPEG_ENCODE_MODE_E;
+pub const rkVENC_STREAM_BUF_INFO_S = struct_rkVENC_STREAM_BUF_INFO_S;
+pub const rkVENC_H265_PU_S = struct_rkVENC_H265_PU_S;
+pub const rkVENC_H265_TRANS_S = struct_rkVENC_H265_TRANS_S;
+pub const rkVENC_H265_ENTROPY_S = struct_rkVENC_H265_ENTROPY_S;
+pub const rkVENC_H265_DBLK_S = struct_rkVENC_H265_DBLK_S;
+pub const rkVENC_H265_SAO_S = struct_rkVENC_H265_SAO_S;
+pub const rkVENC_INTRA_REFRESH_MODE_E = enum_rkVENC_INTRA_REFRESH_MODE_E;
+pub const rkVENC_INTRA_REFRESH_S = struct_rkVENC_INTRA_REFRESH_S;
+pub const rkVENC_MODTYPE_E = enum_rkVENC_MODTYPE_E;
+pub const rkVENC_MOD_H264E_S = struct_rkVENC_MOD_H264E_S;
+pub const rkVENC_MOD_H265E_S = struct_rkVENC_MOD_H265E_S;
+pub const rkVENC_MOD_JPEGE_S = struct_rkVENC_MOD_JPEGE_S;
+pub const rkVENC_MOD_RC_S = struct_rkVENC_MOD_RC_S;
+pub const rkVENC_MOD_VENC_S = struct_rkVENC_MOD_VENC_S;
+pub const rkVENC_MODPARAM_S = struct_rkVENC_MODPARAM_S;
+pub const rkVENC_FRAME_TYPE_E = enum_rkVENC_FRAME_TYPE_E;
+pub const rkUSER_RC_INFO_S = struct_rkUSER_RC_INFO_S;
+pub const rkUSER_FRAME_INFO_S = struct_rkUSER_FRAME_INFO_S;
+pub const rkVENC_SSE_CFG_S = struct_rkVENC_SSE_CFG_S;
+pub const rkVENC_CROP_TYPE_E = enum_rkVENC_CROP_TYPE_E;
+pub const rkVENC_SCALE_RECT_S = struct_rkVENC_SCALE_RECT_S;
+pub const rkVENC_CROP_INFO_S = struct_rkVENC_CROP_INFO_S;
+pub const rkVENC_FRAME_RATE_S = struct_rkVENC_FRAME_RATE_S;
+pub const rkVENC_CHN_PARAM_S = struct_rkVENC_CHN_PARAM_S;
+pub const rkVENC_FOREGROUND_PROTECT_S = struct_rkVENC_FOREGROUND_PROTECT_S;
+pub const rkVENC_SCENE_MODE_E = enum_rkVENC_SCENE_MODE_E;
+pub const rkVENC_DEBREATHEFFECT_S = struct_rkVENC_DEBREATHEFFECT_S;
+pub const rkVENC_CU_PREDICTION_S = struct_rkVENC_CU_PREDICTION_S;
+pub const rkVENC_SKIP_BIAS_S = struct_rkVENC_SKIP_BIAS_S;
+pub const rkVENC_HIERARCHICAL_QP_S = struct_rkVENC_HIERARCHICAL_QP_S;
+pub const rkVENC_CHN_POOL_S = struct_rkVENC_CHN_POOL_S;
+pub const rkVENC_RC_ADVPARAM_S = struct_rkVENC_RC_ADVPARAM_S;
+pub const rkRC_SUPERFRM_MODE_E = enum_rkRC_SUPERFRM_MODE_E;
+pub const rkVENC_RC_PRIORITY_E = enum_rkVENC_RC_PRIORITY_E;
+pub const rkVENC_SUPERFRAME_CFG_S = struct_rkVENC_SUPERFRAME_CFG_S;
+pub const rkVENC_FRAMELOST_MODE_E = enum_rkVENC_FRAMELOST_MODE_E;
+pub const rkVENC_FRAMELOST_S = struct_rkVENC_FRAMELOST_S;
 pub const rkVPSS_MOD_PARAM_S = struct_rkVPSS_MOD_PARAM_S;
 pub const rkVPSS_GRP_ATTR_S = struct_rkVPSS_GRP_ATTR_S;
 pub const rkVPSS_CHN_MODE_E = enum_rkVPSS_CHN_MODE_E;

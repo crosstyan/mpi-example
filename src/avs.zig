@@ -229,11 +229,7 @@ pub const Avs = struct {
     }
 };
 
-const CompressMode = enum(u32) {
-    none = 0,
-    afbc_16x16 = 1,
-    butt = 2,
-};
+pub const CompressMode = rk.CompressMode;
 
 fn getFrameFiles(allocator: std.mem.Allocator, src_path: []const u8, flags: std.fs.File.OpenFlags, pipe_count: u32) !std.ArrayList(std.fs.File) {
     var files = std.ArrayList(std.fs.File).init(allocator);
@@ -259,10 +255,6 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, ctx: *Avs, test_path:
     const calib_path = try std.fs.path.join(allocator, &.{ test_path, "/avs_calib/calib_file.pto" });
     const mesh_path = try std.fs.path.join(allocator, &.{ test_path, "/avs_mesh/" });
     // no closure. dumb
-    var calib_buf: [256]u8 = std.mem.zeroes([256]u8);
-    var mesh_buf: [256]u8 = std.mem.zeroes([256]u8);
-    std.mem.copy(u8, calib_buf[0..], calib_path);
-    std.mem.copy(u8, mesh_buf[0..], mesh_path);
     defer {
         allocator.free(src_path);
         allocator.free(dst_path);
@@ -271,10 +263,10 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, ctx: *Avs, test_path:
     }
     ctx.with_default();
     // 标定文件地址
-    ctx.grp_attr.stOutAttr.stCalib.aCalibFilePath = calib_buf;
+    std.mem.copy(u8, ctx.grp_attr.stOutAttr.stCalib.aCalibFilePath, calib_path);
     // 输出查找表文件地址
     // This is output mesh file path
-    ctx.grp_attr.stOutAttr.stCalib.aMeshAlphaPath = mesh_buf;
+    std.mem.copy(u8, ctx.grp_attr.stOutAttr.stCalib.aMeshAlphaPath, mesh_path);
     try ctx.init();
     defer ctx.deinit() catch unreachable;
 
