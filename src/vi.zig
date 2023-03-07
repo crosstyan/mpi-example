@@ -200,6 +200,13 @@ pub const VICtx = struct {
 
         // depth need > 0 when vi not bind any other module!
         self.chn_attr.stIspOpt.u32BufCount = 3;
+        // 当vi后级没有绑定其他模块时建议 u32Depth 设置跟 VI_ISP_OPT_S 的 u32BufCount
+        // 个数一致，如果此时设置 0 则获取不到输出 buf。
+        // 当vi后级绑定有其他模块时:
+        // 如果需要通过 RK_MPI_VI_GetChnFrame 获取图像，建议 u32Depth 设置比 VI_ISP_OPT_S 的
+        // u32BufCount 至少要 小 2，如 u32BufCount 设置为3， u32Depth 设置为1。此时 u32Depth
+        // 设置过高会影响正常输出数据或者导致后级 帧率不足。 如果不需要通过 RK_MPI_VI_GetChnFrame 获取图像，建议
+        // u32Depth 设置为0。
         self.chn_attr.u32Depth = 3;
         self.chn_attr.stIspOpt.enMemoryType = c.VI_V4L2_MEMORY_TYPE_MMAP;
         self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE;
