@@ -6,6 +6,7 @@ const argsParser = @import("args");
 const common = @import("bindings/common.zig");
 const rk = @import("rockit.zig");
 const avs = @import("avs.zig");
+const vi = @import("vi.zig");
 
 fn eglTest() void {
     // RK_MPI_SYS_Init hasn't use external EGL?
@@ -29,6 +30,7 @@ pub fn main() !u8 {
         struct {},
         union(enum) {
             @"egl-test": struct {},
+            @"vi-test": vi.TestOptions,
         },
         allocator,
         .print,
@@ -37,6 +39,12 @@ pub fn main() !u8 {
     if (options.verb) |verb| {
         switch (verb) {
             .@"egl-test" => eglTest(),
+            .@"vi-test" => |opts| {
+                try rk.init();
+                var vi_ctx = vi.VICtx.new(opts.width, opts.height);
+                try vi_ctx.test_vi(opts);
+                defer rk.deinit() catch unreachable;
+            },
         }
     } else {
         try rk.init();

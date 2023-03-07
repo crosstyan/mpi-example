@@ -129,7 +129,7 @@ pub fn createVideoFrame(buf_attr: *const c.PIC_BUF_ATTR_S, frame: *c.VIDEO_FRAME
     frame.stVFrame.enCompressMode = buf_attr.enCompMode;
 }
 
-const CompressMode = enum(u32) {
+pub const CompressMode = enum(u32) {
     none = 0,
     afbc_16x16 = 1,
     butt = 2,

@@ -2,8 +2,9 @@ const c = @import("bindings/common.zig");
 const rk = @import("rockit.zig");
 const sucess = rk.sucess;
 const std = @import("std");
-const utils = @import("utils.zig");
 const log = std.log.scoped(.log);
+const utils = @import("utils.zig");
+const set_zeros = utils.set_zeros;
 
 const VIErr = error{
     InvalidPara,
@@ -31,7 +32,6 @@ pub fn cvtErr(err: c.RK_S32) VIErr {
         c.RK_ERR_VI_INVALID_PIPEID => return error.InvalidPipeid,
         c.RK_ERR_VI_INVALID_CHNID => return error.InvalidChnid,
         c.RK_ERR_VI_INVALID_NULL_PTR => return error.InvalidNullPtr,
-        c.RK_ERR_VI_FAILED_NOTCONFIG => return error.FailedNotconfig,
         c.RK_ERR_VI_SYS_NOTREADY => return error.SysNotready,
         c.RK_ERR_VI_BUF_EMPTY => return error.BufEmpty,
         c.RK_ERR_VI_BUF_FULL => return error.BufFull,
@@ -119,17 +119,32 @@ pub fn disableDev(dev_id: i32) VIErr!void {
 
 const CompressMode = rk.CompressMode;
 
-const VICtx = struct {
+pub const TestOptions = struct {
+    @"entity-name": ?[]const u8 = null,
+    count: usize = 100,
+    width: i32 = 1920,
+    height: i32 = 1080,
+    /// delay ms. -1 is blocking. 0 is non-blocking.
+    delay: i32 = 33,
+};
+
+pub const VICtx = struct {
     width: i32,
     height: i32,
     dev_id: i32,
     pipe_id: i32,
     chn_id: i32,
-    is_freeze: bool,
     compress_mode: CompressMode,
     dev_attr: c.VI_DEV_ATTR_S,
     pipe: c.VI_DEV_BIND_PIPE_S,
     chn_attr: c.VI_CHN_ATTR_S,
+
+    pub fn new(width: i32, height: i32) VICtx {
+        var ctx = std.mem.zeroes(VICtx);
+        ctx.width = width;
+        ctx.height = height;
+        return ctx;
+    }
 
     /// 当采集的数据为isp输入或者直通时，需要配置
     ///
@@ -152,33 +167,74 @@ const VICtx = struct {
     /// - 更多isp细节参看3588 datasheet中isp章节说明
     ///
     /// RK3588平台，因底层硬件需要做缓存处理, `u32BufCount` 至少需要3个或以上buffer才能获取到满足帧率需求的帧数
-    pub fn setEntityName(self: *@This(), entity_name: []const u8) void {
+    pub fn setEntityName(self: *@This(), entity_name: ?[]const u8) void {
         // C use this piece of string which should be zero ended
-        utils.zeroes(u8, self.chn_attr.stIspOpt.aEntityName);
-        std.mem.copy(u8, self.chn_attr.stIspOpt.aEntityName, entity_name);
+        set_zeros(&self.chn_attr.stIspOpt.aEntityName);
+        if (entity_name != null) {
+            std.mem.copy(u8, &self.chn_attr.stIspOpt.aEntityName, entity_name.?);
+        }
     }
 
     /// Should set entity name before call this function
     /// or the entity name will be `RK_NULL` (0)
     pub fn init(self: *@This()) !void {
-        getDevAttr(self.dev_id, self.dev_attr) catch |err| switch (err) {
+        self.chn_id = 1;
+        getDevAttr(self.dev_id, &self.dev_attr) catch |err| switch (err) {
             error.NotConfig => {
-                try setDevAttr(self.dev_id, self.dev_attr);
+                try setDevAttr(self.dev_id, &self.dev_attr);
             },
             else => return err,
         };
         const is_enabled = getDevIsEnable(self.dev_id);
         if (!is_enabled) {
             try enableDev(self.dev_id);
-            self.pipe.u32Num = self.pipe_id;
+            self.pipe.u32Num = @intCast(u32, self.pipe_id);
             self.pipe.PipeId[0] = self.pipe_id;
-            try setDevBindPipe(self.dev_id, self.pipe);
+            try setDevBindPipe(self.dev_id, &self.pipe);
         } else {
             log.info("vi dev {} is enabled", .{self.dev_id});
         }
-        self.chn_attr.stSize.u32Width = self.width;
-        self.chn_attr.stSize.u32Height = self.height;
+        self.chn_attr.stSize.u32Width = @intCast(u32, self.width);
+        self.chn_attr.stSize.u32Height = @intCast(u32, self.height);
         self.chn_attr.enCompressMode = @enumToInt(self.compress_mode);
-        try setChnAttr(self.pipe_id, self.chn_id, self.chn_attr);
+
+        // depth need > 0 when vi not bind any other module!
+        self.chn_attr.stIspOpt.u32BufCount = 3;
+        self.chn_attr.u32Depth = 3;
+        self.chn_attr.stIspOpt.enMemoryType = c.VI_V4L2_MEMORY_TYPE_MMAP;
+        self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE;
+        self.chn_attr.enPixelFormat = c.RK_FMT_YUV420SP;
+        self.chn_attr.enAllocBufType = c.VI_ALLOC_BUF_TYPE_EXTERNAL;
+        self.chn_attr.stFrameRate.s32SrcFrameRate = -1;
+        self.chn_attr.stFrameRate.s32DstFrameRate = -1;
+
+        try setChnAttr(self.pipe_id, self.chn_id, &self.chn_attr);
+        try enableChn(self.pipe_id, self.chn_id);
+    }
+
+    pub fn deinit(self: *@This()) void {
+        disableChn(self.pipe_id, self.chn_id) catch unreachable;
+        disableDev(self.dev_id) catch unreachable;
+    }
+
+    pub fn test_vi(self: *@This(), opts: TestOptions) !void {
+        const entity_name = opts.@"entity-name";
+        self.setEntityName(entity_name);
+        log.info("entity name: {s}", .{&self.chn_attr.stIspOpt.aEntityName});
+        try self.init();
+        defer self.deinit();
+        var frame = std.mem.zeroes(c.VIDEO_FRAME_INFO_S);
+        var last = utils.Elapsed.new();
+        for (0..opts.count) |i| {
+            getChnFrame(self.pipe_id, self.chn_id, &frame, opts.delay) catch |err| {
+                log.err("[{d}] get chn frame failed: {?}", .{ i, err });
+                continue;
+            };
+            const elapsed = last.reset_elapsed();
+            var status = std.mem.zeroes(c.VI_CHN_STATUS_S);
+            try queryChnStatus(self.pipe_id, self.chn_id, &status);
+            log.info("[{d}] w:{d}, h:{d}, frame id:{d}, elapsed: {d}ms", .{ i, status.stSize.u32Width, status.stSize.u32Height, status.u32CurFrameID, elapsed });
+            try releaseChnFrame(self.pipe_id, self.chn_id, &frame);
+        }
     }
 };

@@ -263,10 +263,10 @@ pub fn test_avs_6_rectlinear(allocator: std.mem.Allocator, ctx: *Avs, test_path:
     }
     ctx.with_default();
     // 标定文件地址
-    std.mem.copy(u8, ctx.grp_attr.stOutAttr.stCalib.aCalibFilePath, calib_path);
+    std.mem.copy(u8, &ctx.grp_attr.stOutAttr.stCalib.aCalibFilePath, calib_path);
     // 输出查找表文件地址
     // This is output mesh file path
-    std.mem.copy(u8, ctx.grp_attr.stOutAttr.stCalib.aMeshAlphaPath, mesh_path);
+    std.mem.copy(u8, &ctx.grp_attr.stOutAttr.stCalib.aMeshAlphaPath, mesh_path);
     try ctx.init();
     defer ctx.deinit() catch unreachable;
 
