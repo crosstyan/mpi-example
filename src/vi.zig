@@ -126,6 +126,7 @@ pub const TestOptions = struct {
     height: i32 = 1080,
     /// delay ms. -1 is blocking. 0 is non-blocking.
     delay: i32 = 33,
+    v4l2: bool = false,
 };
 
 pub const VICtx = struct {
@@ -177,7 +178,7 @@ pub const VICtx = struct {
 
     /// Should set entity name before call this function
     /// or the entity name will be `RK_NULL` (0)
-    pub fn init(self: *@This()) !void {
+    pub fn init(self: *@This(), opts: *const TestOptions) !void {
         self.chn_id = 1;
         getDevAttr(self.dev_id, &self.dev_attr) catch |err| switch (err) {
             error.NotConfig => {
@@ -199,19 +200,22 @@ pub const VICtx = struct {
         self.chn_attr.enCompressMode = @enumToInt(self.compress_mode);
 
         // depth need > 0 when vi not bind any other module!
-        self.chn_attr.stIspOpt.u32BufCount = 3;
+        self.chn_attr.stIspOpt.u32BufCount = 5;
         // 当vi后级没有绑定其他模块时建议 u32Depth 设置跟 VI_ISP_OPT_S 的 u32BufCount
         // 个数一致，如果此时设置 0 则获取不到输出 buf。
         // 当vi后级绑定有其他模块时:
         // 如果需要通过 RK_MPI_VI_GetChnFrame 获取图像，建议 u32Depth 设置比 VI_ISP_OPT_S 的
-        // u32BufCount 至少要 小 2，如 u32BufCount 设置为3， u32Depth 设置为1。此时 u32Depth
-        // 设置过高会影响正常输出数据或者导致后级 帧率不足。 如果不需要通过 RK_MPI_VI_GetChnFrame 获取图像，建议
+        // u32BufCount 至少要小 2，如 u32BufCount 设置为3， u32Depth 设置为1。此时 u32Depth
+        // 设置过高会影响正常输出数据或者导致后级帧率不足。 如果不需要通过 RK_MPI_VI_GetChnFrame 获取图像，建议
         // u32Depth 设置为0。
-        self.chn_attr.u32Depth = 3;
+        self.chn_attr.u32Depth = 5;
         self.chn_attr.stIspOpt.enMemoryType = c.VI_V4L2_MEMORY_TYPE_MMAP;
         self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE;
         self.chn_attr.enPixelFormat = c.RK_FMT_YUV420SP;
+        // 当图像类型为 mmap 方式获取时需要设置为外部申请。
         self.chn_attr.enAllocBufType = c.VI_ALLOC_BUF_TYPE_EXTERNAL;
+        self.chn_attr.stIspOpt.bNoUseLibV4L2 = @boolToInt(opts.v4l2);
+        log.info("if use v4l2: {}", .{opts.v4l2});
         self.chn_attr.stFrameRate.s32SrcFrameRate = -1;
         self.chn_attr.stFrameRate.s32DstFrameRate = -1;
 
@@ -228,7 +232,7 @@ pub const VICtx = struct {
         const entity_name = opts.@"entity-name";
         self.setEntityName(entity_name);
         log.info("entity name: {s}", .{&self.chn_attr.stIspOpt.aEntityName});
-        try self.init();
+        try self.init(&opts);
         defer self.deinit();
         var frame = std.mem.zeroes(c.VIDEO_FRAME_INFO_S);
         var last = utils.Elapsed.new();
