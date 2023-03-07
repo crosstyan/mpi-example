@@ -209,12 +209,14 @@ pub const VICtx = struct {
         // 设置过高会影响正常输出数据或者导致后级帧率不足。 如果不需要通过 RK_MPI_VI_GetChnFrame 获取图像，建议
         // u32Depth 设置为0。
         self.chn_attr.u32Depth = 5;
+        // https://blog.csdn.net/kickxxx/article/details/8051263
+        // https://stackoverflow.com/questions/66962795/what-is-the-use-of-mmap-userptr-and-dmabuf-in-video-streaming-using-v4l2-drive
         self.chn_attr.stIspOpt.enMemoryType = c.VI_V4L2_MEMORY_TYPE_MMAP;
-        self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE;
-        self.chn_attr.enPixelFormat = c.RK_FMT_YUV420SP;
         // 当图像类型为 mmap 方式获取时需要设置为外部申请。
         self.chn_attr.enAllocBufType = c.VI_ALLOC_BUF_TYPE_EXTERNAL;
-        self.chn_attr.stIspOpt.bNoUseLibV4L2 = @boolToInt(opts.v4l2);
+        self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE;
+        self.chn_attr.enPixelFormat = c.RK_FMT_YUV420SP;
+        self.chn_attr.stIspOpt.bNoUseLibV4L2 = !@boolToInt(opts.v4l2);
         log.info("if use v4l2: {}", .{opts.v4l2});
         self.chn_attr.stFrameRate.s32SrcFrameRate = -1;
         self.chn_attr.stFrameRate.s32DstFrameRate = -1;
