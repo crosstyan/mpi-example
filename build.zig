@@ -115,6 +115,7 @@ pub fn build(b: *std.Build) !void {
     // OpenGL
     // exe.linkSystemLibrary("EGL");
     // exe.linkSystemLibrary("GLESv2");
+    exe.linkSystemLibrary("v4l2");
     exe.linkLibC();
     exe.install();
 

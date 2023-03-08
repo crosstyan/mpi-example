@@ -9,3 +9,4 @@
 #include "rk_mpi_avs.h"
 #include "rk_mpi_vo.h"
 #include <linux/videodev2.h>
+#include <libv4l2.h>

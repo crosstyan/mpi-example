@@ -279,29 +279,41 @@ pub const V4l2Options = struct {
     device: ?[]const u8 = null,
     width: u32 = 640,
     height: u32 = 480,
-    pub const shorthands = struct {
+    pub const shorthands = .{
         .d = "device",
         .w = "width",
         .h = "height",
     };
 };
 
-const ioctl = std.os.linux.ioctl;
+const ioctl = c.v4l2_ioctl;
+const open = c.v4l2_open;
+const close = c.v4l2_close;
+const mmap = c.v4l2_mmap;
+const munmap = c.v4l2_munmap;
 const fd_t = std.os.fd_t;
 const mem = std.mem;
 const num_buffer = 16;
 
 pub const V4l2Vi = struct {
+    /// Don't mutate this field directly, `videoEnable` and `videoDisable`
+    _is_capturing: bool = false,
     device: [64]u8,
     width: u32,
     height: u32,
     file_desc: std.os.fd_t,
     frame_buffer: []u8,
+    /// addr and length
     mems: [num_buffer][]align(mem.page_size) u8,
     allocator: std.mem.Allocator,
+
     pub fn new(allocator: std.mem.Allocator, opts: *const V4l2Options) !V4l2Vi {
-        var self = std.mem.zeroes(V4l2Vi);
-        self.device = opts.device;
+        var self: V4l2Vi = undefined;
+        if (opts.device == null) {
+            return error.IllegalParam;
+        }
+        utils.set_zeros(&self.device);
+        std.mem.copy(u8, self.device[0..], opts.device.?);
         self.width = opts.width;
         self.height = opts.height;
         self.allocator = allocator;
@@ -310,61 +322,118 @@ pub const V4l2Vi = struct {
         return self;
     }
 
-    /// mmap
-    pub fn query_buffer(self: *@This()) !void {
+    /// called in `init`
+    ///
+    /// `mmap` is called here
+    pub fn queryBuffer(self: *@This()) !void {
         var fd = self.file_desc;
         for (0..num_buffer) |i| {
             var buf = std.mem.zeroes(c.v4l2_buffer);
             buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
             buf.memory = c.V4L2_MEMORY_MMAP;
-            buf.index = i;
-            const res = ioctl(fd, c.VIDIOC_QUERYBUF, &buf);
+            buf.index = @intCast(c_uint, i);
+            const res = ioctl(fd, c.VIDIOC_QUERYBUF, @ptrToInt(&buf));
             if (res == -1) {
                 return error.QueryV4l2BufferFailed;
             }
-            self.mems[i] = try std.os.mmap(null, buf.length, std.os.PROT_READ, std.os.MAP_SHARED, fd, buf.m.offset);
+            var ptr = mmap(null, buf.length, std.os.linux.PROT.READ | std.os.linux.PROT.WRITE, std.os.linux.MAP.SHARED, fd, buf.m.offset);
+            if (ptr == null) {
+                return error.NullPtr;
+            }
+            var p = @ptrCast([*]u8, ptr);
+            self.mems[i].ptr = @alignCast(mem.page_size, p);
+            self.mems[i].len = buf.length;
         }
     }
 
-    pub fn queue_buffer(self: *@This()) !void {
+    pub fn is_capture(self: *const @This()) bool {
+        return self._is_capturing;
+    }
+
+    pub fn v4l2_test(self: *@This()) !void {
+        try self.init();
+        defer self.deinit();
+        try self.videoEnable();
+        for (0..30) |i| {
+            self.grab() catch |err| {
+                log.err("[{}] err {?}", .{ i, err });
+            };
+        }
+        try self.writeToFile("test.yuv");
+        log.info("sucess! ", .{});
+    }
+
+    pub fn writeToFile(self: *const @This(), filename: []const u8) !void {
+        const file = try std.fs.cwd().createFile(filename, .{});
+        defer file.close();
+        try file.writer().writeAll(self.frame_buffer);
+    }
+
+    /// called in `init`
+    pub fn queueBuffer(self: *@This()) !void {
         var fd = self.file_desc;
         for (0..num_buffer) |i| {
             var buf = std.mem.zeroes(c.v4l2_buffer);
             buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
             buf.memory = c.V4L2_MEMORY_MMAP;
-            buf.index = i;
-            const res = ioctl(fd, c.VIDIOC_QBUF, buf);
+            buf.index = @intCast(c_uint, i);
+            const res = ioctl(fd, c.VIDIOC_QBUF, @ptrToInt(&buf));
             if (res == -1) {
                 return error.QueueV4l2BufferFailed;
             }
         }
     }
 
+    fn videoEnable(self: *@This()) !void {
+        if (self._is_capturing) return;
+        try videoEnableRaw(self.file_desc);
+        self._is_capturing = true;
+    }
+
+    fn videoDisable(self: *@This()) !void {
+        if (!self._is_capturing) return;
+        try videoDisableRaw(self.file_desc);
+        self._is_capturing = false;
+    }
+
     pub fn init(self: *@This()) !void {
-        self.file_desc = try std.os.open(&self.device, std.os.O_RDWR | std.os.O_NONBLOCK, 0);
-        const format = std.mem.zeroes(c.v4l2_format);
+        var p = @ptrCast([*:0]u8, &self.device);
+        log.info("device: {s}", .{p});
+        self.file_desc = open(p, std.os.linux.O.RDWR | std.os.linux.O.NONBLOCK);
+
+        var cap = std.mem.zeroes(c.v4l2_capability);
+        var err = ioctl(self.file_desc, c.VIDIOC_QUERYCAP, @ptrToInt(&cap));
+        if (err == -1) {
+            return error.NoV4l2Device;
+        }
+
+        if (cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE <= 0) {
+            return error.NoV4l2CaptureDevice;
+        }
+
+        var format = std.mem.zeroes(c.v4l2_format);
         format.type = c.V4L2_CAP_VIDEO_CAPTURE;
         format.fmt.pix.width = self.width;
         format.fmt.pix.height = self.height;
         format.fmt.pix.pixelformat = c.V4L2_PIX_FMT_YUYV;
         format.fmt.pix.field = c.V4L2_FIELD_NONE;
-        const res = ioctl(self.file_desc, c.VIDIOC_S_FMT, &format);
+        const res = ioctl(self.file_desc, c.VIDIOC_S_FMT, @ptrToInt(&format));
         if (res == -1) {
             return error.SetV4l2FormatFailed;
         }
-        try request_buffers(self.file_desc, num_buffer);
-        try self.query_buffer(self.file_desc);
-        try self.queue_buffer(self.file_desc);
+        try requestBuffersRaw(self.file_desc, num_buffer);
+        try self.queryBuffer();
+        try self.queueBuffer();
     }
 
     /// won't free the frame buffer
     /// call `destory`
     pub fn deinit(self: *@This()) void {
-        video_disable(self.file_desc);
+        videoDisableRaw(self.file_desc) catch unreachable;
         for (self.mems) |m| {
-            std.os.munmap(m);
+            _ = munmap(m.ptr, m.len);
         }
-        std.os.close(self.file_desc);
+        _ = close(self.file_desc);
     }
 
     pub fn destory(self: *@This()) void {
@@ -376,15 +445,22 @@ pub const V4l2Vi = struct {
         buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory = c.V4L2_MEMORY_MMAP;
         // dequeue buffer
-        const res = ioctl(self.file_desc, c.VIDIOC_DQBUF, &buf);
+        const res = ioctl(self.file_desc, c.VIDIOC_DQBUF, @ptrToInt(&buf));
         if (res == -1) {
-            return error.DequeueV4l2BufferFailed;
+            const e = std.os.errno(res);
+            switch (e) {
+                std.os.linux.errno.generic.E.AGAIN => return error.Again,
+                else => {
+                    log.err("dequeue: {}", .{e});
+                    return error.DequeueV4l2BufferFailed;
+                },
+            }
         }
         // copy buffer
         {
             const i = buf.index;
-            const mem_buf = self.mems[i][0..@intCast(usize, buf.bytesused)];
-            log.debug("get mem buf from index {d}", .{i});
+            const mem_buf = self.mems[i];
+            log.info("get mem buf from index {d}, size {d}", .{ i, buf.bytesused });
             if (mem_buf.len != self.frame_buffer.len) {
                 log.info("resize frame buffer. {} -> {}", .{ self.frame_buffer.len, mem_buf.len });
                 const ret = self.allocator.resize(self.frame_buffer, buf.bytesused);
@@ -396,7 +472,7 @@ pub const V4l2Vi = struct {
         }
         // requeue buffer
         {
-            const ret = ioctl(self.file_desc, c.VIDIOC_QBUF, &buf);
+            const ret = ioctl(self.file_desc, c.VIDIOC_QBUF, @ptrToInt(&buf));
             if (ret == -1) {
                 return error.RequeueV4l2BufferFailed;
             }
@@ -404,28 +480,29 @@ pub const V4l2Vi = struct {
     }
 };
 
-pub fn request_buffers(fd: fd_t, count: usize) !void {
+pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
     var req = std.mem.zeroes(c.v4l2_requestbuffers);
-    req.count = count;
+    req.count = @intCast(c_uint, count);
     req.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
     req.memory = c.V4L2_MEMORY_MMAP;
-    const res = ioctl(fd, c.VIDIOC_REQBUFS, &req);
+    const res = ioctl(fd, c.VIDIOC_REQBUFS, @ptrToInt(&req));
     if (res == -1) {
         return error.RequestV4l2BufferFailed;
     }
+    log.info("requested count: {d}", .{req.count});
 }
 
-pub fn video_enable(fd: fd_t) !void {
-    var type_ = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    const res = ioctl(fd, c.VIDIOC_STREAMON, &type_);
+pub fn videoEnableRaw(fd: fd_t) !void {
+    var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    const res = ioctl(fd, c.VIDIOC_STREAMON, @ptrToInt(&t));
     if (res == -1) {
         return error.StartV4l2StreamingFailed;
     }
 }
 
-pub fn video_disable(fd: fd_t) !void {
-    var type_ = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    const res = ioctl(fd, c.VIDIOC_STREAMOFF, &type_);
+pub fn videoDisableRaw(fd: fd_t) !void {
+    var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    const res = ioctl(fd, c.VIDIOC_STREAMOFF, @ptrToInt(&t));
     if (res == -1) {
         return error.StopV4l2StreamingFailed;
     }

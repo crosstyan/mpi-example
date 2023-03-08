@@ -31,6 +31,7 @@ pub fn main() !u8 {
         union(enum) {
             @"egl-test": struct {},
             @"vi-test": vi.TestOptions,
+            @"v4l2-test": vi.V4l2Options,
         },
         allocator,
         .print,
@@ -44,6 +45,11 @@ pub fn main() !u8 {
                 var vi_ctx = vi.VICtx.new();
                 try vi_ctx.test_vi(opts);
                 defer rk.deinit() catch unreachable;
+            },
+            .@"v4l2-test" => |opts| {
+                var v = try vi.V4l2Vi.new(allocator, &opts);
+                defer v.destory();
+                try v.v4l2_test();
             },
         }
     } else {
