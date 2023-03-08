@@ -286,6 +286,7 @@ pub const V4l2Options = struct {
     };
 };
 
+// use equivent in libv4l2
 const ioctl = c.v4l2_ioctl;
 const open = c.v4l2_open;
 const close = c.v4l2_close;
@@ -302,6 +303,7 @@ pub const V4l2Vi = struct {
     width: u32,
     height: u32,
     file_desc: std.os.fd_t,
+    /// mapped buffer would be copied to here
     frame_buffer: []u8,
     /// addr and length
     mems: [num_buffer][]align(mem.page_size) u8,
@@ -399,6 +401,7 @@ pub const V4l2Vi = struct {
     pub fn init(self: *@This()) !void {
         var p = @ptrCast([*:0]u8, &self.device);
         log.info("device: {s}", .{p});
+        // blocking could be good but I love non blocking
         self.file_desc = open(p, std.os.linux.O.RDWR | std.os.linux.O.NONBLOCK);
 
         var cap = std.mem.zeroes(c.v4l2_capability);
@@ -446,10 +449,11 @@ pub const V4l2Vi = struct {
         buf.memory = c.V4L2_MEMORY_MMAP;
         // dequeue buffer
         const res = ioctl(self.file_desc, c.VIDIOC_DQBUF, @ptrToInt(&buf));
+        const E = std.os.linux.E;
         if (res == -1) {
             const e = std.os.errno(res);
             switch (e) {
-                std.os.linux.errno.generic.E.AGAIN => return error.Again,
+                E.AGAIN => return error.Again,
                 else => {
                     log.err("dequeue: {}", .{e});
                     return error.DequeueV4l2BufferFailed;
