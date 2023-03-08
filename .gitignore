@@ -21,3 +21,4 @@ avs/6x_rectlinear/avs_mesh/*
 !avs/6x_rectlinear/avs_mesh/mesh_output_here.txt
 !avs/6x_rectlinear/output_res/output_here.txt
 example/build
+test.yuv
