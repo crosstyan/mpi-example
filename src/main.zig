@@ -41,7 +41,7 @@ pub fn main() !u8 {
             .@"egl-test" => eglTest(),
             .@"vi-test" => |opts| {
                 try rk.init();
-                var vi_ctx = vi.VICtx.new(opts.width, opts.height);
+                var vi_ctx = vi.VICtx.new();
                 try vi_ctx.test_vi(opts);
                 defer rk.deinit() catch unreachable;
             },

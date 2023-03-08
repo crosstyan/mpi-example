@@ -159,11 +159,8 @@ pub const VICtx = struct {
     pipe: c.VI_DEV_BIND_PIPE_S,
     chn_attr: c.VI_CHN_ATTR_S,
 
-    pub fn new(width: i32, height: i32) VICtx {
-        var ctx = std.mem.zeroes(VICtx);
-        ctx.width = width;
-        ctx.height = height;
-        return ctx;
+    pub fn new() VICtx {
+        return std.mem.zeroes(VICtx);
     }
 
     /// 当采集的数据为isp输入或者直通时，需要配置
@@ -187,6 +184,9 @@ pub const VICtx = struct {
     /// - 更多isp细节参看3588 datasheet中isp章节说明
     ///
     /// RK3588平台，因底层硬件需要做缓存处理, `u32BufCount` 至少需要3个或以上buffer才能获取到满足帧率需求的帧数
+    ///
+    /// Should set entity name before call this function
+    /// or the entity name will be `RK_NULL` (0)
     pub fn setEntityName(self: *@This(), entity_name: ?[]const u8) void {
         // C use this piece of string which should be zero ended
         set_zeros(&self.chn_attr.stIspOpt.aEntityName);
@@ -195,10 +195,11 @@ pub const VICtx = struct {
         }
     }
 
-    /// Should set entity name before call this function
-    /// or the entity name will be `RK_NULL` (0)
-    pub fn init(self: *@This(), opts: *const TestOptions) !void {
+    /// not very useful... For Now
+    pub fn init_test(self: *@This(), opts: *const TestOptions) !void {
         self.chn_id = 0;
+        self.width = opts.width;
+        self.height = opts.height;
         const entity_name = opts.@"entity-name";
         self.setEntityName(entity_name);
 
@@ -256,7 +257,7 @@ pub const VICtx = struct {
 
     pub fn test_vi(self: *@This(), opts: TestOptions) !void {
         log.info("entity name: {s}", .{&self.chn_attr.stIspOpt.aEntityName});
-        try self.init(&opts);
+        try self.init_test(&opts);
         defer self.deinit();
         var frame = std.mem.zeroes(c.VIDEO_FRAME_INFO_S);
         var last = utils.Elapsed.new();
@@ -273,3 +274,153 @@ pub const VICtx = struct {
         }
     }
 };
+
+pub const V4l2Options = struct {
+    device: ?[]const u8 = null,
+    width: u32 = 640,
+    height: u32 = 480,
+    pub const shorthands = struct {
+        .d = "device",
+        .w = "width",
+        .h = "height",
+    };
+};
+
+const ioctl = std.os.linux.ioctl;
+const fd_t = std.os.fd_t;
+const mem = std.mem;
+const num_buffer = 16;
+
+pub const V4l2Vi = struct {
+    device: [64]u8,
+    width: u32,
+    height: u32,
+    file_desc: std.os.fd_t,
+    frame_buffer: []u8,
+    mems: [num_buffer][]align(mem.page_size) u8,
+    allocator: std.mem.Allocator,
+    pub fn new(allocator: std.mem.Allocator, opts: *const V4l2Options) !V4l2Vi {
+        var self = std.mem.zeroes(V4l2Vi);
+        self.device = opts.device;
+        self.width = opts.width;
+        self.height = opts.height;
+        self.allocator = allocator;
+        const frame_buffer_size = self.width * self.height * 2;
+        self.frame_buffer = try self.allocator.alloc(u8, frame_buffer_size);
+        return self;
+    }
+
+    /// mmap
+    pub fn query_buffer(self: @This()) !void {
+        var fd = self.file_desc;
+        for (0..num_buffer) |i| {
+            var buf = std.mem.zeroes(c.v4l2_buffer);
+            buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            buf.memory = c.V4L2_MEMORY_MMAP;
+            buf.index = i;
+            const res = ioctl(fd, c.VIDIOC_QUERYBUF, &buf);
+            if (res == -1) {
+                return error.QueryV4l2BufferFailed;
+            }
+            self.mems[i] = try std.os.mmap(null, buf.length, std.os.PROT_READ, std.os.MAP_SHARED, fd, buf.m.offset);
+        }
+    }
+
+    pub fn queue_buffer(self: @This()) !void {
+        var fd = self.file_desc;
+        for (0..num_buffer) |i| {
+            var buf = std.mem.zeroes(c.v4l2_buffer);
+            buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            buf.memory = c.V4L2_MEMORY_MMAP;
+            buf.index = i;
+            const res = ioctl(fd, c.VIDIOC_QBUF, buf);
+            if (res == -1) {
+                return error.QueueV4l2BufferFailed;
+            }
+        }
+    }
+
+    pub fn init(self: @This()) !void {
+        self.file_desc = try std.os.open(&self.device, std.os.O_RDWR | std.os.O_NONBLOCK, 0);
+        const format = std.mem.zeroes(c.v4l2_format);
+        format.type = c.V4L2_CAP_VIDEO_CAPTURE;
+        format.fmt.pix.width = self.width;
+        format.fmt.pix.height = self.height;
+        format.fmt.pix.pixelformat = c.V4L2_PIX_FMT_YUYV;
+        format.fmt.pix.field = c.V4L2_FIELD_NONE;
+        const res = ioctl(self.file_desc, c.VIDIOC_S_FMT, &format);
+        if (res == -1) {
+            return error.SetV4l2FormatFailed;
+        }
+        try request_buffers(self.file_desc, num_buffer);
+        try self.query_buffer(self.file_desc);
+        try self.queue_buffer(self.file_desc);
+    }
+
+    pub fn grab(self: @This()) !void {
+        var buf = std.mem.zeroes(c.v4l2_buffer);
+        buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        buf.memory = c.V4L2_MEMORY_MMAP;
+        // dequeue buffer
+        const res = ioctl(self.file_desc, c.VIDIOC_DQBUF, &buf);
+        if (res == -1) {
+            return error.DequeueV4l2BufferFailed;
+        }
+        // copy buffer
+        {
+            const i = buf.index;
+            const mem_buf = self.mems[i][0..@intCast(usize, buf.bytesused)];
+            log.debug("get mem buf from index {d}", .{i});
+            if (mem_buf.len != self.frame_buffer.len) {
+                log.info("resize frame buffer. {} -> {}", .{ self.frame_buffer.len, mem_buf.len });
+                const ret = self.allocator.resize(self.frame_buffer, buf.bytesused);
+                if (!ret) {
+                    return error.ResizeV4l2BufferFailed;
+                }
+            }
+            std.mem.copy(u8, self.frame_buffer, mem_buf);
+        }
+        // requeue buffer
+        {
+            const ret = ioctl(self.file_desc, c.VIDIOC_QBUF, &buf);
+            if (ret == -1) {
+                return error.RequeueV4l2BufferFailed;
+            }
+        }
+    }
+};
+
+pub fn request_buffers(fd: fd_t, count: usize) !void {
+    var req = std.mem.zeroes(c.v4l2_requestbuffers);
+    req.count = count;
+    req.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    req.memory = c.V4L2_MEMORY_MMAP;
+    const res = ioctl(fd, c.VIDIOC_REQBUFS, &req);
+    if (res == -1) {
+        return error.RequestV4l2BufferFailed;
+    }
+}
+
+pub fn video_enable(fd: fd_t) !void {
+    var type_ = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    const res = ioctl(fd, c.VIDIOC_STREAMON, &type_);
+    if (res == -1) {
+        return error.StartV4l2StreamingFailed;
+    }
+}
+
+pub fn video_disable(fd: fd_t) !void {
+    var type_ = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    const res = ioctl(fd, c.VIDIOC_STREAMOFF, &type_);
+    if (res == -1) {
+        return error.StopV4l2StreamingFailed;
+    }
+}
+
+// https://github.com/ziglang/zig/pull/14744
+// All modern applications should instead use poll(2) or epoll(7), which do not
+// suffer this limitation.
+// https://av.tib.eu/media/13946
+// https://work-blog.readthedocs.io/en/latest/v4l2%20intro.html
+// https://stackoverflow.com/questions/4009439/v4l2-very-simple-example
+// https://github.com/csete/uvccapture

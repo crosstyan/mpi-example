@@ -2991,6 +2991,1351 @@ pub extern fn RK_MPI_VO_GetWbcFrame(VoWbc: VO_WBC, pstVFrame: [*c]VIDEO_FRAME_IN
 pub extern fn RK_MPI_VO_ReleaseWbcFrame(VoWbc: VO_WBC, pstVFrame: [*c]VIDEO_FRAME_INFO_S) RK_S32;
 pub extern fn RK_MPI_VO_SetLayerSpliceMode(VoLayer: VO_LAYER, enSpliceMode: VO_SPLICE_MODE_E) RK_S32;
 pub extern fn RK_MPI_VO_GetLayerSpliceMode(VoLayer: VO_LAYER, enSpliceMode: [*c]VO_SPLICE_MODE_E) RK_S32;
+pub const time_t = __time_t;
+pub const struct_timeval = extern struct {
+    tv_sec: __time_t,
+    tv_usec: __suseconds_t,
+};
+pub const suseconds_t = __suseconds_t;
+pub const __sigset_t = extern struct {
+    __val: [16]c_ulong,
+};
+pub const sigset_t = __sigset_t;
+pub const struct_timespec = extern struct {
+    tv_sec: __time_t,
+    tv_nsec: __syscall_slong_t,
+};
+pub const __fd_mask = c_long;
+pub const fd_set = extern struct {
+    __fds_bits: [16]__fd_mask,
+};
+pub const fd_mask = __fd_mask;
+pub extern fn select(__nfds: c_int, noalias __readfds: [*c]fd_set, noalias __writefds: [*c]fd_set, noalias __exceptfds: [*c]fd_set, noalias __timeout: [*c]struct_timeval) c_int;
+pub extern fn pselect(__nfds: c_int, noalias __readfds: [*c]fd_set, noalias __writefds: [*c]fd_set, noalias __exceptfds: [*c]fd_set, noalias __timeout: [*c]const struct_timespec, noalias __sigmask: [*c]const __sigset_t) c_int;
+pub const struct_timezone = extern struct {
+    tz_minuteswest: c_int,
+    tz_dsttime: c_int,
+};
+pub extern fn gettimeofday(noalias __tv: [*c]struct_timeval, noalias __tz: ?*anyopaque) c_int;
+pub extern fn settimeofday(__tv: [*c]const struct_timeval, __tz: [*c]const struct_timezone) c_int;
+pub extern fn adjtime(__delta: [*c]const struct_timeval, __olddelta: [*c]struct_timeval) c_int;
+pub const ITIMER_REAL: c_int = 0;
+pub const ITIMER_VIRTUAL: c_int = 1;
+pub const ITIMER_PROF: c_int = 2;
+pub const enum___itimer_which = c_uint;
+pub const struct_itimerval = extern struct {
+    it_interval: struct_timeval,
+    it_value: struct_timeval,
+};
+pub const __itimer_which_t = c_int;
+pub extern fn getitimer(__which: __itimer_which_t, __value: [*c]struct_itimerval) c_int;
+pub extern fn setitimer(__which: __itimer_which_t, noalias __new: [*c]const struct_itimerval, noalias __old: [*c]struct_itimerval) c_int;
+pub extern fn utimes(__file: [*c]const u8, __tvp: [*c]const struct_timeval) c_int;
+pub extern fn lutimes(__file: [*c]const u8, __tvp: [*c]const struct_timeval) c_int;
+pub extern fn futimes(__fd: c_int, __tvp: [*c]const struct_timeval) c_int;
+pub const __s8 = i8;
+pub const __u8 = u8;
+pub const __s16 = c_short;
+pub const __u16 = c_ushort;
+pub const __s32 = c_int;
+pub const __u32 = c_uint;
+pub const __s64 = c_longlong;
+pub const __u64 = c_ulonglong;
+pub const __kernel_fd_set = extern struct {
+    fds_bits: [16]c_ulong,
+};
+pub const __kernel_sighandler_t = ?*const fn (c_int) callconv(.C) void;
+pub const __kernel_key_t = c_int;
+pub const __kernel_mqd_t = c_int;
+pub const __kernel_old_uid_t = c_ushort;
+pub const __kernel_old_gid_t = c_ushort;
+pub const __kernel_long_t = c_long;
+pub const __kernel_ulong_t = c_ulong;
+pub const __kernel_ino_t = __kernel_ulong_t;
+pub const __kernel_mode_t = c_uint;
+pub const __kernel_pid_t = c_int;
+pub const __kernel_ipc_pid_t = c_int;
+pub const __kernel_uid_t = c_uint;
+pub const __kernel_gid_t = c_uint;
+pub const __kernel_suseconds_t = __kernel_long_t;
+pub const __kernel_daddr_t = c_int;
+pub const __kernel_uid32_t = c_uint;
+pub const __kernel_gid32_t = c_uint;
+pub const __kernel_old_dev_t = c_uint;
+pub const __kernel_size_t = __kernel_ulong_t;
+pub const __kernel_ssize_t = __kernel_long_t;
+pub const __kernel_ptrdiff_t = __kernel_long_t;
+pub const __kernel_fsid_t = extern struct {
+    val: [2]c_int,
+};
+pub const __kernel_off_t = __kernel_long_t;
+pub const __kernel_loff_t = c_longlong;
+pub const __kernel_old_time_t = __kernel_long_t;
+pub const __kernel_time_t = __kernel_long_t;
+pub const __kernel_time64_t = c_longlong;
+pub const __kernel_clock_t = __kernel_long_t;
+pub const __kernel_timer_t = c_int;
+pub const __kernel_clockid_t = c_int;
+pub const __kernel_caddr_t = [*c]u8;
+pub const __kernel_uid16_t = c_ushort;
+pub const __kernel_gid16_t = c_ushort;
+pub const __le16 = __u16;
+pub const __be16 = __u16;
+pub const __le32 = __u32;
+pub const __be32 = __u32;
+pub const __le64 = __u64;
+pub const __be64 = __u64;
+pub const __sum16 = __u16;
+pub const __wsum = __u32;
+pub const __poll_t = c_uint;
+pub const struct_v4l2_edid = extern struct {
+    pad: __u32,
+    start_block: __u32,
+    blocks: __u32,
+    reserved: [5]__u32,
+    edid: [*c]__u8,
+};
+pub const V4L2_CID_POWER_LINE_FREQUENCY_DISABLED: c_int = 0;
+pub const V4L2_CID_POWER_LINE_FREQUENCY_50HZ: c_int = 1;
+pub const V4L2_CID_POWER_LINE_FREQUENCY_60HZ: c_int = 2;
+pub const V4L2_CID_POWER_LINE_FREQUENCY_AUTO: c_int = 3;
+pub const enum_v4l2_power_line_frequency = c_uint;
+pub const V4L2_COLORFX_NONE: c_int = 0;
+pub const V4L2_COLORFX_BW: c_int = 1;
+pub const V4L2_COLORFX_SEPIA: c_int = 2;
+pub const V4L2_COLORFX_NEGATIVE: c_int = 3;
+pub const V4L2_COLORFX_EMBOSS: c_int = 4;
+pub const V4L2_COLORFX_SKETCH: c_int = 5;
+pub const V4L2_COLORFX_SKY_BLUE: c_int = 6;
+pub const V4L2_COLORFX_GRASS_GREEN: c_int = 7;
+pub const V4L2_COLORFX_SKIN_WHITEN: c_int = 8;
+pub const V4L2_COLORFX_VIVID: c_int = 9;
+pub const V4L2_COLORFX_AQUA: c_int = 10;
+pub const V4L2_COLORFX_ART_FREEZE: c_int = 11;
+pub const V4L2_COLORFX_SILHOUETTE: c_int = 12;
+pub const V4L2_COLORFX_SOLARIZATION: c_int = 13;
+pub const V4L2_COLORFX_ANTIQUE: c_int = 14;
+pub const V4L2_COLORFX_SET_CBCR: c_int = 15;
+pub const enum_v4l2_colorfx = c_uint;
+pub const V4L2_MPEG_STREAM_TYPE_MPEG2_PS: c_int = 0;
+pub const V4L2_MPEG_STREAM_TYPE_MPEG2_TS: c_int = 1;
+pub const V4L2_MPEG_STREAM_TYPE_MPEG1_SS: c_int = 2;
+pub const V4L2_MPEG_STREAM_TYPE_MPEG2_DVD: c_int = 3;
+pub const V4L2_MPEG_STREAM_TYPE_MPEG1_VCD: c_int = 4;
+pub const V4L2_MPEG_STREAM_TYPE_MPEG2_SVCD: c_int = 5;
+pub const enum_v4l2_mpeg_stream_type = c_uint;
+pub const V4L2_MPEG_STREAM_VBI_FMT_NONE: c_int = 0;
+pub const V4L2_MPEG_STREAM_VBI_FMT_IVTV: c_int = 1;
+pub const enum_v4l2_mpeg_stream_vbi_fmt = c_uint;
+pub const V4L2_MPEG_AUDIO_SAMPLING_FREQ_44100: c_int = 0;
+pub const V4L2_MPEG_AUDIO_SAMPLING_FREQ_48000: c_int = 1;
+pub const V4L2_MPEG_AUDIO_SAMPLING_FREQ_32000: c_int = 2;
+pub const enum_v4l2_mpeg_audio_sampling_freq = c_uint;
+pub const V4L2_MPEG_AUDIO_ENCODING_LAYER_1: c_int = 0;
+pub const V4L2_MPEG_AUDIO_ENCODING_LAYER_2: c_int = 1;
+pub const V4L2_MPEG_AUDIO_ENCODING_LAYER_3: c_int = 2;
+pub const V4L2_MPEG_AUDIO_ENCODING_AAC: c_int = 3;
+pub const V4L2_MPEG_AUDIO_ENCODING_AC3: c_int = 4;
+pub const enum_v4l2_mpeg_audio_encoding = c_uint;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_32K: c_int = 0;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_64K: c_int = 1;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_96K: c_int = 2;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_128K: c_int = 3;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_160K: c_int = 4;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_192K: c_int = 5;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_224K: c_int = 6;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_256K: c_int = 7;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_288K: c_int = 8;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_320K: c_int = 9;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_352K: c_int = 10;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_384K: c_int = 11;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_416K: c_int = 12;
+pub const V4L2_MPEG_AUDIO_L1_BITRATE_448K: c_int = 13;
+pub const enum_v4l2_mpeg_audio_l1_bitrate = c_uint;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_32K: c_int = 0;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_48K: c_int = 1;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_56K: c_int = 2;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_64K: c_int = 3;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_80K: c_int = 4;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_96K: c_int = 5;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_112K: c_int = 6;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_128K: c_int = 7;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_160K: c_int = 8;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_192K: c_int = 9;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_224K: c_int = 10;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_256K: c_int = 11;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_320K: c_int = 12;
+pub const V4L2_MPEG_AUDIO_L2_BITRATE_384K: c_int = 13;
+pub const enum_v4l2_mpeg_audio_l2_bitrate = c_uint;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_32K: c_int = 0;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_40K: c_int = 1;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_48K: c_int = 2;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_56K: c_int = 3;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_64K: c_int = 4;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_80K: c_int = 5;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_96K: c_int = 6;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_112K: c_int = 7;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_128K: c_int = 8;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_160K: c_int = 9;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_192K: c_int = 10;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_224K: c_int = 11;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_256K: c_int = 12;
+pub const V4L2_MPEG_AUDIO_L3_BITRATE_320K: c_int = 13;
+pub const enum_v4l2_mpeg_audio_l3_bitrate = c_uint;
+pub const V4L2_MPEG_AUDIO_MODE_STEREO: c_int = 0;
+pub const V4L2_MPEG_AUDIO_MODE_JOINT_STEREO: c_int = 1;
+pub const V4L2_MPEG_AUDIO_MODE_DUAL: c_int = 2;
+pub const V4L2_MPEG_AUDIO_MODE_MONO: c_int = 3;
+pub const enum_v4l2_mpeg_audio_mode = c_uint;
+pub const V4L2_MPEG_AUDIO_MODE_EXTENSION_BOUND_4: c_int = 0;
+pub const V4L2_MPEG_AUDIO_MODE_EXTENSION_BOUND_8: c_int = 1;
+pub const V4L2_MPEG_AUDIO_MODE_EXTENSION_BOUND_12: c_int = 2;
+pub const V4L2_MPEG_AUDIO_MODE_EXTENSION_BOUND_16: c_int = 3;
+pub const enum_v4l2_mpeg_audio_mode_extension = c_uint;
+pub const V4L2_MPEG_AUDIO_EMPHASIS_NONE: c_int = 0;
+pub const V4L2_MPEG_AUDIO_EMPHASIS_50_DIV_15_uS: c_int = 1;
+pub const V4L2_MPEG_AUDIO_EMPHASIS_CCITT_J17: c_int = 2;
+pub const enum_v4l2_mpeg_audio_emphasis = c_uint;
+pub const V4L2_MPEG_AUDIO_CRC_NONE: c_int = 0;
+pub const V4L2_MPEG_AUDIO_CRC_CRC16: c_int = 1;
+pub const enum_v4l2_mpeg_audio_crc = c_uint;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_32K: c_int = 0;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_40K: c_int = 1;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_48K: c_int = 2;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_56K: c_int = 3;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_64K: c_int = 4;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_80K: c_int = 5;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_96K: c_int = 6;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_112K: c_int = 7;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_128K: c_int = 8;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_160K: c_int = 9;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_192K: c_int = 10;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_224K: c_int = 11;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_256K: c_int = 12;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_320K: c_int = 13;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_384K: c_int = 14;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_448K: c_int = 15;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_512K: c_int = 16;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_576K: c_int = 17;
+pub const V4L2_MPEG_AUDIO_AC3_BITRATE_640K: c_int = 18;
+pub const enum_v4l2_mpeg_audio_ac3_bitrate = c_uint;
+pub const V4L2_MPEG_AUDIO_DEC_PLAYBACK_AUTO: c_int = 0;
+pub const V4L2_MPEG_AUDIO_DEC_PLAYBACK_STEREO: c_int = 1;
+pub const V4L2_MPEG_AUDIO_DEC_PLAYBACK_LEFT: c_int = 2;
+pub const V4L2_MPEG_AUDIO_DEC_PLAYBACK_RIGHT: c_int = 3;
+pub const V4L2_MPEG_AUDIO_DEC_PLAYBACK_MONO: c_int = 4;
+pub const V4L2_MPEG_AUDIO_DEC_PLAYBACK_SWAPPED_STEREO: c_int = 5;
+pub const enum_v4l2_mpeg_audio_dec_playback = c_uint;
+pub const V4L2_MPEG_VIDEO_ENCODING_MPEG_1: c_int = 0;
+pub const V4L2_MPEG_VIDEO_ENCODING_MPEG_2: c_int = 1;
+pub const V4L2_MPEG_VIDEO_ENCODING_MPEG_4_AVC: c_int = 2;
+pub const enum_v4l2_mpeg_video_encoding = c_uint;
+pub const V4L2_MPEG_VIDEO_ASPECT_1x1: c_int = 0;
+pub const V4L2_MPEG_VIDEO_ASPECT_4x3: c_int = 1;
+pub const V4L2_MPEG_VIDEO_ASPECT_16x9: c_int = 2;
+pub const V4L2_MPEG_VIDEO_ASPECT_221x100: c_int = 3;
+pub const enum_v4l2_mpeg_video_aspect = c_uint;
+pub const V4L2_MPEG_VIDEO_BITRATE_MODE_VBR: c_int = 0;
+pub const V4L2_MPEG_VIDEO_BITRATE_MODE_CBR: c_int = 1;
+pub const V4L2_MPEG_VIDEO_BITRATE_MODE_CQ: c_int = 2;
+pub const enum_v4l2_mpeg_video_bitrate_mode = c_uint;
+pub const V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE: c_int = 0;
+pub const V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME: c_int = 1;
+pub const enum_v4l2_mpeg_video_header_mode = c_uint;
+pub const V4L2_MPEG_VIDEO_MULTI_SLICE_MODE_SINGLE: c_int = 0;
+pub const V4L2_MPEG_VIDEO_MULTI_SLICE_MODE_MAX_MB: c_int = 1;
+pub const V4L2_MPEG_VIDEO_MULTI_SLICE_MODE_MAX_BYTES: c_int = 2;
+pub const V4L2_MPEG_VIDEO_MULTI_SICE_MODE_MAX_MB: c_int = 1;
+pub const V4L2_MPEG_VIDEO_MULTI_SICE_MODE_MAX_BYTES: c_int = 2;
+pub const enum_v4l2_mpeg_video_multi_slice_mode = c_uint;
+pub const V4L2_MPEG_VIDEO_MPEG2_LEVEL_LOW: c_int = 0;
+pub const V4L2_MPEG_VIDEO_MPEG2_LEVEL_MAIN: c_int = 1;
+pub const V4L2_MPEG_VIDEO_MPEG2_LEVEL_HIGH_1440: c_int = 2;
+pub const V4L2_MPEG_VIDEO_MPEG2_LEVEL_HIGH: c_int = 3;
+pub const enum_v4l2_mpeg_video_mpeg2_level = c_uint;
+pub const V4L2_MPEG_VIDEO_MPEG2_PROFILE_SIMPLE: c_int = 0;
+pub const V4L2_MPEG_VIDEO_MPEG2_PROFILE_MAIN: c_int = 1;
+pub const V4L2_MPEG_VIDEO_MPEG2_PROFILE_SNR_SCALABLE: c_int = 2;
+pub const V4L2_MPEG_VIDEO_MPEG2_PROFILE_SPATIALLY_SCALABLE: c_int = 3;
+pub const V4L2_MPEG_VIDEO_MPEG2_PROFILE_HIGH: c_int = 4;
+pub const V4L2_MPEG_VIDEO_MPEG2_PROFILE_MULTIVIEW: c_int = 5;
+pub const enum_v4l2_mpeg_video_mpeg2_profile = c_uint;
+pub const V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CAVLC: c_int = 0;
+pub const V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CABAC: c_int = 1;
+pub const enum_v4l2_mpeg_video_h264_entropy_mode = c_uint;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_1_0: c_int = 0;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_1B: c_int = 1;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_1_1: c_int = 2;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_1_2: c_int = 3;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_1_3: c_int = 4;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_2_0: c_int = 5;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_2_1: c_int = 6;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_2_2: c_int = 7;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_3_0: c_int = 8;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_3_1: c_int = 9;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_3_2: c_int = 10;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_4_0: c_int = 11;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_4_1: c_int = 12;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_4_2: c_int = 13;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_5_0: c_int = 14;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_5_1: c_int = 15;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_5_2: c_int = 16;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_6_0: c_int = 17;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_6_1: c_int = 18;
+pub const V4L2_MPEG_VIDEO_H264_LEVEL_6_2: c_int = 19;
+pub const enum_v4l2_mpeg_video_h264_level = c_uint;
+pub const V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_ENABLED: c_int = 0;
+pub const V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED: c_int = 1;
+pub const V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDARY: c_int = 2;
+pub const enum_v4l2_mpeg_video_h264_loop_filter_mode = c_uint;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE: c_int = 0;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_BASELINE: c_int = 1;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_MAIN: c_int = 2;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED: c_int = 3;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_HIGH: c_int = 4;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_10: c_int = 5;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_422: c_int = 6;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_444_PREDICTIVE: c_int = 7;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_10_INTRA: c_int = 8;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_422_INTRA: c_int = 9;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_444_INTRA: c_int = 10;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_CAVLC_444_INTRA: c_int = 11;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_SCALABLE_BASELINE: c_int = 12;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_SCALABLE_HIGH: c_int = 13;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_SCALABLE_HIGH_INTRA: c_int = 14;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_STEREO_HIGH: c_int = 15;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_MULTIVIEW_HIGH: c_int = 16;
+pub const V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_HIGH: c_int = 17;
+pub const enum_v4l2_mpeg_video_h264_profile = c_uint;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_UNSPECIFIED: c_int = 0;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_1x1: c_int = 1;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_12x11: c_int = 2;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_10x11: c_int = 3;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_16x11: c_int = 4;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_40x33: c_int = 5;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_24x11: c_int = 6;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_20x11: c_int = 7;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_32x11: c_int = 8;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_80x33: c_int = 9;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_18x11: c_int = 10;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_15x11: c_int = 11;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_64x33: c_int = 12;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_160x99: c_int = 13;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_4x3: c_int = 14;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_3x2: c_int = 15;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_2x1: c_int = 16;
+pub const V4L2_MPEG_VIDEO_H264_VUI_SAR_IDC_EXTENDED: c_int = 17;
+pub const enum_v4l2_mpeg_video_h264_vui_sar_idc = c_uint;
+pub const V4L2_MPEG_VIDEO_H264_SEI_FP_ARRANGEMENT_TYPE_CHECKERBOARD: c_int = 0;
+pub const V4L2_MPEG_VIDEO_H264_SEI_FP_ARRANGEMENT_TYPE_COLUMN: c_int = 1;
+pub const V4L2_MPEG_VIDEO_H264_SEI_FP_ARRANGEMENT_TYPE_ROW: c_int = 2;
+pub const V4L2_MPEG_VIDEO_H264_SEI_FP_ARRANGEMENT_TYPE_SIDE_BY_SIDE: c_int = 3;
+pub const V4L2_MPEG_VIDEO_H264_SEI_FP_ARRANGEMENT_TYPE_TOP_BOTTOM: c_int = 4;
+pub const V4L2_MPEG_VIDEO_H264_SEI_FP_ARRANGEMENT_TYPE_TEMPORAL: c_int = 5;
+pub const enum_v4l2_mpeg_video_h264_sei_fp_arrangement_type = c_uint;
+pub const V4L2_MPEG_VIDEO_H264_FMO_MAP_TYPE_INTERLEAVED_SLICES: c_int = 0;
+pub const V4L2_MPEG_VIDEO_H264_FMO_MAP_TYPE_SCATTERED_SLICES: c_int = 1;
+pub const V4L2_MPEG_VIDEO_H264_FMO_MAP_TYPE_FOREGROUND_WITH_LEFT_OVER: c_int = 2;
+pub const V4L2_MPEG_VIDEO_H264_FMO_MAP_TYPE_BOX_OUT: c_int = 3;
+pub const V4L2_MPEG_VIDEO_H264_FMO_MAP_TYPE_RASTER_SCAN: c_int = 4;
+pub const V4L2_MPEG_VIDEO_H264_FMO_MAP_TYPE_WIPE_SCAN: c_int = 5;
+pub const V4L2_MPEG_VIDEO_H264_FMO_MAP_TYPE_EXPLICIT: c_int = 6;
+pub const enum_v4l2_mpeg_video_h264_fmo_map_type = c_uint;
+pub const V4L2_MPEG_VIDEO_H264_FMO_CHANGE_DIR_RIGHT: c_int = 0;
+pub const V4L2_MPEG_VIDEO_H264_FMO_CHANGE_DIR_LEFT: c_int = 1;
+pub const enum_v4l2_mpeg_video_h264_fmo_change_dir = c_uint;
+pub const V4L2_MPEG_VIDEO_H264_HIERARCHICAL_CODING_B: c_int = 0;
+pub const V4L2_MPEG_VIDEO_H264_HIERARCHICAL_CODING_P: c_int = 1;
+pub const enum_v4l2_mpeg_video_h264_hierarchical_coding_type = c_uint;
+pub const V4L2_MPEG_VIDEO_MPEG4_LEVEL_0: c_int = 0;
+pub const V4L2_MPEG_VIDEO_MPEG4_LEVEL_0B: c_int = 1;
+pub const V4L2_MPEG_VIDEO_MPEG4_LEVEL_1: c_int = 2;
+pub const V4L2_MPEG_VIDEO_MPEG4_LEVEL_2: c_int = 3;
+pub const V4L2_MPEG_VIDEO_MPEG4_LEVEL_3: c_int = 4;
+pub const V4L2_MPEG_VIDEO_MPEG4_LEVEL_3B: c_int = 5;
+pub const V4L2_MPEG_VIDEO_MPEG4_LEVEL_4: c_int = 6;
+pub const V4L2_MPEG_VIDEO_MPEG4_LEVEL_5: c_int = 7;
+pub const enum_v4l2_mpeg_video_mpeg4_level = c_uint;
+pub const V4L2_MPEG_VIDEO_MPEG4_PROFILE_SIMPLE: c_int = 0;
+pub const V4L2_MPEG_VIDEO_MPEG4_PROFILE_ADVANCED_SIMPLE: c_int = 1;
+pub const V4L2_MPEG_VIDEO_MPEG4_PROFILE_CORE: c_int = 2;
+pub const V4L2_MPEG_VIDEO_MPEG4_PROFILE_SIMPLE_SCALABLE: c_int = 3;
+pub const V4L2_MPEG_VIDEO_MPEG4_PROFILE_ADVANCED_CODING_EFFICIENCY: c_int = 4;
+pub const enum_v4l2_mpeg_video_mpeg4_profile = c_uint;
+pub const V4L2_CID_MPEG_VIDEO_VPX_1_PARTITION: c_int = 0;
+pub const V4L2_CID_MPEG_VIDEO_VPX_2_PARTITIONS: c_int = 1;
+pub const V4L2_CID_MPEG_VIDEO_VPX_4_PARTITIONS: c_int = 2;
+pub const V4L2_CID_MPEG_VIDEO_VPX_8_PARTITIONS: c_int = 3;
+pub const enum_v4l2_vp8_num_partitions = c_uint;
+pub const V4L2_CID_MPEG_VIDEO_VPX_1_REF_FRAME: c_int = 0;
+pub const V4L2_CID_MPEG_VIDEO_VPX_2_REF_FRAME: c_int = 1;
+pub const V4L2_CID_MPEG_VIDEO_VPX_3_REF_FRAME: c_int = 2;
+pub const enum_v4l2_vp8_num_ref_frames = c_uint;
+pub const V4L2_CID_MPEG_VIDEO_VPX_GOLDEN_FRAME_USE_PREV: c_int = 0;
+pub const V4L2_CID_MPEG_VIDEO_VPX_GOLDEN_FRAME_USE_REF_PERIOD: c_int = 1;
+pub const enum_v4l2_vp8_golden_frame_sel = c_uint;
+pub const V4L2_MPEG_VIDEO_VP8_PROFILE_0: c_int = 0;
+pub const V4L2_MPEG_VIDEO_VP8_PROFILE_1: c_int = 1;
+pub const V4L2_MPEG_VIDEO_VP8_PROFILE_2: c_int = 2;
+pub const V4L2_MPEG_VIDEO_VP8_PROFILE_3: c_int = 3;
+pub const enum_v4l2_mpeg_video_vp8_profile = c_uint;
+pub const V4L2_MPEG_VIDEO_VP9_PROFILE_0: c_int = 0;
+pub const V4L2_MPEG_VIDEO_VP9_PROFILE_1: c_int = 1;
+pub const V4L2_MPEG_VIDEO_VP9_PROFILE_2: c_int = 2;
+pub const V4L2_MPEG_VIDEO_VP9_PROFILE_3: c_int = 3;
+pub const enum_v4l2_mpeg_video_vp9_profile = c_uint;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_1_0: c_int = 0;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_1_1: c_int = 1;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_2_0: c_int = 2;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_2_1: c_int = 3;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_3_0: c_int = 4;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_3_1: c_int = 5;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_4_0: c_int = 6;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_4_1: c_int = 7;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_5_0: c_int = 8;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_5_1: c_int = 9;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_5_2: c_int = 10;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_6_0: c_int = 11;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_6_1: c_int = 12;
+pub const V4L2_MPEG_VIDEO_VP9_LEVEL_6_2: c_int = 13;
+pub const enum_v4l2_mpeg_video_vp9_level = c_uint;
+pub const V4L2_MPEG_VIDEO_HEVC_HIERARCHICAL_CODING_B: c_int = 0;
+pub const V4L2_MPEG_VIDEO_HEVC_HIERARCHICAL_CODING_P: c_int = 1;
+pub const enum_v4l2_mpeg_video_hevc_hier_coding_type = c_uint;
+pub const V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN: c_int = 0;
+pub const V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_STILL_PICTURE: c_int = 1;
+pub const V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_10: c_int = 2;
+pub const enum_v4l2_mpeg_video_hevc_profile = c_uint;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_1: c_int = 0;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_2: c_int = 1;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_2_1: c_int = 2;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_3: c_int = 3;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_3_1: c_int = 4;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_4: c_int = 5;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_4_1: c_int = 6;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_5: c_int = 7;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_5_1: c_int = 8;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_5_2: c_int = 9;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_6: c_int = 10;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_6_1: c_int = 11;
+pub const V4L2_MPEG_VIDEO_HEVC_LEVEL_6_2: c_int = 12;
+pub const enum_v4l2_mpeg_video_hevc_level = c_uint;
+pub const V4L2_MPEG_VIDEO_HEVC_TIER_MAIN: c_int = 0;
+pub const V4L2_MPEG_VIDEO_HEVC_TIER_HIGH: c_int = 1;
+pub const enum_v4l2_mpeg_video_hevc_tier = c_uint;
+pub const V4L2_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE_DISABLED: c_int = 0;
+pub const V4L2_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE_ENABLED: c_int = 1;
+pub const V4L2_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDARY: c_int = 2;
+pub const enum_v4l2_cid_mpeg_video_hevc_loop_filter_mode = c_uint;
+pub const V4L2_MPEG_VIDEO_HEVC_REFRESH_NONE: c_int = 0;
+pub const V4L2_MPEG_VIDEO_HEVC_REFRESH_CRA: c_int = 1;
+pub const V4L2_MPEG_VIDEO_HEVC_REFRESH_IDR: c_int = 2;
+pub const enum_v4l2_cid_mpeg_video_hevc_refresh_type = c_uint;
+pub const V4L2_MPEG_VIDEO_HEVC_SIZE_0: c_int = 0;
+pub const V4L2_MPEG_VIDEO_HEVC_SIZE_1: c_int = 1;
+pub const V4L2_MPEG_VIDEO_HEVC_SIZE_2: c_int = 2;
+pub const V4L2_MPEG_VIDEO_HEVC_SIZE_4: c_int = 3;
+pub const enum_v4l2_cid_mpeg_video_hevc_size_of_length_field = c_uint;
+pub const V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_DISABLED: c_int = 0;
+pub const V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_LEVEL_LIMIT: c_int = 1;
+pub const V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_BUF_LIMIT: c_int = 2;
+pub const enum_v4l2_mpeg_video_frame_skip_mode = c_uint;
+pub const V4L2_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE_MANUAL: c_int = 0;
+pub const V4L2_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE_AUTO: c_int = 1;
+pub const enum_v4l2_mpeg_cx2341x_video_spatial_filter_mode = c_uint;
+pub const V4L2_MPEG_CX2341X_VIDEO_LUMA_SPATIAL_FILTER_TYPE_OFF: c_int = 0;
+pub const V4L2_MPEG_CX2341X_VIDEO_LUMA_SPATIAL_FILTER_TYPE_1D_HOR: c_int = 1;
+pub const V4L2_MPEG_CX2341X_VIDEO_LUMA_SPATIAL_FILTER_TYPE_1D_VERT: c_int = 2;
+pub const V4L2_MPEG_CX2341X_VIDEO_LUMA_SPATIAL_FILTER_TYPE_2D_HV_SEPARABLE: c_int = 3;
+pub const V4L2_MPEG_CX2341X_VIDEO_LUMA_SPATIAL_FILTER_TYPE_2D_SYM_NON_SEPARABLE: c_int = 4;
+pub const enum_v4l2_mpeg_cx2341x_video_luma_spatial_filter_type = c_uint;
+pub const V4L2_MPEG_CX2341X_VIDEO_CHROMA_SPATIAL_FILTER_TYPE_OFF: c_int = 0;
+pub const V4L2_MPEG_CX2341X_VIDEO_CHROMA_SPATIAL_FILTER_TYPE_1D_HOR: c_int = 1;
+pub const enum_v4l2_mpeg_cx2341x_video_chroma_spatial_filter_type = c_uint;
+pub const V4L2_MPEG_CX2341X_VIDEO_TEMPORAL_FILTER_MODE_MANUAL: c_int = 0;
+pub const V4L2_MPEG_CX2341X_VIDEO_TEMPORAL_FILTER_MODE_AUTO: c_int = 1;
+pub const enum_v4l2_mpeg_cx2341x_video_temporal_filter_mode = c_uint;
+pub const V4L2_MPEG_CX2341X_VIDEO_MEDIAN_FILTER_TYPE_OFF: c_int = 0;
+pub const V4L2_MPEG_CX2341X_VIDEO_MEDIAN_FILTER_TYPE_HOR: c_int = 1;
+pub const V4L2_MPEG_CX2341X_VIDEO_MEDIAN_FILTER_TYPE_VERT: c_int = 2;
+pub const V4L2_MPEG_CX2341X_VIDEO_MEDIAN_FILTER_TYPE_HOR_VERT: c_int = 3;
+pub const V4L2_MPEG_CX2341X_VIDEO_MEDIAN_FILTER_TYPE_DIAG: c_int = 4;
+pub const enum_v4l2_mpeg_cx2341x_video_median_filter_type = c_uint;
+pub const V4L2_MPEG_MFC51_VIDEO_FRAME_SKIP_MODE_DISABLED: c_int = 0;
+pub const V4L2_MPEG_MFC51_VIDEO_FRAME_SKIP_MODE_LEVEL_LIMIT: c_int = 1;
+pub const V4L2_MPEG_MFC51_VIDEO_FRAME_SKIP_MODE_BUF_LIMIT: c_int = 2;
+pub const enum_v4l2_mpeg_mfc51_video_frame_skip_mode = c_uint;
+pub const V4L2_MPEG_MFC51_VIDEO_FORCE_FRAME_TYPE_DISABLED: c_int = 0;
+pub const V4L2_MPEG_MFC51_VIDEO_FORCE_FRAME_TYPE_I_FRAME: c_int = 1;
+pub const V4L2_MPEG_MFC51_VIDEO_FORCE_FRAME_TYPE_NOT_CODED: c_int = 2;
+pub const enum_v4l2_mpeg_mfc51_video_force_frame_type = c_uint;
+pub const V4L2_EXPOSURE_AUTO: c_int = 0;
+pub const V4L2_EXPOSURE_MANUAL: c_int = 1;
+pub const V4L2_EXPOSURE_SHUTTER_PRIORITY: c_int = 2;
+pub const V4L2_EXPOSURE_APERTURE_PRIORITY: c_int = 3;
+pub const enum_v4l2_exposure_auto_type = c_uint;
+pub const V4L2_WHITE_BALANCE_MANUAL: c_int = 0;
+pub const V4L2_WHITE_BALANCE_AUTO: c_int = 1;
+pub const V4L2_WHITE_BALANCE_INCANDESCENT: c_int = 2;
+pub const V4L2_WHITE_BALANCE_FLUORESCENT: c_int = 3;
+pub const V4L2_WHITE_BALANCE_FLUORESCENT_H: c_int = 4;
+pub const V4L2_WHITE_BALANCE_HORIZON: c_int = 5;
+pub const V4L2_WHITE_BALANCE_DAYLIGHT: c_int = 6;
+pub const V4L2_WHITE_BALANCE_FLASH: c_int = 7;
+pub const V4L2_WHITE_BALANCE_CLOUDY: c_int = 8;
+pub const V4L2_WHITE_BALANCE_SHADE: c_int = 9;
+pub const enum_v4l2_auto_n_preset_white_balance = c_uint;
+pub const V4L2_ISO_SENSITIVITY_MANUAL: c_int = 0;
+pub const V4L2_ISO_SENSITIVITY_AUTO: c_int = 1;
+pub const enum_v4l2_iso_sensitivity_auto_type = c_uint;
+pub const V4L2_EXPOSURE_METERING_AVERAGE: c_int = 0;
+pub const V4L2_EXPOSURE_METERING_CENTER_WEIGHTED: c_int = 1;
+pub const V4L2_EXPOSURE_METERING_SPOT: c_int = 2;
+pub const V4L2_EXPOSURE_METERING_MATRIX: c_int = 3;
+pub const enum_v4l2_exposure_metering = c_uint;
+pub const V4L2_SCENE_MODE_NONE: c_int = 0;
+pub const V4L2_SCENE_MODE_BACKLIGHT: c_int = 1;
+pub const V4L2_SCENE_MODE_BEACH_SNOW: c_int = 2;
+pub const V4L2_SCENE_MODE_CANDLE_LIGHT: c_int = 3;
+pub const V4L2_SCENE_MODE_DAWN_DUSK: c_int = 4;
+pub const V4L2_SCENE_MODE_FALL_COLORS: c_int = 5;
+pub const V4L2_SCENE_MODE_FIREWORKS: c_int = 6;
+pub const V4L2_SCENE_MODE_LANDSCAPE: c_int = 7;
+pub const V4L2_SCENE_MODE_NIGHT: c_int = 8;
+pub const V4L2_SCENE_MODE_PARTY_INDOOR: c_int = 9;
+pub const V4L2_SCENE_MODE_PORTRAIT: c_int = 10;
+pub const V4L2_SCENE_MODE_SPORTS: c_int = 11;
+pub const V4L2_SCENE_MODE_SUNSET: c_int = 12;
+pub const V4L2_SCENE_MODE_TEXT: c_int = 13;
+pub const enum_v4l2_scene_mode = c_uint;
+pub const V4L2_AUTO_FOCUS_RANGE_AUTO: c_int = 0;
+pub const V4L2_AUTO_FOCUS_RANGE_NORMAL: c_int = 1;
+pub const V4L2_AUTO_FOCUS_RANGE_MACRO: c_int = 2;
+pub const V4L2_AUTO_FOCUS_RANGE_INFINITY: c_int = 3;
+pub const enum_v4l2_auto_focus_range = c_uint;
+pub const V4L2_PREEMPHASIS_DISABLED: c_int = 0;
+pub const V4L2_PREEMPHASIS_50_uS: c_int = 1;
+pub const V4L2_PREEMPHASIS_75_uS: c_int = 2;
+pub const enum_v4l2_preemphasis = c_uint;
+pub const V4L2_FLASH_LED_MODE_NONE: c_int = 0;
+pub const V4L2_FLASH_LED_MODE_FLASH: c_int = 1;
+pub const V4L2_FLASH_LED_MODE_TORCH: c_int = 2;
+pub const enum_v4l2_flash_led_mode = c_uint;
+pub const V4L2_FLASH_STROBE_SOURCE_SOFTWARE: c_int = 0;
+pub const V4L2_FLASH_STROBE_SOURCE_EXTERNAL: c_int = 1;
+pub const enum_v4l2_flash_strobe_source = c_uint;
+pub const V4L2_JPEG_CHROMA_SUBSAMPLING_444: c_int = 0;
+pub const V4L2_JPEG_CHROMA_SUBSAMPLING_422: c_int = 1;
+pub const V4L2_JPEG_CHROMA_SUBSAMPLING_420: c_int = 2;
+pub const V4L2_JPEG_CHROMA_SUBSAMPLING_411: c_int = 3;
+pub const V4L2_JPEG_CHROMA_SUBSAMPLING_410: c_int = 4;
+pub const V4L2_JPEG_CHROMA_SUBSAMPLING_GRAY: c_int = 5;
+pub const enum_v4l2_jpeg_chroma_subsampling = c_uint;
+pub const V4L2_DV_TX_MODE_DVI_D: c_int = 0;
+pub const V4L2_DV_TX_MODE_HDMI: c_int = 1;
+pub const enum_v4l2_dv_tx_mode = c_uint;
+pub const V4L2_DV_RGB_RANGE_AUTO: c_int = 0;
+pub const V4L2_DV_RGB_RANGE_LIMITED: c_int = 1;
+pub const V4L2_DV_RGB_RANGE_FULL: c_int = 2;
+pub const enum_v4l2_dv_rgb_range = c_uint;
+pub const V4L2_DV_IT_CONTENT_TYPE_GRAPHICS: c_int = 0;
+pub const V4L2_DV_IT_CONTENT_TYPE_PHOTO: c_int = 1;
+pub const V4L2_DV_IT_CONTENT_TYPE_CINEMA: c_int = 2;
+pub const V4L2_DV_IT_CONTENT_TYPE_GAME: c_int = 3;
+pub const V4L2_DV_IT_CONTENT_TYPE_NO_ITC: c_int = 4;
+pub const enum_v4l2_dv_it_content_type = c_uint;
+pub const V4L2_DEEMPHASIS_DISABLED: c_int = 0;
+pub const V4L2_DEEMPHASIS_50_uS: c_int = 1;
+pub const V4L2_DEEMPHASIS_75_uS: c_int = 2;
+pub const enum_v4l2_deemphasis = c_uint;
+pub const V4L2_DETECT_MD_MODE_DISABLED: c_int = 0;
+pub const V4L2_DETECT_MD_MODE_GLOBAL: c_int = 1;
+pub const V4L2_DETECT_MD_MODE_THRESHOLD_GRID: c_int = 2;
+pub const V4L2_DETECT_MD_MODE_REGION_GRID: c_int = 3;
+pub const enum_v4l2_detect_md_mode = c_uint;
+pub const V4L2_FIELD_ANY: c_int = 0;
+pub const V4L2_FIELD_NONE: c_int = 1;
+pub const V4L2_FIELD_TOP: c_int = 2;
+pub const V4L2_FIELD_BOTTOM: c_int = 3;
+pub const V4L2_FIELD_INTERLACED: c_int = 4;
+pub const V4L2_FIELD_SEQ_TB: c_int = 5;
+pub const V4L2_FIELD_SEQ_BT: c_int = 6;
+pub const V4L2_FIELD_ALTERNATE: c_int = 7;
+pub const V4L2_FIELD_INTERLACED_TB: c_int = 8;
+pub const V4L2_FIELD_INTERLACED_BT: c_int = 9;
+pub const enum_v4l2_field = c_uint;
+pub const V4L2_BUF_TYPE_VIDEO_CAPTURE: c_int = 1;
+pub const V4L2_BUF_TYPE_VIDEO_OUTPUT: c_int = 2;
+pub const V4L2_BUF_TYPE_VIDEO_OVERLAY: c_int = 3;
+pub const V4L2_BUF_TYPE_VBI_CAPTURE: c_int = 4;
+pub const V4L2_BUF_TYPE_VBI_OUTPUT: c_int = 5;
+pub const V4L2_BUF_TYPE_SLICED_VBI_CAPTURE: c_int = 6;
+pub const V4L2_BUF_TYPE_SLICED_VBI_OUTPUT: c_int = 7;
+pub const V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY: c_int = 8;
+pub const V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE: c_int = 9;
+pub const V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE: c_int = 10;
+pub const V4L2_BUF_TYPE_SDR_CAPTURE: c_int = 11;
+pub const V4L2_BUF_TYPE_SDR_OUTPUT: c_int = 12;
+pub const V4L2_BUF_TYPE_META_CAPTURE: c_int = 13;
+pub const V4L2_BUF_TYPE_META_OUTPUT: c_int = 14;
+pub const V4L2_BUF_TYPE_PRIVATE: c_int = 128;
+pub const enum_v4l2_buf_type = c_uint;
+pub const V4L2_TUNER_RADIO: c_int = 1;
+pub const V4L2_TUNER_ANALOG_TV: c_int = 2;
+pub const V4L2_TUNER_DIGITAL_TV: c_int = 3;
+pub const V4L2_TUNER_SDR: c_int = 4;
+pub const V4L2_TUNER_RF: c_int = 5;
+pub const enum_v4l2_tuner_type = c_uint;
+pub const V4L2_MEMORY_MMAP: c_int = 1;
+pub const V4L2_MEMORY_USERPTR: c_int = 2;
+pub const V4L2_MEMORY_OVERLAY: c_int = 3;
+pub const V4L2_MEMORY_DMABUF: c_int = 4;
+pub const enum_v4l2_memory = c_uint;
+pub const V4L2_COLORSPACE_DEFAULT: c_int = 0;
+pub const V4L2_COLORSPACE_SMPTE170M: c_int = 1;
+pub const V4L2_COLORSPACE_SMPTE240M: c_int = 2;
+pub const V4L2_COLORSPACE_REC709: c_int = 3;
+pub const V4L2_COLORSPACE_BT878: c_int = 4;
+pub const V4L2_COLORSPACE_470_SYSTEM_M: c_int = 5;
+pub const V4L2_COLORSPACE_470_SYSTEM_BG: c_int = 6;
+pub const V4L2_COLORSPACE_JPEG: c_int = 7;
+pub const V4L2_COLORSPACE_SRGB: c_int = 8;
+pub const V4L2_COLORSPACE_OPRGB: c_int = 9;
+pub const V4L2_COLORSPACE_BT2020: c_int = 10;
+pub const V4L2_COLORSPACE_RAW: c_int = 11;
+pub const V4L2_COLORSPACE_DCI_P3: c_int = 12;
+pub const enum_v4l2_colorspace = c_uint;
+pub const V4L2_XFER_FUNC_DEFAULT: c_int = 0;
+pub const V4L2_XFER_FUNC_709: c_int = 1;
+pub const V4L2_XFER_FUNC_SRGB: c_int = 2;
+pub const V4L2_XFER_FUNC_OPRGB: c_int = 3;
+pub const V4L2_XFER_FUNC_SMPTE240M: c_int = 4;
+pub const V4L2_XFER_FUNC_NONE: c_int = 5;
+pub const V4L2_XFER_FUNC_DCI_P3: c_int = 6;
+pub const V4L2_XFER_FUNC_SMPTE2084: c_int = 7;
+pub const enum_v4l2_xfer_func = c_uint;
+pub const V4L2_YCBCR_ENC_DEFAULT: c_int = 0;
+pub const V4L2_YCBCR_ENC_601: c_int = 1;
+pub const V4L2_YCBCR_ENC_709: c_int = 2;
+pub const V4L2_YCBCR_ENC_XV601: c_int = 3;
+pub const V4L2_YCBCR_ENC_XV709: c_int = 4;
+pub const V4L2_YCBCR_ENC_SYCC: c_int = 5;
+pub const V4L2_YCBCR_ENC_BT2020: c_int = 6;
+pub const V4L2_YCBCR_ENC_BT2020_CONST_LUM: c_int = 7;
+pub const V4L2_YCBCR_ENC_SMPTE240M: c_int = 8;
+pub const enum_v4l2_ycbcr_encoding = c_uint;
+pub const V4L2_HSV_ENC_180: c_int = 128;
+pub const V4L2_HSV_ENC_256: c_int = 129;
+pub const enum_v4l2_hsv_encoding = c_uint;
+pub const V4L2_QUANTIZATION_DEFAULT: c_int = 0;
+pub const V4L2_QUANTIZATION_FULL_RANGE: c_int = 1;
+pub const V4L2_QUANTIZATION_LIM_RANGE: c_int = 2;
+pub const enum_v4l2_quantization = c_uint;
+pub const V4L2_PRIORITY_UNSET: c_int = 0;
+pub const V4L2_PRIORITY_BACKGROUND: c_int = 1;
+pub const V4L2_PRIORITY_INTERACTIVE: c_int = 2;
+pub const V4L2_PRIORITY_RECORD: c_int = 3;
+pub const V4L2_PRIORITY_DEFAULT: c_int = 2;
+pub const enum_v4l2_priority = c_uint;
+pub const struct_v4l2_rect = extern struct {
+    left: __s32,
+    top: __s32,
+    width: __u32,
+    height: __u32,
+};
+pub const struct_v4l2_fract = extern struct {
+    numerator: __u32,
+    denominator: __u32,
+};
+pub const struct_v4l2_area = extern struct {
+    width: __u32,
+    height: __u32,
+};
+pub const struct_v4l2_capability = extern struct {
+    driver: [16]__u8,
+    card: [32]__u8,
+    bus_info: [32]__u8,
+    version: __u32,
+    capabilities: __u32,
+    device_caps: __u32,
+    reserved: [3]__u32,
+};
+const union_unnamed_11 = extern union {
+    ycbcr_enc: __u32,
+    hsv_enc: __u32,
+};
+pub const struct_v4l2_pix_format = extern struct {
+    width: __u32,
+    height: __u32,
+    pixelformat: __u32,
+    field: __u32,
+    bytesperline: __u32,
+    sizeimage: __u32,
+    colorspace: __u32,
+    priv: __u32,
+    flags: __u32,
+    unnamed_0: union_unnamed_11,
+    quantization: __u32,
+    xfer_func: __u32,
+};
+pub const struct_v4l2_fmtdesc = extern struct {
+    index: __u32,
+    type: __u32,
+    flags: __u32,
+    description: [32]__u8,
+    pixelformat: __u32,
+    mbus_code: __u32,
+    reserved: [3]__u32,
+};
+pub const V4L2_FRMSIZE_TYPE_DISCRETE: c_int = 1;
+pub const V4L2_FRMSIZE_TYPE_CONTINUOUS: c_int = 2;
+pub const V4L2_FRMSIZE_TYPE_STEPWISE: c_int = 3;
+pub const enum_v4l2_frmsizetypes = c_uint;
+pub const struct_v4l2_frmsize_discrete = extern struct {
+    width: __u32,
+    height: __u32,
+};
+pub const struct_v4l2_frmsize_stepwise = extern struct {
+    min_width: __u32,
+    max_width: __u32,
+    step_width: __u32,
+    min_height: __u32,
+    max_height: __u32,
+    step_height: __u32,
+};
+const union_unnamed_12 = extern union {
+    discrete: struct_v4l2_frmsize_discrete,
+    stepwise: struct_v4l2_frmsize_stepwise,
+};
+pub const struct_v4l2_frmsizeenum = extern struct {
+    index: __u32,
+    pixel_format: __u32,
+    type: __u32,
+    unnamed_0: union_unnamed_12,
+    reserved: [2]__u32,
+};
+pub const V4L2_FRMIVAL_TYPE_DISCRETE: c_int = 1;
+pub const V4L2_FRMIVAL_TYPE_CONTINUOUS: c_int = 2;
+pub const V4L2_FRMIVAL_TYPE_STEPWISE: c_int = 3;
+pub const enum_v4l2_frmivaltypes = c_uint;
+pub const struct_v4l2_frmival_stepwise = extern struct {
+    min: struct_v4l2_fract,
+    max: struct_v4l2_fract,
+    step: struct_v4l2_fract,
+};
+const union_unnamed_13 = extern union {
+    discrete: struct_v4l2_fract,
+    stepwise: struct_v4l2_frmival_stepwise,
+};
+pub const struct_v4l2_frmivalenum = extern struct {
+    index: __u32,
+    pixel_format: __u32,
+    width: __u32,
+    height: __u32,
+    type: __u32,
+    unnamed_0: union_unnamed_13,
+    reserved: [2]__u32,
+};
+pub const struct_v4l2_timecode = extern struct {
+    type: __u32,
+    flags: __u32,
+    frames: __u8,
+    seconds: __u8,
+    minutes: __u8,
+    hours: __u8,
+    userbits: [4]__u8,
+};
+pub const struct_v4l2_jpegcompression = extern struct {
+    quality: c_int,
+    APPn: c_int,
+    APP_len: c_int,
+    APP_data: [60]u8,
+    COM_len: c_int,
+    COM_data: [60]u8,
+    jpeg_markers: __u32,
+};
+pub const struct_v4l2_requestbuffers = extern struct {
+    count: __u32,
+    type: __u32,
+    memory: __u32,
+    capabilities: __u32,
+    reserved: [1]__u32,
+};
+const union_unnamed_14 = extern union {
+    mem_offset: __u32,
+    userptr: c_ulong,
+    fd: __s32,
+};
+pub const struct_v4l2_plane = extern struct {
+    bytesused: __u32,
+    length: __u32,
+    m: union_unnamed_14,
+    data_offset: __u32,
+    reserved: [11]__u32,
+};
+const union_unnamed_15 = extern union {
+    offset: __u32,
+    userptr: c_ulong,
+    planes: [*c]struct_v4l2_plane,
+    fd: __s32,
+};
+const union_unnamed_16 = extern union {
+    request_fd: __s32,
+    reserved: __u32,
+};
+pub const struct_v4l2_buffer = extern struct {
+    index: __u32,
+    type: __u32,
+    bytesused: __u32,
+    flags: __u32,
+    field: __u32,
+    timestamp: struct_timeval,
+    timecode: struct_v4l2_timecode,
+    sequence: __u32,
+    memory: __u32,
+    m: union_unnamed_15,
+    length: __u32,
+    reserved2: __u32,
+    unnamed_0: union_unnamed_16,
+};
+pub fn v4l2_timeval_to_ns(arg_tv: [*c]const struct_timeval) callconv(.C) __u64 {
+    var tv = arg_tv;
+    return (@bitCast(__u64, @as(c_longlong, tv.*.tv_sec)) *% @as(c_ulonglong, 1000000000)) +% @bitCast(c_ulonglong, @as(c_longlong, tv.*.tv_usec * @bitCast(c_long, @as(c_long, @as(c_int, 1000)))));
+}
+pub const struct_v4l2_exportbuffer = extern struct {
+    type: __u32,
+    index: __u32,
+    plane: __u32,
+    flags: __u32,
+    fd: __s32,
+    reserved: [11]__u32,
+};
+const struct_unnamed_17 = extern struct {
+    width: __u32,
+    height: __u32,
+    pixelformat: __u32,
+    field: __u32,
+    bytesperline: __u32,
+    sizeimage: __u32,
+    colorspace: __u32,
+    priv: __u32,
+};
+pub const struct_v4l2_framebuffer = extern struct {
+    capability: __u32,
+    flags: __u32,
+    base: ?*anyopaque,
+    fmt: struct_unnamed_17,
+};
+pub const struct_v4l2_clip = extern struct {
+    c: struct_v4l2_rect,
+    next: [*c]struct_v4l2_clip,
+};
+pub const struct_v4l2_window = extern struct {
+    w: struct_v4l2_rect,
+    field: __u32,
+    chromakey: __u32,
+    clips: [*c]struct_v4l2_clip,
+    clipcount: __u32,
+    bitmap: ?*anyopaque,
+    global_alpha: __u8,
+};
+pub const struct_v4l2_captureparm = extern struct {
+    capability: __u32,
+    capturemode: __u32,
+    timeperframe: struct_v4l2_fract,
+    extendedmode: __u32,
+    readbuffers: __u32,
+    reserved: [4]__u32,
+};
+pub const struct_v4l2_outputparm = extern struct {
+    capability: __u32,
+    outputmode: __u32,
+    timeperframe: struct_v4l2_fract,
+    extendedmode: __u32,
+    writebuffers: __u32,
+    reserved: [4]__u32,
+};
+pub const struct_v4l2_cropcap = extern struct {
+    type: __u32,
+    bounds: struct_v4l2_rect,
+    defrect: struct_v4l2_rect,
+    pixelaspect: struct_v4l2_fract,
+};
+pub const struct_v4l2_crop = extern struct {
+    type: __u32,
+    c: struct_v4l2_rect,
+};
+pub const struct_v4l2_selection = extern struct {
+    type: __u32,
+    target: __u32,
+    flags: __u32,
+    r: struct_v4l2_rect,
+    reserved: [9]__u32,
+};
+pub const v4l2_std_id = __u64;
+pub const struct_v4l2_standard = extern struct {
+    index: __u32,
+    id: v4l2_std_id,
+    name: [24]__u8,
+    frameperiod: struct_v4l2_fract,
+    framelines: __u32,
+    reserved: [4]__u32,
+};
+pub const struct_v4l2_bt_timings = extern struct {
+    width: __u32 align(1),
+    height: __u32 align(1),
+    interlaced: __u32 align(1),
+    polarities: __u32 align(1),
+    pixelclock: __u64 align(1),
+    hfrontporch: __u32 align(1),
+    hsync: __u32 align(1),
+    hbackporch: __u32 align(1),
+    vfrontporch: __u32 align(1),
+    vsync: __u32 align(1),
+    vbackporch: __u32 align(1),
+    il_vfrontporch: __u32 align(1),
+    il_vsync: __u32 align(1),
+    il_vbackporch: __u32 align(1),
+    standards: __u32 align(1),
+    flags: __u32 align(1),
+    picture_aspect: struct_v4l2_fract align(1),
+    cea861_vic: __u8 align(1),
+    hdmi_vic: __u8 align(1),
+    reserved: [46]__u8 align(1),
+};
+const union_unnamed_18 = extern union {
+    bt: struct_v4l2_bt_timings,
+    reserved: [32]__u32,
+};
+pub const struct_v4l2_dv_timings = extern struct {
+    type: __u32 align(1),
+    unnamed_0: union_unnamed_18 align(1),
+};
+pub const struct_v4l2_enum_dv_timings = extern struct {
+    index: __u32,
+    pad: __u32,
+    reserved: [2]__u32,
+    timings: struct_v4l2_dv_timings,
+};
+pub const struct_v4l2_bt_timings_cap = extern struct {
+    min_width: __u32 align(1),
+    max_width: __u32 align(1),
+    min_height: __u32 align(1),
+    max_height: __u32 align(1),
+    min_pixelclock: __u64 align(1),
+    max_pixelclock: __u64 align(1),
+    standards: __u32 align(1),
+    capabilities: __u32 align(1),
+    reserved: [16]__u32 align(1),
+};
+const union_unnamed_19 = extern union {
+    bt: struct_v4l2_bt_timings_cap,
+    raw_data: [32]__u32,
+};
+pub const struct_v4l2_dv_timings_cap = extern struct {
+    type: __u32,
+    pad: __u32,
+    reserved: [2]__u32,
+    unnamed_0: union_unnamed_19,
+};
+pub const struct_v4l2_input = extern struct {
+    index: __u32,
+    name: [32]__u8,
+    type: __u32,
+    audioset: __u32,
+    tuner: __u32,
+    std: v4l2_std_id,
+    status: __u32,
+    capabilities: __u32,
+    reserved: [3]__u32,
+};
+pub const struct_v4l2_output = extern struct {
+    index: __u32,
+    name: [32]__u8,
+    type: __u32,
+    audioset: __u32,
+    modulator: __u32,
+    std: v4l2_std_id,
+    capabilities: __u32,
+    reserved: [3]__u32,
+};
+pub const struct_v4l2_control = extern struct {
+    id: __u32,
+    value: __s32,
+};
+const union_unnamed_20 = extern union {
+    value: __s32,
+    value64: __s64,
+    string: [*c]u8,
+    p_u8: [*c]__u8,
+    p_u16: [*c]__u16,
+    p_u32: [*c]__u32,
+    p_area: [*c]struct_v4l2_area,
+    ptr: ?*anyopaque,
+};
+pub const struct_v4l2_ext_control = extern struct {
+    id: __u32 align(1),
+    size: __u32 align(1),
+    reserved2: [1]__u32 align(1),
+    unnamed_0: union_unnamed_20 align(1),
+};
+const union_unnamed_21 = extern union {
+    ctrl_class: __u32,
+    which: __u32,
+};
+pub const struct_v4l2_ext_controls = extern struct {
+    unnamed_0: union_unnamed_21,
+    count: __u32,
+    error_idx: __u32,
+    request_fd: __s32,
+    reserved: [1]__u32,
+    controls: [*c]struct_v4l2_ext_control,
+};
+pub const V4L2_CTRL_TYPE_INTEGER: c_int = 1;
+pub const V4L2_CTRL_TYPE_BOOLEAN: c_int = 2;
+pub const V4L2_CTRL_TYPE_MENU: c_int = 3;
+pub const V4L2_CTRL_TYPE_BUTTON: c_int = 4;
+pub const V4L2_CTRL_TYPE_INTEGER64: c_int = 5;
+pub const V4L2_CTRL_TYPE_CTRL_CLASS: c_int = 6;
+pub const V4L2_CTRL_TYPE_STRING: c_int = 7;
+pub const V4L2_CTRL_TYPE_BITMASK: c_int = 8;
+pub const V4L2_CTRL_TYPE_INTEGER_MENU: c_int = 9;
+pub const V4L2_CTRL_COMPOUND_TYPES: c_int = 256;
+pub const V4L2_CTRL_TYPE_U8: c_int = 256;
+pub const V4L2_CTRL_TYPE_U16: c_int = 257;
+pub const V4L2_CTRL_TYPE_U32: c_int = 258;
+pub const V4L2_CTRL_TYPE_AREA: c_int = 262;
+pub const enum_v4l2_ctrl_type = c_uint;
+pub const struct_v4l2_queryctrl = extern struct {
+    id: __u32,
+    type: __u32,
+    name: [32]__u8,
+    minimum: __s32,
+    maximum: __s32,
+    step: __s32,
+    default_value: __s32,
+    flags: __u32,
+    reserved: [2]__u32,
+};
+pub const struct_v4l2_query_ext_ctrl = extern struct {
+    id: __u32,
+    type: __u32,
+    name: [32]u8,
+    minimum: __s64,
+    maximum: __s64,
+    step: __u64,
+    default_value: __s64,
+    flags: __u32,
+    elem_size: __u32,
+    elems: __u32,
+    nr_of_dims: __u32,
+    dims: [4]__u32,
+    reserved: [32]__u32,
+};
+const union_unnamed_22 = extern union {
+    name: [32]__u8,
+    value: __s64,
+};
+pub const struct_v4l2_querymenu = extern struct {
+    id: __u32 align(1),
+    index: __u32 align(1),
+    unnamed_0: union_unnamed_22 align(1),
+    reserved: __u32 align(1),
+};
+pub const struct_v4l2_tuner = extern struct {
+    index: __u32,
+    name: [32]__u8,
+    type: __u32,
+    capability: __u32,
+    rangelow: __u32,
+    rangehigh: __u32,
+    rxsubchans: __u32,
+    audmode: __u32,
+    signal: __s32,
+    afc: __s32,
+    reserved: [4]__u32,
+};
+pub const struct_v4l2_modulator = extern struct {
+    index: __u32,
+    name: [32]__u8,
+    capability: __u32,
+    rangelow: __u32,
+    rangehigh: __u32,
+    txsubchans: __u32,
+    type: __u32,
+    reserved: [3]__u32,
+};
+pub const struct_v4l2_frequency = extern struct {
+    tuner: __u32,
+    type: __u32,
+    frequency: __u32,
+    reserved: [8]__u32,
+};
+pub const struct_v4l2_frequency_band = extern struct {
+    tuner: __u32,
+    type: __u32,
+    index: __u32,
+    capability: __u32,
+    rangelow: __u32,
+    rangehigh: __u32,
+    modulation: __u32,
+    reserved: [9]__u32,
+};
+pub const struct_v4l2_hw_freq_seek = extern struct {
+    tuner: __u32,
+    type: __u32,
+    seek_upward: __u32,
+    wrap_around: __u32,
+    spacing: __u32,
+    rangelow: __u32,
+    rangehigh: __u32,
+    reserved: [5]__u32,
+};
+pub const struct_v4l2_rds_data = extern struct {
+    lsb: __u8 align(1),
+    msb: __u8 align(1),
+    block: __u8 align(1),
+};
+pub const struct_v4l2_audio = extern struct {
+    index: __u32,
+    name: [32]__u8,
+    capability: __u32,
+    mode: __u32,
+    reserved: [2]__u32,
+};
+pub const struct_v4l2_audioout = extern struct {
+    index: __u32,
+    name: [32]__u8,
+    capability: __u32,
+    mode: __u32,
+    reserved: [2]__u32,
+};
+pub const struct_v4l2_enc_idx_entry = extern struct {
+    offset: __u64,
+    pts: __u64,
+    length: __u32,
+    flags: __u32,
+    reserved: [2]__u32,
+};
+pub const struct_v4l2_enc_idx = extern struct {
+    entries: __u32,
+    entries_cap: __u32,
+    reserved: [4]__u32,
+    entry: [64]struct_v4l2_enc_idx_entry,
+};
+const struct_unnamed_24 = extern struct {
+    data: [8]__u32,
+};
+const union_unnamed_23 = extern union {
+    raw: struct_unnamed_24,
+};
+pub const struct_v4l2_encoder_cmd = extern struct {
+    cmd: __u32,
+    flags: __u32,
+    unnamed_0: union_unnamed_23,
+};
+const struct_unnamed_26 = extern struct {
+    pts: __u64,
+};
+const struct_unnamed_27 = extern struct {
+    speed: __s32,
+    format: __u32,
+};
+const struct_unnamed_28 = extern struct {
+    data: [16]__u32,
+};
+const union_unnamed_25 = extern union {
+    stop: struct_unnamed_26,
+    start: struct_unnamed_27,
+    raw: struct_unnamed_28,
+};
+pub const struct_v4l2_decoder_cmd = extern struct {
+    cmd: __u32,
+    flags: __u32,
+    unnamed_0: union_unnamed_25,
+};
+pub const struct_v4l2_vbi_format = extern struct {
+    sampling_rate: __u32,
+    offset: __u32,
+    samples_per_line: __u32,
+    sample_format: __u32,
+    start: [2]__s32,
+    count: [2]__u32,
+    flags: __u32,
+    reserved: [2]__u32,
+};
+pub const struct_v4l2_sliced_vbi_format = extern struct {
+    service_set: __u16,
+    service_lines: [2][24]__u16,
+    io_size: __u32,
+    reserved: [2]__u32,
+};
+pub const struct_v4l2_sliced_vbi_cap = extern struct {
+    service_set: __u16,
+    service_lines: [2][24]__u16,
+    type: __u32,
+    reserved: [3]__u32,
+};
+pub const struct_v4l2_sliced_vbi_data = extern struct {
+    id: __u32,
+    field: __u32,
+    line: __u32,
+    reserved: __u32,
+    data: [48]__u8,
+};
+pub const struct_v4l2_mpeg_vbi_itv0_line = extern struct {
+    id: __u8 align(1),
+    data: [42]__u8 align(1),
+};
+pub const struct_v4l2_mpeg_vbi_itv0 = extern struct {
+    linemask: [2]__le32 align(1),
+    line: [35]struct_v4l2_mpeg_vbi_itv0_line align(1),
+};
+pub const struct_v4l2_mpeg_vbi_ITV0 = extern struct {
+    line: [36]struct_v4l2_mpeg_vbi_itv0_line align(1),
+};
+const union_unnamed_29 = extern union {
+    itv0: struct_v4l2_mpeg_vbi_itv0,
+    ITV0: struct_v4l2_mpeg_vbi_ITV0,
+};
+pub const struct_v4l2_mpeg_vbi_fmt_ivtv = extern struct {
+    magic: [4]__u8 align(1),
+    unnamed_0: union_unnamed_29 align(1),
+};
+pub const struct_v4l2_plane_pix_format = extern struct {
+    sizeimage: __u32 align(1),
+    bytesperline: __u32 align(1),
+    reserved: [6]__u16 align(1),
+};
+const union_unnamed_30 = extern union {
+    ycbcr_enc: __u8,
+    hsv_enc: __u8,
+};
+pub const struct_v4l2_pix_format_mplane = extern struct {
+    width: __u32 align(1),
+    height: __u32 align(1),
+    pixelformat: __u32 align(1),
+    field: __u32 align(1),
+    colorspace: __u32 align(1),
+    plane_fmt: [8]struct_v4l2_plane_pix_format align(1),
+    num_planes: __u8 align(1),
+    flags: __u8 align(1),
+    unnamed_0: union_unnamed_30 align(1),
+    quantization: __u8 align(1),
+    xfer_func: __u8 align(1),
+    reserved: [7]__u8 align(1),
+};
+pub const struct_v4l2_sdr_format = extern struct {
+    pixelformat: __u32 align(1),
+    buffersize: __u32 align(1),
+    reserved: [24]__u8 align(1),
+};
+pub const struct_v4l2_meta_format = extern struct {
+    dataformat: __u32 align(1),
+    buffersize: __u32 align(1),
+};
+const union_unnamed_31 = extern union {
+    pix: struct_v4l2_pix_format,
+    pix_mp: struct_v4l2_pix_format_mplane,
+    win: struct_v4l2_window,
+    vbi: struct_v4l2_vbi_format,
+    sliced: struct_v4l2_sliced_vbi_format,
+    sdr: struct_v4l2_sdr_format,
+    meta: struct_v4l2_meta_format,
+    raw_data: [200]__u8,
+};
+pub const struct_v4l2_format = extern struct {
+    type: __u32,
+    fmt: union_unnamed_31,
+};
+const union_unnamed_32 = extern union {
+    capture: struct_v4l2_captureparm,
+    output: struct_v4l2_outputparm,
+    raw_data: [200]__u8,
+};
+pub const struct_v4l2_streamparm = extern struct {
+    type: __u32,
+    parm: union_unnamed_32,
+};
+pub const struct_v4l2_event_vsync = extern struct {
+    field: __u8 align(1),
+};
+const union_unnamed_33 = extern union {
+    value: __s32,
+    value64: __s64,
+};
+pub const struct_v4l2_event_ctrl = extern struct {
+    changes: __u32,
+    type: __u32,
+    unnamed_0: union_unnamed_33,
+    flags: __u32,
+    minimum: __s32,
+    maximum: __s32,
+    step: __s32,
+    default_value: __s32,
+};
+pub const struct_v4l2_event_frame_sync = extern struct {
+    frame_sequence: __u32,
+};
+pub const struct_v4l2_event_src_change = extern struct {
+    changes: __u32,
+};
+pub const struct_v4l2_event_motion_det = extern struct {
+    flags: __u32,
+    frame_sequence: __u32,
+    region_mask: __u32,
+};
+const union_unnamed_34 = extern union {
+    vsync: struct_v4l2_event_vsync,
+    ctrl: struct_v4l2_event_ctrl,
+    frame_sync: struct_v4l2_event_frame_sync,
+    src_change: struct_v4l2_event_src_change,
+    motion_det: struct_v4l2_event_motion_det,
+    data: [64]__u8,
+};
+pub const struct_v4l2_event = extern struct {
+    type: __u32,
+    u: union_unnamed_34,
+    pending: __u32,
+    sequence: __u32,
+    timestamp: struct_timespec,
+    id: __u32,
+    reserved: [8]__u32,
+};
+pub const struct_v4l2_event_subscription = extern struct {
+    type: __u32,
+    id: __u32,
+    flags: __u32,
+    reserved: [5]__u32,
+};
+const union_unnamed_35 = extern union {
+    addr: __u32,
+    name: [32]u8,
+};
+pub const struct_v4l2_dbg_match = extern struct {
+    type: __u32 align(1),
+    unnamed_0: union_unnamed_35 align(1),
+};
+pub const struct_v4l2_dbg_register = extern struct {
+    match: struct_v4l2_dbg_match align(1),
+    size: __u32 align(1),
+    reg: __u64 align(1),
+    val: __u64 align(1),
+};
+pub const struct_v4l2_dbg_chip_info = extern struct {
+    match: struct_v4l2_dbg_match align(1),
+    name: [32]u8 align(1),
+    flags: __u32 align(1),
+    reserved: [32]__u32 align(1),
+};
+pub const struct_v4l2_create_buffers = extern struct {
+    index: __u32,
+    count: __u32,
+    memory: __u32,
+    format: struct_v4l2_format,
+    capabilities: __u32,
+    reserved: [7]__u32,
+};
 pub const __INTMAX_C_SUFFIX__ = @compileError("unable to translate macro: undefined identifier `L`"); // (no file):80:9
 pub const __UINTMAX_C_SUFFIX__ = @compileError("unable to translate macro: undefined identifier `UL`"); // (no file):86:9
 pub const __FLT16_DENORM_MIN__ = @compileError("unable to translate C expr: unexpected token 'IntegerLiteral'"); // (no file):109:9
@@ -3056,6 +4401,17 @@ pub const RK_LOGI = @compileError("unable to translate C expr: expected ')' inst
 pub const RK_LOGD = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_debug.h:91:9
 pub const RK_LOGV = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_debug.h:92:9
 pub const RK_TRACE_SYS = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_comm_sys.h:34:9
+pub const __FD_ZERO = @compileError("unable to translate macro: undefined identifier `__i`"); // /usr/include/aarch64-linux-gnu/bits/select.h:25:9
+pub const __FD_SET = @compileError("unable to translate C expr: expected ')' instead got '|='"); // /usr/include/aarch64-linux-gnu/bits/select.h:32:9
+pub const __FD_CLR = @compileError("unable to translate C expr: expected ')' instead got '&='"); // /usr/include/aarch64-linux-gnu/bits/select.h:34:9
+pub const timerclear = @compileError("unable to translate C expr: expected ')' instead got '='"); // /usr/include/aarch64-linux-gnu/sys/time.h:161:10
+pub const timercmp = @compileError("unable to translate C expr: expected ')' instead got 'Identifier'"); // /usr/include/aarch64-linux-gnu/sys/time.h:162:10
+pub const timeradd = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/include/aarch64-linux-gnu/sys/time.h:166:10
+pub const timersub = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/include/aarch64-linux-gnu/sys/time.h:176:10
+pub const __struct_group = @compileError("unable to translate C expr: expected ')' instead got '...'"); // /usr/include/linux/stddef.h:26:9
+pub const __aligned_u64 = @compileError("unable to translate macro: undefined identifier `__attribute__`"); // /usr/include/linux/types.h:43:9
+pub const __aligned_be64 = @compileError("unable to translate macro: undefined identifier `__attribute__`"); // /usr/include/linux/types.h:44:9
+pub const __aligned_le64 = @compileError("unable to translate macro: undefined identifier `__attribute__`"); // /usr/include/linux/types.h:45:9
 pub const __llvm__ = @as(c_int, 1);
 pub const __clang__ = @as(c_int, 1);
 pub const __clang_major__ = @as(c_int, 15);
@@ -4048,6 +5404,1279 @@ pub const VO_INTF_HDMI1 = @as(c_long, 0x01) << @as(c_int, 14);
 pub const VO_INTF_DP = @as(c_long, 0x01) << @as(c_int, 15);
 pub const VO_INTF_DP1 = @as(c_long, 0x01) << @as(c_int, 16);
 pub const VO_INTF_NUM = @as(c_int, 17);
+pub const __LINUX_VIDEODEV2_H = "";
+pub const _SYS_TIME_H = @as(c_int, 1);
+pub const __time_t_defined = @as(c_int, 1);
+pub const __timeval_defined = @as(c_int, 1);
+pub const __suseconds_t_defined = "";
+pub const _SYS_SELECT_H = @as(c_int, 1);
+pub inline fn __FD_ISSET(d: anytype, s: anytype) @TypeOf((__FDS_BITS(s)[@intCast(usize, __FD_ELT(d))] & __FD_MASK(d)) != @as(c_int, 0)) {
+    return (__FDS_BITS(s)[@intCast(usize, __FD_ELT(d))] & __FD_MASK(d)) != @as(c_int, 0);
+}
+pub const __sigset_t_defined = @as(c_int, 1);
+pub const ____sigset_t_defined = "";
+pub const _SIGSET_NWORDS = @import("std").zig.c_translation.MacroArithmetic.div(@as(c_int, 1024), @as(c_int, 8) * @import("std").zig.c_translation.sizeof(c_ulong));
+pub const _STRUCT_TIMESPEC = @as(c_int, 1);
+pub const _BITS_ENDIAN_H = @as(c_int, 1);
+pub const __LITTLE_ENDIAN = @as(c_int, 1234);
+pub const __BIG_ENDIAN = @as(c_int, 4321);
+pub const __PDP_ENDIAN = @as(c_int, 3412);
+pub const _BITS_ENDIANNESS_H = @as(c_int, 1);
+pub const __BYTE_ORDER = __LITTLE_ENDIAN;
+pub const __FLOAT_WORD_ORDER = __BYTE_ORDER;
+pub inline fn __LONG_LONG_PAIR(HI: anytype, LO: anytype) @TypeOf(HI) {
+    return blk: {
+        _ = @TypeOf(LO);
+        break :blk HI;
+    };
+}
+pub const __NFDBITS = @as(c_int, 8) * @import("std").zig.c_translation.cast(c_int, @import("std").zig.c_translation.sizeof(__fd_mask));
+pub inline fn __FD_ELT(d: anytype) @TypeOf(@import("std").zig.c_translation.MacroArithmetic.div(d, __NFDBITS)) {
+    return @import("std").zig.c_translation.MacroArithmetic.div(d, __NFDBITS);
+}
+pub inline fn __FD_MASK(d: anytype) __fd_mask {
+    return @import("std").zig.c_translation.cast(__fd_mask, @as(c_ulong, 1) << @import("std").zig.c_translation.MacroArithmetic.rem(d, __NFDBITS));
+}
+pub inline fn __FDS_BITS(set: anytype) @TypeOf(set.*.__fds_bits) {
+    return set.*.__fds_bits;
+}
+pub const FD_SETSIZE = __FD_SETSIZE;
+pub const NFDBITS = __NFDBITS;
+pub inline fn FD_SET(fd: anytype, fdsetp: anytype) @TypeOf(__FD_SET(fd, fdsetp)) {
+    return __FD_SET(fd, fdsetp);
+}
+pub inline fn FD_CLR(fd: anytype, fdsetp: anytype) @TypeOf(__FD_CLR(fd, fdsetp)) {
+    return __FD_CLR(fd, fdsetp);
+}
+pub inline fn FD_ISSET(fd: anytype, fdsetp: anytype) @TypeOf(__FD_ISSET(fd, fdsetp)) {
+    return __FD_ISSET(fd, fdsetp);
+}
+pub inline fn FD_ZERO(fdsetp: anytype) @TypeOf(__FD_ZERO(fdsetp)) {
+    return __FD_ZERO(fdsetp);
+}
+pub inline fn timerisset(tvp: anytype) @TypeOf((tvp.*.tv_sec != 0) or (tvp.*.tv_usec != 0)) {
+    return (tvp.*.tv_sec != 0) or (tvp.*.tv_usec != 0);
+}
+pub const _LINUX_IOCTL_H = "";
+pub const _ASM_GENERIC_IOCTL_H = "";
+pub const _IOC_NRBITS = @as(c_int, 8);
+pub const _IOC_TYPEBITS = @as(c_int, 8);
+pub const _IOC_SIZEBITS = @as(c_int, 14);
+pub const _IOC_DIRBITS = @as(c_int, 2);
+pub const _IOC_NRMASK = (@as(c_int, 1) << _IOC_NRBITS) - @as(c_int, 1);
+pub const _IOC_TYPEMASK = (@as(c_int, 1) << _IOC_TYPEBITS) - @as(c_int, 1);
+pub const _IOC_SIZEMASK = (@as(c_int, 1) << _IOC_SIZEBITS) - @as(c_int, 1);
+pub const _IOC_DIRMASK = (@as(c_int, 1) << _IOC_DIRBITS) - @as(c_int, 1);
+pub const _IOC_NRSHIFT = @as(c_int, 0);
+pub const _IOC_TYPESHIFT = _IOC_NRSHIFT + _IOC_NRBITS;
+pub const _IOC_SIZESHIFT = _IOC_TYPESHIFT + _IOC_TYPEBITS;
+pub const _IOC_DIRSHIFT = _IOC_SIZESHIFT + _IOC_SIZEBITS;
+pub const _IOC_NONE = @as(c_uint, 0);
+pub const _IOC_WRITE = @as(c_uint, 1);
+pub const _IOC_READ = @as(c_uint, 2);
+pub inline fn _IOC(dir: anytype, @"type": anytype, nr: anytype, size: anytype) @TypeOf((((dir << _IOC_DIRSHIFT) | (@"type" << _IOC_TYPESHIFT)) | (nr << _IOC_NRSHIFT)) | (size << _IOC_SIZESHIFT)) {
+    return (((dir << _IOC_DIRSHIFT) | (@"type" << _IOC_TYPESHIFT)) | (nr << _IOC_NRSHIFT)) | (size << _IOC_SIZESHIFT);
+}
+pub inline fn _IOC_TYPECHECK(t: anytype) @TypeOf(@import("std").zig.c_translation.sizeof(t)) {
+    _ = @TypeOf(t);
+    return @import("std").zig.c_translation.sizeof(t);
+}
+pub inline fn _IO(@"type": anytype, nr: anytype) @TypeOf(_IOC(_IOC_NONE, @"type", nr, @as(c_int, 0))) {
+    return _IOC(_IOC_NONE, @"type", nr, @as(c_int, 0));
+}
+pub inline fn _IOR(@"type": anytype, nr: anytype, size: anytype) @TypeOf(_IOC(_IOC_READ, @"type", nr, _IOC_TYPECHECK(size))) {
+    return _IOC(_IOC_READ, @"type", nr, _IOC_TYPECHECK(size));
+}
+pub inline fn _IOW(@"type": anytype, nr: anytype, size: anytype) @TypeOf(_IOC(_IOC_WRITE, @"type", nr, _IOC_TYPECHECK(size))) {
+    return _IOC(_IOC_WRITE, @"type", nr, _IOC_TYPECHECK(size));
+}
+pub inline fn _IOWR(@"type": anytype, nr: anytype, size: anytype) @TypeOf(_IOC(_IOC_READ | _IOC_WRITE, @"type", nr, _IOC_TYPECHECK(size))) {
+    return _IOC(_IOC_READ | _IOC_WRITE, @"type", nr, _IOC_TYPECHECK(size));
+}
+pub inline fn _IOR_BAD(@"type": anytype, nr: anytype, size: anytype) @TypeOf(_IOC(_IOC_READ, @"type", nr, @import("std").zig.c_translation.sizeof(size))) {
+    _ = @TypeOf(size);
+    return _IOC(_IOC_READ, @"type", nr, @import("std").zig.c_translation.sizeof(size));
+}
+pub inline fn _IOW_BAD(@"type": anytype, nr: anytype, size: anytype) @TypeOf(_IOC(_IOC_WRITE, @"type", nr, @import("std").zig.c_translation.sizeof(size))) {
+    _ = @TypeOf(size);
+    return _IOC(_IOC_WRITE, @"type", nr, @import("std").zig.c_translation.sizeof(size));
+}
+pub inline fn _IOWR_BAD(@"type": anytype, nr: anytype, size: anytype) @TypeOf(_IOC(_IOC_READ | _IOC_WRITE, @"type", nr, @import("std").zig.c_translation.sizeof(size))) {
+    _ = @TypeOf(size);
+    return _IOC(_IOC_READ | _IOC_WRITE, @"type", nr, @import("std").zig.c_translation.sizeof(size));
+}
+pub inline fn _IOC_DIR(nr: anytype) @TypeOf((nr >> _IOC_DIRSHIFT) & _IOC_DIRMASK) {
+    return (nr >> _IOC_DIRSHIFT) & _IOC_DIRMASK;
+}
+pub inline fn _IOC_TYPE(nr: anytype) @TypeOf((nr >> _IOC_TYPESHIFT) & _IOC_TYPEMASK) {
+    return (nr >> _IOC_TYPESHIFT) & _IOC_TYPEMASK;
+}
+pub inline fn _IOC_NR(nr: anytype) @TypeOf((nr >> _IOC_NRSHIFT) & _IOC_NRMASK) {
+    return (nr >> _IOC_NRSHIFT) & _IOC_NRMASK;
+}
+pub inline fn _IOC_SIZE(nr: anytype) @TypeOf((nr >> _IOC_SIZESHIFT) & _IOC_SIZEMASK) {
+    return (nr >> _IOC_SIZESHIFT) & _IOC_SIZEMASK;
+}
+pub const IOC_IN = _IOC_WRITE << _IOC_DIRSHIFT;
+pub const IOC_OUT = _IOC_READ << _IOC_DIRSHIFT;
+pub const IOC_INOUT = (_IOC_WRITE | _IOC_READ) << _IOC_DIRSHIFT;
+pub const IOCSIZE_MASK = _IOC_SIZEMASK << _IOC_SIZESHIFT;
+pub const IOCSIZE_SHIFT = _IOC_SIZESHIFT;
+pub const _LINUX_TYPES_H = "";
+pub const _ASM_GENERIC_TYPES_H = "";
+pub const _ASM_GENERIC_INT_LL64_H = "";
+pub const __ASM_BITSPERLONG_H = "";
+pub const __BITS_PER_LONG = @as(c_int, 64);
+pub const __ASM_GENERIC_BITS_PER_LONG = "";
+pub const _LINUX_POSIX_TYPES_H = "";
+pub const _LINUX_STDDEF_H = "";
+pub const __ASM_POSIX_TYPES_H = "";
+pub const __ASM_GENERIC_POSIX_TYPES_H = "";
+pub const __bitwise__ = "";
+pub const __bitwise = __bitwise__;
+pub const __V4L2_COMMON__ = "";
+pub const V4L2_SEL_TGT_CROP = @as(c_int, 0x0000);
+pub const V4L2_SEL_TGT_CROP_DEFAULT = @as(c_int, 0x0001);
+pub const V4L2_SEL_TGT_CROP_BOUNDS = @as(c_int, 0x0002);
+pub const V4L2_SEL_TGT_NATIVE_SIZE = @as(c_int, 0x0003);
+pub const V4L2_SEL_TGT_COMPOSE = @as(c_int, 0x0100);
+pub const V4L2_SEL_TGT_COMPOSE_DEFAULT = @as(c_int, 0x0101);
+pub const V4L2_SEL_TGT_COMPOSE_BOUNDS = @as(c_int, 0x0102);
+pub const V4L2_SEL_TGT_COMPOSE_PADDED = @as(c_int, 0x0103);
+pub const V4L2_SEL_FLAG_GE = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_SEL_FLAG_LE = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_SEL_FLAG_KEEP_CONFIG = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_SEL_TGT_CROP_ACTIVE = V4L2_SEL_TGT_CROP;
+pub const V4L2_SEL_TGT_COMPOSE_ACTIVE = V4L2_SEL_TGT_COMPOSE;
+pub const V4L2_SUBDEV_SEL_TGT_CROP_ACTUAL = V4L2_SEL_TGT_CROP;
+pub const V4L2_SUBDEV_SEL_TGT_COMPOSE_ACTUAL = V4L2_SEL_TGT_COMPOSE;
+pub const V4L2_SUBDEV_SEL_TGT_CROP_BOUNDS = V4L2_SEL_TGT_CROP_BOUNDS;
+pub const V4L2_SUBDEV_SEL_TGT_COMPOSE_BOUNDS = V4L2_SEL_TGT_COMPOSE_BOUNDS;
+pub const V4L2_SUBDEV_SEL_FLAG_SIZE_GE = V4L2_SEL_FLAG_GE;
+pub const V4L2_SUBDEV_SEL_FLAG_SIZE_LE = V4L2_SEL_FLAG_LE;
+pub const V4L2_SUBDEV_SEL_FLAG_KEEP_CONFIG = V4L2_SEL_FLAG_KEEP_CONFIG;
+pub const __LINUX_V4L2_CONTROLS_H = "";
+pub const V4L2_CTRL_CLASS_USER = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00980000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_MPEG = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00990000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_CAMERA = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x009a0000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_FM_TX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x009b0000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_FLASH = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x009c0000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_JPEG = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x009d0000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_IMAGE_SOURCE = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x009e0000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_IMAGE_PROC = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x009f0000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_DV = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00a00000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_FM_RX = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00a10000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_RF_TUNER = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00a20000, .hexadecimal);
+pub const V4L2_CTRL_CLASS_DETECT = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00a30000, .hexadecimal);
+pub const V4L2_CID_BASE = V4L2_CTRL_CLASS_USER | @as(c_int, 0x900);
+pub const V4L2_CID_USER_BASE = V4L2_CID_BASE;
+pub const V4L2_CID_USER_CLASS = V4L2_CTRL_CLASS_USER | @as(c_int, 1);
+pub const V4L2_CID_BRIGHTNESS = V4L2_CID_BASE + @as(c_int, 0);
+pub const V4L2_CID_CONTRAST = V4L2_CID_BASE + @as(c_int, 1);
+pub const V4L2_CID_SATURATION = V4L2_CID_BASE + @as(c_int, 2);
+pub const V4L2_CID_HUE = V4L2_CID_BASE + @as(c_int, 3);
+pub const V4L2_CID_AUDIO_VOLUME = V4L2_CID_BASE + @as(c_int, 5);
+pub const V4L2_CID_AUDIO_BALANCE = V4L2_CID_BASE + @as(c_int, 6);
+pub const V4L2_CID_AUDIO_BASS = V4L2_CID_BASE + @as(c_int, 7);
+pub const V4L2_CID_AUDIO_TREBLE = V4L2_CID_BASE + @as(c_int, 8);
+pub const V4L2_CID_AUDIO_MUTE = V4L2_CID_BASE + @as(c_int, 9);
+pub const V4L2_CID_AUDIO_LOUDNESS = V4L2_CID_BASE + @as(c_int, 10);
+pub const V4L2_CID_BLACK_LEVEL = V4L2_CID_BASE + @as(c_int, 11);
+pub const V4L2_CID_AUTO_WHITE_BALANCE = V4L2_CID_BASE + @as(c_int, 12);
+pub const V4L2_CID_DO_WHITE_BALANCE = V4L2_CID_BASE + @as(c_int, 13);
+pub const V4L2_CID_RED_BALANCE = V4L2_CID_BASE + @as(c_int, 14);
+pub const V4L2_CID_BLUE_BALANCE = V4L2_CID_BASE + @as(c_int, 15);
+pub const V4L2_CID_GAMMA = V4L2_CID_BASE + @as(c_int, 16);
+pub const V4L2_CID_WHITENESS = V4L2_CID_GAMMA;
+pub const V4L2_CID_EXPOSURE = V4L2_CID_BASE + @as(c_int, 17);
+pub const V4L2_CID_AUTOGAIN = V4L2_CID_BASE + @as(c_int, 18);
+pub const V4L2_CID_GAIN = V4L2_CID_BASE + @as(c_int, 19);
+pub const V4L2_CID_HFLIP = V4L2_CID_BASE + @as(c_int, 20);
+pub const V4L2_CID_VFLIP = V4L2_CID_BASE + @as(c_int, 21);
+pub const V4L2_CID_POWER_LINE_FREQUENCY = V4L2_CID_BASE + @as(c_int, 24);
+pub const V4L2_CID_HUE_AUTO = V4L2_CID_BASE + @as(c_int, 25);
+pub const V4L2_CID_WHITE_BALANCE_TEMPERATURE = V4L2_CID_BASE + @as(c_int, 26);
+pub const V4L2_CID_SHARPNESS = V4L2_CID_BASE + @as(c_int, 27);
+pub const V4L2_CID_BACKLIGHT_COMPENSATION = V4L2_CID_BASE + @as(c_int, 28);
+pub const V4L2_CID_CHROMA_AGC = V4L2_CID_BASE + @as(c_int, 29);
+pub const V4L2_CID_COLOR_KILLER = V4L2_CID_BASE + @as(c_int, 30);
+pub const V4L2_CID_COLORFX = V4L2_CID_BASE + @as(c_int, 31);
+pub const V4L2_CID_AUTOBRIGHTNESS = V4L2_CID_BASE + @as(c_int, 32);
+pub const V4L2_CID_BAND_STOP_FILTER = V4L2_CID_BASE + @as(c_int, 33);
+pub const V4L2_CID_ROTATE = V4L2_CID_BASE + @as(c_int, 34);
+pub const V4L2_CID_BG_COLOR = V4L2_CID_BASE + @as(c_int, 35);
+pub const V4L2_CID_CHROMA_GAIN = V4L2_CID_BASE + @as(c_int, 36);
+pub const V4L2_CID_ILLUMINATORS_1 = V4L2_CID_BASE + @as(c_int, 37);
+pub const V4L2_CID_ILLUMINATORS_2 = V4L2_CID_BASE + @as(c_int, 38);
+pub const V4L2_CID_MIN_BUFFERS_FOR_CAPTURE = V4L2_CID_BASE + @as(c_int, 39);
+pub const V4L2_CID_MIN_BUFFERS_FOR_OUTPUT = V4L2_CID_BASE + @as(c_int, 40);
+pub const V4L2_CID_ALPHA_COMPONENT = V4L2_CID_BASE + @as(c_int, 41);
+pub const V4L2_CID_COLORFX_CBCR = V4L2_CID_BASE + @as(c_int, 42);
+pub const V4L2_CID_LASTP1 = V4L2_CID_BASE + @as(c_int, 43);
+pub const V4L2_CID_USER_MEYE_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x1000);
+pub const V4L2_CID_USER_BTTV_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x1010);
+pub const V4L2_CID_USER_S2255_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x1030);
+pub const V4L2_CID_USER_SI476X_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x1040);
+pub const V4L2_CID_USER_TI_VPE_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x1050);
+pub const V4L2_CID_USER_SAA7134_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x1060);
+pub const V4L2_CID_USER_ADV7180_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x1070);
+pub const V4L2_CID_USER_TC358743_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x1080);
+pub const V4L2_CID_USER_MAX217X_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x1090);
+pub const V4L2_CID_USER_IMX_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x10b0);
+pub const V4L2_CID_USER_ATMEL_ISC_BASE = V4L2_CID_USER_BASE + @as(c_int, 0x10c0);
+pub const V4L2_CID_MPEG_BASE = V4L2_CTRL_CLASS_MPEG | @as(c_int, 0x900);
+pub const V4L2_CID_MPEG_CLASS = V4L2_CTRL_CLASS_MPEG | @as(c_int, 1);
+pub const V4L2_CID_MPEG_STREAM_TYPE = V4L2_CID_MPEG_BASE + @as(c_int, 0);
+pub const V4L2_CID_MPEG_STREAM_PID_PMT = V4L2_CID_MPEG_BASE + @as(c_int, 1);
+pub const V4L2_CID_MPEG_STREAM_PID_AUDIO = V4L2_CID_MPEG_BASE + @as(c_int, 2);
+pub const V4L2_CID_MPEG_STREAM_PID_VIDEO = V4L2_CID_MPEG_BASE + @as(c_int, 3);
+pub const V4L2_CID_MPEG_STREAM_PID_PCR = V4L2_CID_MPEG_BASE + @as(c_int, 4);
+pub const V4L2_CID_MPEG_STREAM_PES_ID_AUDIO = V4L2_CID_MPEG_BASE + @as(c_int, 5);
+pub const V4L2_CID_MPEG_STREAM_PES_ID_VIDEO = V4L2_CID_MPEG_BASE + @as(c_int, 6);
+pub const V4L2_CID_MPEG_STREAM_VBI_FMT = V4L2_CID_MPEG_BASE + @as(c_int, 7);
+pub const V4L2_CID_MPEG_AUDIO_SAMPLING_FREQ = V4L2_CID_MPEG_BASE + @as(c_int, 100);
+pub const V4L2_CID_MPEG_AUDIO_ENCODING = V4L2_CID_MPEG_BASE + @as(c_int, 101);
+pub const V4L2_CID_MPEG_AUDIO_L1_BITRATE = V4L2_CID_MPEG_BASE + @as(c_int, 102);
+pub const V4L2_CID_MPEG_AUDIO_L2_BITRATE = V4L2_CID_MPEG_BASE + @as(c_int, 103);
+pub const V4L2_CID_MPEG_AUDIO_L3_BITRATE = V4L2_CID_MPEG_BASE + @as(c_int, 104);
+pub const V4L2_CID_MPEG_AUDIO_MODE = V4L2_CID_MPEG_BASE + @as(c_int, 105);
+pub const V4L2_CID_MPEG_AUDIO_MODE_EXTENSION = V4L2_CID_MPEG_BASE + @as(c_int, 106);
+pub const V4L2_CID_MPEG_AUDIO_EMPHASIS = V4L2_CID_MPEG_BASE + @as(c_int, 107);
+pub const V4L2_CID_MPEG_AUDIO_CRC = V4L2_CID_MPEG_BASE + @as(c_int, 108);
+pub const V4L2_CID_MPEG_AUDIO_MUTE = V4L2_CID_MPEG_BASE + @as(c_int, 109);
+pub const V4L2_CID_MPEG_AUDIO_AAC_BITRATE = V4L2_CID_MPEG_BASE + @as(c_int, 110);
+pub const V4L2_CID_MPEG_AUDIO_AC3_BITRATE = V4L2_CID_MPEG_BASE + @as(c_int, 111);
+pub const V4L2_CID_MPEG_AUDIO_DEC_PLAYBACK = V4L2_CID_MPEG_BASE + @as(c_int, 112);
+pub const V4L2_CID_MPEG_AUDIO_DEC_MULTILINGUAL_PLAYBACK = V4L2_CID_MPEG_BASE + @as(c_int, 113);
+pub const V4L2_CID_MPEG_VIDEO_ENCODING = V4L2_CID_MPEG_BASE + @as(c_int, 200);
+pub const V4L2_CID_MPEG_VIDEO_ASPECT = V4L2_CID_MPEG_BASE + @as(c_int, 201);
+pub const V4L2_CID_MPEG_VIDEO_B_FRAMES = V4L2_CID_MPEG_BASE + @as(c_int, 202);
+pub const V4L2_CID_MPEG_VIDEO_GOP_SIZE = V4L2_CID_MPEG_BASE + @as(c_int, 203);
+pub const V4L2_CID_MPEG_VIDEO_GOP_CLOSURE = V4L2_CID_MPEG_BASE + @as(c_int, 204);
+pub const V4L2_CID_MPEG_VIDEO_PULLDOWN = V4L2_CID_MPEG_BASE + @as(c_int, 205);
+pub const V4L2_CID_MPEG_VIDEO_BITRATE_MODE = V4L2_CID_MPEG_BASE + @as(c_int, 206);
+pub const V4L2_CID_MPEG_VIDEO_BITRATE = V4L2_CID_MPEG_BASE + @as(c_int, 207);
+pub const V4L2_CID_MPEG_VIDEO_BITRATE_PEAK = V4L2_CID_MPEG_BASE + @as(c_int, 208);
+pub const V4L2_CID_MPEG_VIDEO_TEMPORAL_DECIMATION = V4L2_CID_MPEG_BASE + @as(c_int, 209);
+pub const V4L2_CID_MPEG_VIDEO_MUTE = V4L2_CID_MPEG_BASE + @as(c_int, 210);
+pub const V4L2_CID_MPEG_VIDEO_MUTE_YUV = V4L2_CID_MPEG_BASE + @as(c_int, 211);
+pub const V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE = V4L2_CID_MPEG_BASE + @as(c_int, 212);
+pub const V4L2_CID_MPEG_VIDEO_DECODER_MPEG4_DEBLOCK_FILTER = V4L2_CID_MPEG_BASE + @as(c_int, 213);
+pub const V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB = V4L2_CID_MPEG_BASE + @as(c_int, 214);
+pub const V4L2_CID_MPEG_VIDEO_FRAME_RC_ENABLE = V4L2_CID_MPEG_BASE + @as(c_int, 215);
+pub const V4L2_CID_MPEG_VIDEO_HEADER_MODE = V4L2_CID_MPEG_BASE + @as(c_int, 216);
+pub const V4L2_CID_MPEG_VIDEO_MAX_REF_PIC = V4L2_CID_MPEG_BASE + @as(c_int, 217);
+pub const V4L2_CID_MPEG_VIDEO_MB_RC_ENABLE = V4L2_CID_MPEG_BASE + @as(c_int, 218);
+pub const V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MAX_BYTES = V4L2_CID_MPEG_BASE + @as(c_int, 219);
+pub const V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MAX_MB = V4L2_CID_MPEG_BASE + @as(c_int, 220);
+pub const V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MODE = V4L2_CID_MPEG_BASE + @as(c_int, 221);
+pub const V4L2_CID_MPEG_VIDEO_VBV_SIZE = V4L2_CID_MPEG_BASE + @as(c_int, 222);
+pub const V4L2_CID_MPEG_VIDEO_DEC_PTS = V4L2_CID_MPEG_BASE + @as(c_int, 223);
+pub const V4L2_CID_MPEG_VIDEO_DEC_FRAME = V4L2_CID_MPEG_BASE + @as(c_int, 224);
+pub const V4L2_CID_MPEG_VIDEO_VBV_DELAY = V4L2_CID_MPEG_BASE + @as(c_int, 225);
+pub const V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER = V4L2_CID_MPEG_BASE + @as(c_int, 226);
+pub const V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE = V4L2_CID_MPEG_BASE + @as(c_int, 227);
+pub const V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE = V4L2_CID_MPEG_BASE + @as(c_int, 228);
+pub const V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME = V4L2_CID_MPEG_BASE + @as(c_int, 229);
+pub const V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL = V4L2_CID_MPEG_BASE + @as(c_int, 270);
+pub const V4L2_CID_MPEG_VIDEO_MPEG2_PROFILE = V4L2_CID_MPEG_BASE + @as(c_int, 271);
+pub const V4L2_CID_FWHT_I_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 290);
+pub const V4L2_CID_FWHT_P_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 291);
+pub const V4L2_CID_MPEG_VIDEO_H263_I_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 300);
+pub const V4L2_CID_MPEG_VIDEO_H263_P_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 301);
+pub const V4L2_CID_MPEG_VIDEO_H263_B_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 302);
+pub const V4L2_CID_MPEG_VIDEO_H263_MIN_QP = V4L2_CID_MPEG_BASE + @as(c_int, 303);
+pub const V4L2_CID_MPEG_VIDEO_H263_MAX_QP = V4L2_CID_MPEG_BASE + @as(c_int, 304);
+pub const V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 350);
+pub const V4L2_CID_MPEG_VIDEO_H264_P_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 351);
+pub const V4L2_CID_MPEG_VIDEO_H264_B_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 352);
+pub const V4L2_CID_MPEG_VIDEO_H264_MIN_QP = V4L2_CID_MPEG_BASE + @as(c_int, 353);
+pub const V4L2_CID_MPEG_VIDEO_H264_MAX_QP = V4L2_CID_MPEG_BASE + @as(c_int, 354);
+pub const V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM = V4L2_CID_MPEG_BASE + @as(c_int, 355);
+pub const V4L2_CID_MPEG_VIDEO_H264_CPB_SIZE = V4L2_CID_MPEG_BASE + @as(c_int, 356);
+pub const V4L2_CID_MPEG_VIDEO_H264_ENTROPY_MODE = V4L2_CID_MPEG_BASE + @as(c_int, 357);
+pub const V4L2_CID_MPEG_VIDEO_H264_I_PERIOD = V4L2_CID_MPEG_BASE + @as(c_int, 358);
+pub const V4L2_CID_MPEG_VIDEO_H264_LEVEL = V4L2_CID_MPEG_BASE + @as(c_int, 359);
+pub const V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_ALPHA = V4L2_CID_MPEG_BASE + @as(c_int, 360);
+pub const V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_BETA = V4L2_CID_MPEG_BASE + @as(c_int, 361);
+pub const V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_MODE = V4L2_CID_MPEG_BASE + @as(c_int, 362);
+pub const V4L2_CID_MPEG_VIDEO_H264_PROFILE = V4L2_CID_MPEG_BASE + @as(c_int, 363);
+pub const V4L2_CID_MPEG_VIDEO_H264_VUI_EXT_SAR_HEIGHT = V4L2_CID_MPEG_BASE + @as(c_int, 364);
+pub const V4L2_CID_MPEG_VIDEO_H264_VUI_EXT_SAR_WIDTH = V4L2_CID_MPEG_BASE + @as(c_int, 365);
+pub const V4L2_CID_MPEG_VIDEO_H264_VUI_SAR_ENABLE = V4L2_CID_MPEG_BASE + @as(c_int, 366);
+pub const V4L2_CID_MPEG_VIDEO_H264_VUI_SAR_IDC = V4L2_CID_MPEG_BASE + @as(c_int, 367);
+pub const V4L2_CID_MPEG_VIDEO_H264_SEI_FRAME_PACKING = V4L2_CID_MPEG_BASE + @as(c_int, 368);
+pub const V4L2_CID_MPEG_VIDEO_H264_SEI_FP_CURRENT_FRAME_0 = V4L2_CID_MPEG_BASE + @as(c_int, 369);
+pub const V4L2_CID_MPEG_VIDEO_H264_SEI_FP_ARRANGEMENT_TYPE = V4L2_CID_MPEG_BASE + @as(c_int, 370);
+pub const V4L2_CID_MPEG_VIDEO_H264_FMO = V4L2_CID_MPEG_BASE + @as(c_int, 371);
+pub const V4L2_CID_MPEG_VIDEO_H264_FMO_MAP_TYPE = V4L2_CID_MPEG_BASE + @as(c_int, 372);
+pub const V4L2_CID_MPEG_VIDEO_H264_FMO_SLICE_GROUP = V4L2_CID_MPEG_BASE + @as(c_int, 373);
+pub const V4L2_CID_MPEG_VIDEO_H264_FMO_CHANGE_DIRECTION = V4L2_CID_MPEG_BASE + @as(c_int, 374);
+pub const V4L2_CID_MPEG_VIDEO_H264_FMO_CHANGE_RATE = V4L2_CID_MPEG_BASE + @as(c_int, 375);
+pub const V4L2_CID_MPEG_VIDEO_H264_FMO_RUN_LENGTH = V4L2_CID_MPEG_BASE + @as(c_int, 376);
+pub const V4L2_CID_MPEG_VIDEO_H264_ASO = V4L2_CID_MPEG_BASE + @as(c_int, 377);
+pub const V4L2_CID_MPEG_VIDEO_H264_ASO_SLICE_ORDER = V4L2_CID_MPEG_BASE + @as(c_int, 378);
+pub const V4L2_CID_MPEG_VIDEO_H264_HIERARCHICAL_CODING = V4L2_CID_MPEG_BASE + @as(c_int, 379);
+pub const V4L2_CID_MPEG_VIDEO_H264_HIERARCHICAL_CODING_TYPE = V4L2_CID_MPEG_BASE + @as(c_int, 380);
+pub const V4L2_CID_MPEG_VIDEO_H264_HIERARCHICAL_CODING_LAYER = V4L2_CID_MPEG_BASE + @as(c_int, 381);
+pub const V4L2_CID_MPEG_VIDEO_H264_HIERARCHICAL_CODING_LAYER_QP = V4L2_CID_MPEG_BASE + @as(c_int, 382);
+pub const V4L2_CID_MPEG_VIDEO_H264_CONSTRAINED_INTRA_PREDICTION = V4L2_CID_MPEG_BASE + @as(c_int, 383);
+pub const V4L2_CID_MPEG_VIDEO_H264_CHROMA_QP_INDEX_OFFSET = V4L2_CID_MPEG_BASE + @as(c_int, 384);
+pub const V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MIN_QP = V4L2_CID_MPEG_BASE + @as(c_int, 385);
+pub const V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MAX_QP = V4L2_CID_MPEG_BASE + @as(c_int, 386);
+pub const V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP = V4L2_CID_MPEG_BASE + @as(c_int, 387);
+pub const V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP = V4L2_CID_MPEG_BASE + @as(c_int, 388);
+pub const V4L2_CID_MPEG_VIDEO_MPEG4_I_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 400);
+pub const V4L2_CID_MPEG_VIDEO_MPEG4_P_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 401);
+pub const V4L2_CID_MPEG_VIDEO_MPEG4_B_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 402);
+pub const V4L2_CID_MPEG_VIDEO_MPEG4_MIN_QP = V4L2_CID_MPEG_BASE + @as(c_int, 403);
+pub const V4L2_CID_MPEG_VIDEO_MPEG4_MAX_QP = V4L2_CID_MPEG_BASE + @as(c_int, 404);
+pub const V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL = V4L2_CID_MPEG_BASE + @as(c_int, 405);
+pub const V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE = V4L2_CID_MPEG_BASE + @as(c_int, 406);
+pub const V4L2_CID_MPEG_VIDEO_MPEG4_QPEL = V4L2_CID_MPEG_BASE + @as(c_int, 407);
+pub const V4L2_CID_MPEG_VIDEO_VPX_NUM_PARTITIONS = V4L2_CID_MPEG_BASE + @as(c_int, 500);
+pub const V4L2_CID_MPEG_VIDEO_VPX_IMD_DISABLE_4X4 = V4L2_CID_MPEG_BASE + @as(c_int, 501);
+pub const V4L2_CID_MPEG_VIDEO_VPX_NUM_REF_FRAMES = V4L2_CID_MPEG_BASE + @as(c_int, 502);
+pub const V4L2_CID_MPEG_VIDEO_VPX_FILTER_LEVEL = V4L2_CID_MPEG_BASE + @as(c_int, 503);
+pub const V4L2_CID_MPEG_VIDEO_VPX_FILTER_SHARPNESS = V4L2_CID_MPEG_BASE + @as(c_int, 504);
+pub const V4L2_CID_MPEG_VIDEO_VPX_GOLDEN_FRAME_REF_PERIOD = V4L2_CID_MPEG_BASE + @as(c_int, 505);
+pub const V4L2_CID_MPEG_VIDEO_VPX_GOLDEN_FRAME_SEL = V4L2_CID_MPEG_BASE + @as(c_int, 506);
+pub const V4L2_CID_MPEG_VIDEO_VPX_MIN_QP = V4L2_CID_MPEG_BASE + @as(c_int, 507);
+pub const V4L2_CID_MPEG_VIDEO_VPX_MAX_QP = V4L2_CID_MPEG_BASE + @as(c_int, 508);
+pub const V4L2_CID_MPEG_VIDEO_VPX_I_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 509);
+pub const V4L2_CID_MPEG_VIDEO_VPX_P_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 510);
+pub const V4L2_CID_MPEG_VIDEO_VP8_PROFILE = V4L2_CID_MPEG_BASE + @as(c_int, 511);
+pub const V4L2_CID_MPEG_VIDEO_VPX_PROFILE = V4L2_CID_MPEG_VIDEO_VP8_PROFILE;
+pub const V4L2_CID_MPEG_VIDEO_VP9_PROFILE = V4L2_CID_MPEG_BASE + @as(c_int, 512);
+pub const V4L2_CID_MPEG_VIDEO_VP9_LEVEL = V4L2_CID_MPEG_BASE + @as(c_int, 513);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP = V4L2_CID_MPEG_BASE + @as(c_int, 600);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP = V4L2_CID_MPEG_BASE + @as(c_int, 601);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 602);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 603);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_QP = V4L2_CID_MPEG_BASE + @as(c_int, 604);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_QP = V4L2_CID_MPEG_BASE + @as(c_int, 605);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_TYPE = V4L2_CID_MPEG_BASE + @as(c_int, 606);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_LAYER = V4L2_CID_MPEG_BASE + @as(c_int, 607);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L0_QP = V4L2_CID_MPEG_BASE + @as(c_int, 608);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L1_QP = V4L2_CID_MPEG_BASE + @as(c_int, 609);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L2_QP = V4L2_CID_MPEG_BASE + @as(c_int, 610);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L3_QP = V4L2_CID_MPEG_BASE + @as(c_int, 611);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L4_QP = V4L2_CID_MPEG_BASE + @as(c_int, 612);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L5_QP = V4L2_CID_MPEG_BASE + @as(c_int, 613);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L6_QP = V4L2_CID_MPEG_BASE + @as(c_int, 614);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_PROFILE = V4L2_CID_MPEG_BASE + @as(c_int, 615);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_LEVEL = V4L2_CID_MPEG_BASE + @as(c_int, 616);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_FRAME_RATE_RESOLUTION = V4L2_CID_MPEG_BASE + @as(c_int, 617);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_TIER = V4L2_CID_MPEG_BASE + @as(c_int, 618);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_MAX_PARTITION_DEPTH = V4L2_CID_MPEG_BASE + @as(c_int, 619);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_LOOP_FILTER_MODE = V4L2_CID_MPEG_BASE + @as(c_int, 620);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_LF_BETA_OFFSET_DIV2 = V4L2_CID_MPEG_BASE + @as(c_int, 621);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_LF_TC_OFFSET_DIV2 = V4L2_CID_MPEG_BASE + @as(c_int, 622);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_REFRESH_TYPE = V4L2_CID_MPEG_BASE + @as(c_int, 623);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_REFRESH_PERIOD = V4L2_CID_MPEG_BASE + @as(c_int, 624);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_LOSSLESS_CU = V4L2_CID_MPEG_BASE + @as(c_int, 625);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_CONST_INTRA_PRED = V4L2_CID_MPEG_BASE + @as(c_int, 626);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_WAVEFRONT = V4L2_CID_MPEG_BASE + @as(c_int, 627);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_GENERAL_PB = V4L2_CID_MPEG_BASE + @as(c_int, 628);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_TEMPORAL_ID = V4L2_CID_MPEG_BASE + @as(c_int, 629);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_STRONG_SMOOTHING = V4L2_CID_MPEG_BASE + @as(c_int, 630);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_MAX_NUM_MERGE_MV_MINUS1 = V4L2_CID_MPEG_BASE + @as(c_int, 631);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_INTRA_PU_SPLIT = V4L2_CID_MPEG_BASE + @as(c_int, 632);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_TMV_PREDICTION = V4L2_CID_MPEG_BASE + @as(c_int, 633);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_WITHOUT_STARTCODE = V4L2_CID_MPEG_BASE + @as(c_int, 634);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_SIZE_OF_LENGTH_FIELD = V4L2_CID_MPEG_BASE + @as(c_int, 635);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L0_BR = V4L2_CID_MPEG_BASE + @as(c_int, 636);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L1_BR = V4L2_CID_MPEG_BASE + @as(c_int, 637);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L2_BR = V4L2_CID_MPEG_BASE + @as(c_int, 638);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L3_BR = V4L2_CID_MPEG_BASE + @as(c_int, 639);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L4_BR = V4L2_CID_MPEG_BASE + @as(c_int, 640);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L5_BR = V4L2_CID_MPEG_BASE + @as(c_int, 641);
+pub const V4L2_CID_MPEG_VIDEO_HEVC_HIER_CODING_L6_BR = V4L2_CID_MPEG_BASE + @as(c_int, 642);
+pub const V4L2_CID_MPEG_VIDEO_REF_NUMBER_FOR_PFRAMES = V4L2_CID_MPEG_BASE + @as(c_int, 643);
+pub const V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR = V4L2_CID_MPEG_BASE + @as(c_int, 644);
+pub const V4L2_CID_MPEG_VIDEO_CONSTANT_QUALITY = V4L2_CID_MPEG_BASE + @as(c_int, 645);
+pub const V4L2_CID_MPEG_VIDEO_FRAME_SKIP_MODE = V4L2_CID_MPEG_BASE + @as(c_int, 646);
+pub const V4L2_CID_MPEG_CX2341X_BASE = V4L2_CTRL_CLASS_MPEG | @as(c_int, 0x1000);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_SPATIAL_FILTER_MODE = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 0);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_SPATIAL_FILTER = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 1);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_LUMA_SPATIAL_FILTER_TYPE = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 2);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_CHROMA_SPATIAL_FILTER_TYPE = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 3);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_TEMPORAL_FILTER_MODE = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 4);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_TEMPORAL_FILTER = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 5);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_MEDIAN_FILTER_TYPE = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 6);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_LUMA_MEDIAN_FILTER_BOTTOM = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 7);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_LUMA_MEDIAN_FILTER_TOP = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 8);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_CHROMA_MEDIAN_FILTER_BOTTOM = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 9);
+pub const V4L2_CID_MPEG_CX2341X_VIDEO_CHROMA_MEDIAN_FILTER_TOP = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 10);
+pub const V4L2_CID_MPEG_CX2341X_STREAM_INSERT_NAV_PACKETS = V4L2_CID_MPEG_CX2341X_BASE + @as(c_int, 11);
+pub const V4L2_CID_MPEG_MFC51_BASE = V4L2_CTRL_CLASS_MPEG | @as(c_int, 0x1100);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_DECODER_H264_DISPLAY_DELAY = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 0);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_DECODER_H264_DISPLAY_DELAY_ENABLE = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 1);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_FRAME_SKIP_MODE = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 2);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_FORCE_FRAME_TYPE = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 3);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_PADDING = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 4);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_PADDING_YUV = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 5);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_RC_FIXED_TARGET_BIT = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 6);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_RC_REACTION_COEFF = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 7);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_H264_ADAPTIVE_RC_ACTIVITY = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 50);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_H264_ADAPTIVE_RC_DARK = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 51);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_H264_ADAPTIVE_RC_SMOOTH = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 52);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_H264_ADAPTIVE_RC_STATIC = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 53);
+pub const V4L2_CID_MPEG_MFC51_VIDEO_H264_NUM_REF_PIC_FOR_P = V4L2_CID_MPEG_MFC51_BASE + @as(c_int, 54);
+pub const V4L2_CID_CAMERA_CLASS_BASE = V4L2_CTRL_CLASS_CAMERA | @as(c_int, 0x900);
+pub const V4L2_CID_CAMERA_CLASS = V4L2_CTRL_CLASS_CAMERA | @as(c_int, 1);
+pub const V4L2_CID_EXPOSURE_AUTO = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 1);
+pub const V4L2_CID_EXPOSURE_ABSOLUTE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 2);
+pub const V4L2_CID_EXPOSURE_AUTO_PRIORITY = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 3);
+pub const V4L2_CID_PAN_RELATIVE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 4);
+pub const V4L2_CID_TILT_RELATIVE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 5);
+pub const V4L2_CID_PAN_RESET = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 6);
+pub const V4L2_CID_TILT_RESET = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 7);
+pub const V4L2_CID_PAN_ABSOLUTE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 8);
+pub const V4L2_CID_TILT_ABSOLUTE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 9);
+pub const V4L2_CID_FOCUS_ABSOLUTE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 10);
+pub const V4L2_CID_FOCUS_RELATIVE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 11);
+pub const V4L2_CID_FOCUS_AUTO = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 12);
+pub const V4L2_CID_ZOOM_ABSOLUTE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 13);
+pub const V4L2_CID_ZOOM_RELATIVE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 14);
+pub const V4L2_CID_ZOOM_CONTINUOUS = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 15);
+pub const V4L2_CID_PRIVACY = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 16);
+pub const V4L2_CID_IRIS_ABSOLUTE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 17);
+pub const V4L2_CID_IRIS_RELATIVE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 18);
+pub const V4L2_CID_AUTO_EXPOSURE_BIAS = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 19);
+pub const V4L2_CID_AUTO_N_PRESET_WHITE_BALANCE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 20);
+pub const V4L2_CID_WIDE_DYNAMIC_RANGE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 21);
+pub const V4L2_CID_IMAGE_STABILIZATION = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 22);
+pub const V4L2_CID_ISO_SENSITIVITY = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 23);
+pub const V4L2_CID_ISO_SENSITIVITY_AUTO = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 24);
+pub const V4L2_CID_EXPOSURE_METERING = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 25);
+pub const V4L2_CID_SCENE_MODE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 26);
+pub const V4L2_CID_3A_LOCK = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 27);
+pub const V4L2_LOCK_EXPOSURE = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_LOCK_WHITE_BALANCE = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_LOCK_FOCUS = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_CID_AUTO_FOCUS_START = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 28);
+pub const V4L2_CID_AUTO_FOCUS_STOP = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 29);
+pub const V4L2_CID_AUTO_FOCUS_STATUS = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 30);
+pub const V4L2_AUTO_FOCUS_STATUS_IDLE = @as(c_int, 0) << @as(c_int, 0);
+pub const V4L2_AUTO_FOCUS_STATUS_BUSY = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_AUTO_FOCUS_STATUS_REACHED = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_AUTO_FOCUS_STATUS_FAILED = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_CID_AUTO_FOCUS_RANGE = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 31);
+pub const V4L2_CID_PAN_SPEED = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 32);
+pub const V4L2_CID_TILT_SPEED = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 33);
+pub const V4L2_CID_CAMERA_ORIENTATION = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 34);
+pub const V4L2_CAMERA_ORIENTATION_FRONT = @as(c_int, 0);
+pub const V4L2_CAMERA_ORIENTATION_BACK = @as(c_int, 1);
+pub const V4L2_CAMERA_ORIENTATION_EXTERNAL = @as(c_int, 2);
+pub const V4L2_CID_CAMERA_SENSOR_ROTATION = V4L2_CID_CAMERA_CLASS_BASE + @as(c_int, 35);
+pub const V4L2_CID_FM_TX_CLASS_BASE = V4L2_CTRL_CLASS_FM_TX | @as(c_int, 0x900);
+pub const V4L2_CID_FM_TX_CLASS = V4L2_CTRL_CLASS_FM_TX | @as(c_int, 1);
+pub const V4L2_CID_RDS_TX_DEVIATION = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 1);
+pub const V4L2_CID_RDS_TX_PI = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 2);
+pub const V4L2_CID_RDS_TX_PTY = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 3);
+pub const V4L2_CID_RDS_TX_PS_NAME = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 5);
+pub const V4L2_CID_RDS_TX_RADIO_TEXT = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 6);
+pub const V4L2_CID_RDS_TX_MONO_STEREO = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 7);
+pub const V4L2_CID_RDS_TX_ARTIFICIAL_HEAD = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 8);
+pub const V4L2_CID_RDS_TX_COMPRESSED = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 9);
+pub const V4L2_CID_RDS_TX_DYNAMIC_PTY = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 10);
+pub const V4L2_CID_RDS_TX_TRAFFIC_ANNOUNCEMENT = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 11);
+pub const V4L2_CID_RDS_TX_TRAFFIC_PROGRAM = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 12);
+pub const V4L2_CID_RDS_TX_MUSIC_SPEECH = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 13);
+pub const V4L2_CID_RDS_TX_ALT_FREQS_ENABLE = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 14);
+pub const V4L2_CID_RDS_TX_ALT_FREQS = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 15);
+pub const V4L2_CID_AUDIO_LIMITER_ENABLED = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 64);
+pub const V4L2_CID_AUDIO_LIMITER_RELEASE_TIME = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 65);
+pub const V4L2_CID_AUDIO_LIMITER_DEVIATION = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 66);
+pub const V4L2_CID_AUDIO_COMPRESSION_ENABLED = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 80);
+pub const V4L2_CID_AUDIO_COMPRESSION_GAIN = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 81);
+pub const V4L2_CID_AUDIO_COMPRESSION_THRESHOLD = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 82);
+pub const V4L2_CID_AUDIO_COMPRESSION_ATTACK_TIME = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 83);
+pub const V4L2_CID_AUDIO_COMPRESSION_RELEASE_TIME = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 84);
+pub const V4L2_CID_PILOT_TONE_ENABLED = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 96);
+pub const V4L2_CID_PILOT_TONE_DEVIATION = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 97);
+pub const V4L2_CID_PILOT_TONE_FREQUENCY = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 98);
+pub const V4L2_CID_TUNE_PREEMPHASIS = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 112);
+pub const V4L2_CID_TUNE_POWER_LEVEL = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 113);
+pub const V4L2_CID_TUNE_ANTENNA_CAPACITOR = V4L2_CID_FM_TX_CLASS_BASE + @as(c_int, 114);
+pub const V4L2_CID_FLASH_CLASS_BASE = V4L2_CTRL_CLASS_FLASH | @as(c_int, 0x900);
+pub const V4L2_CID_FLASH_CLASS = V4L2_CTRL_CLASS_FLASH | @as(c_int, 1);
+pub const V4L2_CID_FLASH_LED_MODE = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 1);
+pub const V4L2_CID_FLASH_STROBE_SOURCE = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 2);
+pub const V4L2_CID_FLASH_STROBE = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 3);
+pub const V4L2_CID_FLASH_STROBE_STOP = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 4);
+pub const V4L2_CID_FLASH_STROBE_STATUS = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 5);
+pub const V4L2_CID_FLASH_TIMEOUT = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 6);
+pub const V4L2_CID_FLASH_INTENSITY = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 7);
+pub const V4L2_CID_FLASH_TORCH_INTENSITY = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 8);
+pub const V4L2_CID_FLASH_INDICATOR_INTENSITY = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 9);
+pub const V4L2_CID_FLASH_FAULT = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 10);
+pub const V4L2_FLASH_FAULT_OVER_VOLTAGE = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_FLASH_FAULT_TIMEOUT = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_FLASH_FAULT_OVER_TEMPERATURE = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_FLASH_FAULT_SHORT_CIRCUIT = @as(c_int, 1) << @as(c_int, 3);
+pub const V4L2_FLASH_FAULT_OVER_CURRENT = @as(c_int, 1) << @as(c_int, 4);
+pub const V4L2_FLASH_FAULT_INDICATOR = @as(c_int, 1) << @as(c_int, 5);
+pub const V4L2_FLASH_FAULT_UNDER_VOLTAGE = @as(c_int, 1) << @as(c_int, 6);
+pub const V4L2_FLASH_FAULT_INPUT_VOLTAGE = @as(c_int, 1) << @as(c_int, 7);
+pub const V4L2_FLASH_FAULT_LED_OVER_TEMPERATURE = @as(c_int, 1) << @as(c_int, 8);
+pub const V4L2_CID_FLASH_CHARGE = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 11);
+pub const V4L2_CID_FLASH_READY = V4L2_CID_FLASH_CLASS_BASE + @as(c_int, 12);
+pub const V4L2_CID_JPEG_CLASS_BASE = V4L2_CTRL_CLASS_JPEG | @as(c_int, 0x900);
+pub const V4L2_CID_JPEG_CLASS = V4L2_CTRL_CLASS_JPEG | @as(c_int, 1);
+pub const V4L2_CID_JPEG_CHROMA_SUBSAMPLING = V4L2_CID_JPEG_CLASS_BASE + @as(c_int, 1);
+pub const V4L2_CID_JPEG_RESTART_INTERVAL = V4L2_CID_JPEG_CLASS_BASE + @as(c_int, 2);
+pub const V4L2_CID_JPEG_COMPRESSION_QUALITY = V4L2_CID_JPEG_CLASS_BASE + @as(c_int, 3);
+pub const V4L2_CID_JPEG_ACTIVE_MARKER = V4L2_CID_JPEG_CLASS_BASE + @as(c_int, 4);
+pub const V4L2_JPEG_ACTIVE_MARKER_APP0 = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_JPEG_ACTIVE_MARKER_APP1 = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_JPEG_ACTIVE_MARKER_COM = @as(c_int, 1) << @as(c_int, 16);
+pub const V4L2_JPEG_ACTIVE_MARKER_DQT = @as(c_int, 1) << @as(c_int, 17);
+pub const V4L2_JPEG_ACTIVE_MARKER_DHT = @as(c_int, 1) << @as(c_int, 18);
+pub const V4L2_CID_IMAGE_SOURCE_CLASS_BASE = V4L2_CTRL_CLASS_IMAGE_SOURCE | @as(c_int, 0x900);
+pub const V4L2_CID_IMAGE_SOURCE_CLASS = V4L2_CTRL_CLASS_IMAGE_SOURCE | @as(c_int, 1);
+pub const V4L2_CID_VBLANK = V4L2_CID_IMAGE_SOURCE_CLASS_BASE + @as(c_int, 1);
+pub const V4L2_CID_HBLANK = V4L2_CID_IMAGE_SOURCE_CLASS_BASE + @as(c_int, 2);
+pub const V4L2_CID_ANALOGUE_GAIN = V4L2_CID_IMAGE_SOURCE_CLASS_BASE + @as(c_int, 3);
+pub const V4L2_CID_TEST_PATTERN_RED = V4L2_CID_IMAGE_SOURCE_CLASS_BASE + @as(c_int, 4);
+pub const V4L2_CID_TEST_PATTERN_GREENR = V4L2_CID_IMAGE_SOURCE_CLASS_BASE + @as(c_int, 5);
+pub const V4L2_CID_TEST_PATTERN_BLUE = V4L2_CID_IMAGE_SOURCE_CLASS_BASE + @as(c_int, 6);
+pub const V4L2_CID_TEST_PATTERN_GREENB = V4L2_CID_IMAGE_SOURCE_CLASS_BASE + @as(c_int, 7);
+pub const V4L2_CID_UNIT_CELL_SIZE = V4L2_CID_IMAGE_SOURCE_CLASS_BASE + @as(c_int, 8);
+pub const V4L2_CID_IMAGE_PROC_CLASS_BASE = V4L2_CTRL_CLASS_IMAGE_PROC | @as(c_int, 0x900);
+pub const V4L2_CID_IMAGE_PROC_CLASS = V4L2_CTRL_CLASS_IMAGE_PROC | @as(c_int, 1);
+pub const V4L2_CID_LINK_FREQ = V4L2_CID_IMAGE_PROC_CLASS_BASE + @as(c_int, 1);
+pub const V4L2_CID_PIXEL_RATE = V4L2_CID_IMAGE_PROC_CLASS_BASE + @as(c_int, 2);
+pub const V4L2_CID_TEST_PATTERN = V4L2_CID_IMAGE_PROC_CLASS_BASE + @as(c_int, 3);
+pub const V4L2_CID_DEINTERLACING_MODE = V4L2_CID_IMAGE_PROC_CLASS_BASE + @as(c_int, 4);
+pub const V4L2_CID_DIGITAL_GAIN = V4L2_CID_IMAGE_PROC_CLASS_BASE + @as(c_int, 5);
+pub const V4L2_CID_DV_CLASS_BASE = V4L2_CTRL_CLASS_DV | @as(c_int, 0x900);
+pub const V4L2_CID_DV_CLASS = V4L2_CTRL_CLASS_DV | @as(c_int, 1);
+pub const V4L2_CID_DV_TX_HOTPLUG = V4L2_CID_DV_CLASS_BASE + @as(c_int, 1);
+pub const V4L2_CID_DV_TX_RXSENSE = V4L2_CID_DV_CLASS_BASE + @as(c_int, 2);
+pub const V4L2_CID_DV_TX_EDID_PRESENT = V4L2_CID_DV_CLASS_BASE + @as(c_int, 3);
+pub const V4L2_CID_DV_TX_MODE = V4L2_CID_DV_CLASS_BASE + @as(c_int, 4);
+pub const V4L2_CID_DV_TX_RGB_RANGE = V4L2_CID_DV_CLASS_BASE + @as(c_int, 5);
+pub const V4L2_CID_DV_TX_IT_CONTENT_TYPE = V4L2_CID_DV_CLASS_BASE + @as(c_int, 6);
+pub const V4L2_CID_DV_RX_POWER_PRESENT = V4L2_CID_DV_CLASS_BASE + @as(c_int, 100);
+pub const V4L2_CID_DV_RX_RGB_RANGE = V4L2_CID_DV_CLASS_BASE + @as(c_int, 101);
+pub const V4L2_CID_DV_RX_IT_CONTENT_TYPE = V4L2_CID_DV_CLASS_BASE + @as(c_int, 102);
+pub const V4L2_CID_FM_RX_CLASS_BASE = V4L2_CTRL_CLASS_FM_RX | @as(c_int, 0x900);
+pub const V4L2_CID_FM_RX_CLASS = V4L2_CTRL_CLASS_FM_RX | @as(c_int, 1);
+pub const V4L2_CID_TUNE_DEEMPHASIS = V4L2_CID_FM_RX_CLASS_BASE + @as(c_int, 1);
+pub const V4L2_CID_RDS_RECEPTION = V4L2_CID_FM_RX_CLASS_BASE + @as(c_int, 2);
+pub const V4L2_CID_RDS_RX_PTY = V4L2_CID_FM_RX_CLASS_BASE + @as(c_int, 3);
+pub const V4L2_CID_RDS_RX_PS_NAME = V4L2_CID_FM_RX_CLASS_BASE + @as(c_int, 4);
+pub const V4L2_CID_RDS_RX_RADIO_TEXT = V4L2_CID_FM_RX_CLASS_BASE + @as(c_int, 5);
+pub const V4L2_CID_RDS_RX_TRAFFIC_ANNOUNCEMENT = V4L2_CID_FM_RX_CLASS_BASE + @as(c_int, 6);
+pub const V4L2_CID_RDS_RX_TRAFFIC_PROGRAM = V4L2_CID_FM_RX_CLASS_BASE + @as(c_int, 7);
+pub const V4L2_CID_RDS_RX_MUSIC_SPEECH = V4L2_CID_FM_RX_CLASS_BASE + @as(c_int, 8);
+pub const V4L2_CID_RF_TUNER_CLASS_BASE = V4L2_CTRL_CLASS_RF_TUNER | @as(c_int, 0x900);
+pub const V4L2_CID_RF_TUNER_CLASS = V4L2_CTRL_CLASS_RF_TUNER | @as(c_int, 1);
+pub const V4L2_CID_RF_TUNER_BANDWIDTH_AUTO = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 11);
+pub const V4L2_CID_RF_TUNER_BANDWIDTH = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 12);
+pub const V4L2_CID_RF_TUNER_RF_GAIN = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 32);
+pub const V4L2_CID_RF_TUNER_LNA_GAIN_AUTO = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 41);
+pub const V4L2_CID_RF_TUNER_LNA_GAIN = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 42);
+pub const V4L2_CID_RF_TUNER_MIXER_GAIN_AUTO = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 51);
+pub const V4L2_CID_RF_TUNER_MIXER_GAIN = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 52);
+pub const V4L2_CID_RF_TUNER_IF_GAIN_AUTO = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 61);
+pub const V4L2_CID_RF_TUNER_IF_GAIN = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 62);
+pub const V4L2_CID_RF_TUNER_PLL_LOCK = V4L2_CID_RF_TUNER_CLASS_BASE + @as(c_int, 91);
+pub const V4L2_CID_DETECT_CLASS_BASE = V4L2_CTRL_CLASS_DETECT | @as(c_int, 0x900);
+pub const V4L2_CID_DETECT_CLASS = V4L2_CTRL_CLASS_DETECT | @as(c_int, 1);
+pub const V4L2_CID_DETECT_MD_MODE = V4L2_CID_DETECT_CLASS_BASE + @as(c_int, 1);
+pub const V4L2_CID_DETECT_MD_GLOBAL_THRESHOLD = V4L2_CID_DETECT_CLASS_BASE + @as(c_int, 2);
+pub const V4L2_CID_DETECT_MD_THRESHOLD_GRID = V4L2_CID_DETECT_CLASS_BASE + @as(c_int, 3);
+pub const V4L2_CID_DETECT_MD_REGION_GRID = V4L2_CID_DETECT_CLASS_BASE + @as(c_int, 4);
+pub const VIDEO_MAX_FRAME = @as(c_int, 32);
+pub const VIDEO_MAX_PLANES = @as(c_int, 8);
+pub inline fn v4l2_fourcc(a: anytype, b: anytype, c: anytype, d: anytype) @TypeOf(((@import("std").zig.c_translation.cast(__u32, a) | (@import("std").zig.c_translation.cast(__u32, b) << @as(c_int, 8))) | (@import("std").zig.c_translation.cast(__u32, c) << @as(c_int, 16))) | (@import("std").zig.c_translation.cast(__u32, d) << @as(c_int, 24))) {
+    return ((@import("std").zig.c_translation.cast(__u32, a) | (@import("std").zig.c_translation.cast(__u32, b) << @as(c_int, 8))) | (@import("std").zig.c_translation.cast(__u32, c) << @as(c_int, 16))) | (@import("std").zig.c_translation.cast(__u32, d) << @as(c_int, 24));
+}
+pub inline fn v4l2_fourcc_be(a: anytype, b: anytype, c: anytype, d: anytype) @TypeOf(v4l2_fourcc(a, b, c, d) | (@as(c_uint, 1) << @as(c_int, 31))) {
+    return v4l2_fourcc(a, b, c, d) | (@as(c_uint, 1) << @as(c_int, 31));
+}
+pub inline fn V4L2_FIELD_HAS_TOP(field: anytype) @TypeOf((((((field == V4L2_FIELD_TOP) or (field == V4L2_FIELD_INTERLACED)) or (field == V4L2_FIELD_INTERLACED_TB)) or (field == V4L2_FIELD_INTERLACED_BT)) or (field == V4L2_FIELD_SEQ_TB)) or (field == V4L2_FIELD_SEQ_BT)) {
+    return (((((field == V4L2_FIELD_TOP) or (field == V4L2_FIELD_INTERLACED)) or (field == V4L2_FIELD_INTERLACED_TB)) or (field == V4L2_FIELD_INTERLACED_BT)) or (field == V4L2_FIELD_SEQ_TB)) or (field == V4L2_FIELD_SEQ_BT);
+}
+pub inline fn V4L2_FIELD_HAS_BOTTOM(field: anytype) @TypeOf((((((field == V4L2_FIELD_BOTTOM) or (field == V4L2_FIELD_INTERLACED)) or (field == V4L2_FIELD_INTERLACED_TB)) or (field == V4L2_FIELD_INTERLACED_BT)) or (field == V4L2_FIELD_SEQ_TB)) or (field == V4L2_FIELD_SEQ_BT)) {
+    return (((((field == V4L2_FIELD_BOTTOM) or (field == V4L2_FIELD_INTERLACED)) or (field == V4L2_FIELD_INTERLACED_TB)) or (field == V4L2_FIELD_INTERLACED_BT)) or (field == V4L2_FIELD_SEQ_TB)) or (field == V4L2_FIELD_SEQ_BT);
+}
+pub inline fn V4L2_FIELD_HAS_BOTH(field: anytype) @TypeOf(((((field == V4L2_FIELD_INTERLACED) or (field == V4L2_FIELD_INTERLACED_TB)) or (field == V4L2_FIELD_INTERLACED_BT)) or (field == V4L2_FIELD_SEQ_TB)) or (field == V4L2_FIELD_SEQ_BT)) {
+    return ((((field == V4L2_FIELD_INTERLACED) or (field == V4L2_FIELD_INTERLACED_TB)) or (field == V4L2_FIELD_INTERLACED_BT)) or (field == V4L2_FIELD_SEQ_TB)) or (field == V4L2_FIELD_SEQ_BT);
+}
+pub inline fn V4L2_FIELD_HAS_T_OR_B(field: anytype) @TypeOf(((field == V4L2_FIELD_BOTTOM) or (field == V4L2_FIELD_TOP)) or (field == V4L2_FIELD_ALTERNATE)) {
+    return ((field == V4L2_FIELD_BOTTOM) or (field == V4L2_FIELD_TOP)) or (field == V4L2_FIELD_ALTERNATE);
+}
+pub inline fn V4L2_FIELD_IS_INTERLACED(field: anytype) @TypeOf(((field == V4L2_FIELD_INTERLACED) or (field == V4L2_FIELD_INTERLACED_TB)) or (field == V4L2_FIELD_INTERLACED_BT)) {
+    return ((field == V4L2_FIELD_INTERLACED) or (field == V4L2_FIELD_INTERLACED_TB)) or (field == V4L2_FIELD_INTERLACED_BT);
+}
+pub inline fn V4L2_FIELD_IS_SEQUENTIAL(field: anytype) @TypeOf((field == V4L2_FIELD_SEQ_TB) or (field == V4L2_FIELD_SEQ_BT)) {
+    return (field == V4L2_FIELD_SEQ_TB) or (field == V4L2_FIELD_SEQ_BT);
+}
+pub inline fn V4L2_TYPE_IS_MULTIPLANAR(@"type": anytype) @TypeOf((@"type" == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) or (@"type" == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)) {
+    return (@"type" == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) or (@"type" == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
+}
+pub inline fn V4L2_TYPE_IS_OUTPUT(@"type": anytype) @TypeOf((((((((@"type" == V4L2_BUF_TYPE_VIDEO_OUTPUT) or (@"type" == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)) or (@"type" == V4L2_BUF_TYPE_VIDEO_OVERLAY)) or (@"type" == V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY)) or (@"type" == V4L2_BUF_TYPE_VBI_OUTPUT)) or (@"type" == V4L2_BUF_TYPE_SLICED_VBI_OUTPUT)) or (@"type" == V4L2_BUF_TYPE_SDR_OUTPUT)) or (@"type" == V4L2_BUF_TYPE_META_OUTPUT)) {
+    return (((((((@"type" == V4L2_BUF_TYPE_VIDEO_OUTPUT) or (@"type" == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)) or (@"type" == V4L2_BUF_TYPE_VIDEO_OVERLAY)) or (@"type" == V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY)) or (@"type" == V4L2_BUF_TYPE_VBI_OUTPUT)) or (@"type" == V4L2_BUF_TYPE_SLICED_VBI_OUTPUT)) or (@"type" == V4L2_BUF_TYPE_SDR_OUTPUT)) or (@"type" == V4L2_BUF_TYPE_META_OUTPUT);
+}
+pub inline fn V4L2_TYPE_IS_CAPTURE(@"type": anytype) @TypeOf(!(V4L2_TYPE_IS_OUTPUT(@"type") != 0)) {
+    return !(V4L2_TYPE_IS_OUTPUT(@"type") != 0);
+}
+pub const V4L2_TUNER_ADC = V4L2_TUNER_SDR;
+pub inline fn V4L2_MAP_COLORSPACE_DEFAULT(is_sdtv: anytype, is_hdtv: anytype) @TypeOf(if (is_sdtv) V4L2_COLORSPACE_SMPTE170M else if (is_hdtv) V4L2_COLORSPACE_REC709 else V4L2_COLORSPACE_SRGB) {
+    return if (is_sdtv) V4L2_COLORSPACE_SMPTE170M else if (is_hdtv) V4L2_COLORSPACE_REC709 else V4L2_COLORSPACE_SRGB;
+}
+pub inline fn V4L2_MAP_XFER_FUNC_DEFAULT(colsp: anytype) @TypeOf(if (colsp == V4L2_COLORSPACE_OPRGB) V4L2_XFER_FUNC_OPRGB else if (colsp == V4L2_COLORSPACE_SMPTE240M) V4L2_XFER_FUNC_SMPTE240M else if (colsp == V4L2_COLORSPACE_DCI_P3) V4L2_XFER_FUNC_DCI_P3 else if (colsp == V4L2_COLORSPACE_RAW) V4L2_XFER_FUNC_NONE else if ((colsp == V4L2_COLORSPACE_SRGB) or (colsp == V4L2_COLORSPACE_JPEG)) V4L2_XFER_FUNC_SRGB else V4L2_XFER_FUNC_709) {
+    return if (colsp == V4L2_COLORSPACE_OPRGB) V4L2_XFER_FUNC_OPRGB else if (colsp == V4L2_COLORSPACE_SMPTE240M) V4L2_XFER_FUNC_SMPTE240M else if (colsp == V4L2_COLORSPACE_DCI_P3) V4L2_XFER_FUNC_DCI_P3 else if (colsp == V4L2_COLORSPACE_RAW) V4L2_XFER_FUNC_NONE else if ((colsp == V4L2_COLORSPACE_SRGB) or (colsp == V4L2_COLORSPACE_JPEG)) V4L2_XFER_FUNC_SRGB else V4L2_XFER_FUNC_709;
+}
+pub inline fn V4L2_MAP_YCBCR_ENC_DEFAULT(colsp: anytype) @TypeOf(if ((colsp == V4L2_COLORSPACE_REC709) or (colsp == V4L2_COLORSPACE_DCI_P3)) V4L2_YCBCR_ENC_709 else if (colsp == V4L2_COLORSPACE_BT2020) V4L2_YCBCR_ENC_BT2020 else if (colsp == V4L2_COLORSPACE_SMPTE240M) V4L2_YCBCR_ENC_SMPTE240M else V4L2_YCBCR_ENC_601) {
+    return if ((colsp == V4L2_COLORSPACE_REC709) or (colsp == V4L2_COLORSPACE_DCI_P3)) V4L2_YCBCR_ENC_709 else if (colsp == V4L2_COLORSPACE_BT2020) V4L2_YCBCR_ENC_BT2020 else if (colsp == V4L2_COLORSPACE_SMPTE240M) V4L2_YCBCR_ENC_SMPTE240M else V4L2_YCBCR_ENC_601;
+}
+pub inline fn V4L2_MAP_QUANTIZATION_DEFAULT(is_rgb_or_hsv: anytype, colsp: anytype, ycbcr_enc: anytype) @TypeOf(if ((is_rgb_or_hsv != 0) or (colsp == V4L2_COLORSPACE_JPEG)) V4L2_QUANTIZATION_FULL_RANGE else V4L2_QUANTIZATION_LIM_RANGE) {
+    _ = @TypeOf(ycbcr_enc);
+    return if ((is_rgb_or_hsv != 0) or (colsp == V4L2_COLORSPACE_JPEG)) V4L2_QUANTIZATION_FULL_RANGE else V4L2_QUANTIZATION_LIM_RANGE;
+}
+pub const V4L2_COLORSPACE_ADOBERGB = V4L2_COLORSPACE_OPRGB;
+pub const V4L2_XFER_FUNC_ADOBERGB = V4L2_XFER_FUNC_OPRGB;
+pub const V4L2_CAP_VIDEO_CAPTURE = @as(c_int, 0x00000001);
+pub const V4L2_CAP_VIDEO_OUTPUT = @as(c_int, 0x00000002);
+pub const V4L2_CAP_VIDEO_OVERLAY = @as(c_int, 0x00000004);
+pub const V4L2_CAP_VBI_CAPTURE = @as(c_int, 0x00000010);
+pub const V4L2_CAP_VBI_OUTPUT = @as(c_int, 0x00000020);
+pub const V4L2_CAP_SLICED_VBI_CAPTURE = @as(c_int, 0x00000040);
+pub const V4L2_CAP_SLICED_VBI_OUTPUT = @as(c_int, 0x00000080);
+pub const V4L2_CAP_RDS_CAPTURE = @as(c_int, 0x00000100);
+pub const V4L2_CAP_VIDEO_OUTPUT_OVERLAY = @as(c_int, 0x00000200);
+pub const V4L2_CAP_HW_FREQ_SEEK = @as(c_int, 0x00000400);
+pub const V4L2_CAP_RDS_OUTPUT = @as(c_int, 0x00000800);
+pub const V4L2_CAP_VIDEO_CAPTURE_MPLANE = @as(c_int, 0x00001000);
+pub const V4L2_CAP_VIDEO_OUTPUT_MPLANE = @as(c_int, 0x00002000);
+pub const V4L2_CAP_VIDEO_M2M_MPLANE = @as(c_int, 0x00004000);
+pub const V4L2_CAP_VIDEO_M2M = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00008000, .hexadecimal);
+pub const V4L2_CAP_TUNER = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00010000, .hexadecimal);
+pub const V4L2_CAP_AUDIO = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00020000, .hexadecimal);
+pub const V4L2_CAP_RADIO = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00040000, .hexadecimal);
+pub const V4L2_CAP_MODULATOR = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00080000, .hexadecimal);
+pub const V4L2_CAP_SDR_CAPTURE = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00100000, .hexadecimal);
+pub const V4L2_CAP_EXT_PIX_FORMAT = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00200000, .hexadecimal);
+pub const V4L2_CAP_SDR_OUTPUT = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00400000, .hexadecimal);
+pub const V4L2_CAP_META_CAPTURE = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00800000, .hexadecimal);
+pub const V4L2_CAP_READWRITE = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x01000000, .hexadecimal);
+pub const V4L2_CAP_ASYNCIO = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x02000000, .hexadecimal);
+pub const V4L2_CAP_STREAMING = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x04000000, .hexadecimal);
+pub const V4L2_CAP_META_OUTPUT = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x08000000, .hexadecimal);
+pub const V4L2_CAP_TOUCH = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x10000000, .hexadecimal);
+pub const V4L2_CAP_IO_MC = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x20000000, .hexadecimal);
+pub const V4L2_CAP_DEVICE_CAPS = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x80000000, .hexadecimal);
+pub const V4L2_PIX_FMT_RGB332 = v4l2_fourcc('R', 'G', 'B', '1');
+pub const V4L2_PIX_FMT_RGB444 = v4l2_fourcc('R', '4', '4', '4');
+pub const V4L2_PIX_FMT_ARGB444 = v4l2_fourcc('A', 'R', '1', '2');
+pub const V4L2_PIX_FMT_XRGB444 = v4l2_fourcc('X', 'R', '1', '2');
+pub const V4L2_PIX_FMT_RGBA444 = v4l2_fourcc('R', 'A', '1', '2');
+pub const V4L2_PIX_FMT_RGBX444 = v4l2_fourcc('R', 'X', '1', '2');
+pub const V4L2_PIX_FMT_ABGR444 = v4l2_fourcc('A', 'B', '1', '2');
+pub const V4L2_PIX_FMT_XBGR444 = v4l2_fourcc('X', 'B', '1', '2');
+pub const V4L2_PIX_FMT_BGRA444 = v4l2_fourcc('G', 'A', '1', '2');
+pub const V4L2_PIX_FMT_BGRX444 = v4l2_fourcc('B', 'X', '1', '2');
+pub const V4L2_PIX_FMT_RGB555 = v4l2_fourcc('R', 'G', 'B', 'O');
+pub const V4L2_PIX_FMT_ARGB555 = v4l2_fourcc('A', 'R', '1', '5');
+pub const V4L2_PIX_FMT_XRGB555 = v4l2_fourcc('X', 'R', '1', '5');
+pub const V4L2_PIX_FMT_RGBA555 = v4l2_fourcc('R', 'A', '1', '5');
+pub const V4L2_PIX_FMT_RGBX555 = v4l2_fourcc('R', 'X', '1', '5');
+pub const V4L2_PIX_FMT_ABGR555 = v4l2_fourcc('A', 'B', '1', '5');
+pub const V4L2_PIX_FMT_XBGR555 = v4l2_fourcc('X', 'B', '1', '5');
+pub const V4L2_PIX_FMT_BGRA555 = v4l2_fourcc('B', 'A', '1', '5');
+pub const V4L2_PIX_FMT_BGRX555 = v4l2_fourcc('B', 'X', '1', '5');
+pub const V4L2_PIX_FMT_RGB565 = v4l2_fourcc('R', 'G', 'B', 'P');
+pub const V4L2_PIX_FMT_RGB555X = v4l2_fourcc('R', 'G', 'B', 'Q');
+pub const V4L2_PIX_FMT_ARGB555X = v4l2_fourcc_be('A', 'R', '1', '5');
+pub const V4L2_PIX_FMT_XRGB555X = v4l2_fourcc_be('X', 'R', '1', '5');
+pub const V4L2_PIX_FMT_RGB565X = v4l2_fourcc('R', 'G', 'B', 'R');
+pub const V4L2_PIX_FMT_BGR666 = v4l2_fourcc('B', 'G', 'R', 'H');
+pub const V4L2_PIX_FMT_BGR24 = v4l2_fourcc('B', 'G', 'R', '3');
+pub const V4L2_PIX_FMT_RGB24 = v4l2_fourcc('R', 'G', 'B', '3');
+pub const V4L2_PIX_FMT_BGR32 = v4l2_fourcc('B', 'G', 'R', '4');
+pub const V4L2_PIX_FMT_ABGR32 = v4l2_fourcc('A', 'R', '2', '4');
+pub const V4L2_PIX_FMT_XBGR32 = v4l2_fourcc('X', 'R', '2', '4');
+pub const V4L2_PIX_FMT_BGRA32 = v4l2_fourcc('R', 'A', '2', '4');
+pub const V4L2_PIX_FMT_BGRX32 = v4l2_fourcc('R', 'X', '2', '4');
+pub const V4L2_PIX_FMT_RGB32 = v4l2_fourcc('R', 'G', 'B', '4');
+pub const V4L2_PIX_FMT_RGBA32 = v4l2_fourcc('A', 'B', '2', '4');
+pub const V4L2_PIX_FMT_RGBX32 = v4l2_fourcc('X', 'B', '2', '4');
+pub const V4L2_PIX_FMT_ARGB32 = v4l2_fourcc('B', 'A', '2', '4');
+pub const V4L2_PIX_FMT_XRGB32 = v4l2_fourcc('B', 'X', '2', '4');
+pub const V4L2_PIX_FMT_GREY = v4l2_fourcc('G', 'R', 'E', 'Y');
+pub const V4L2_PIX_FMT_Y4 = v4l2_fourcc('Y', '0', '4', ' ');
+pub const V4L2_PIX_FMT_Y6 = v4l2_fourcc('Y', '0', '6', ' ');
+pub const V4L2_PIX_FMT_Y10 = v4l2_fourcc('Y', '1', '0', ' ');
+pub const V4L2_PIX_FMT_Y12 = v4l2_fourcc('Y', '1', '2', ' ');
+pub const V4L2_PIX_FMT_Y14 = v4l2_fourcc('Y', '1', '4', ' ');
+pub const V4L2_PIX_FMT_Y16 = v4l2_fourcc('Y', '1', '6', ' ');
+pub const V4L2_PIX_FMT_Y16_BE = v4l2_fourcc_be('Y', '1', '6', ' ');
+pub const V4L2_PIX_FMT_Y10BPACK = v4l2_fourcc('Y', '1', '0', 'B');
+pub const V4L2_PIX_FMT_Y10P = v4l2_fourcc('Y', '1', '0', 'P');
+pub const V4L2_PIX_FMT_PAL8 = v4l2_fourcc('P', 'A', 'L', '8');
+pub const V4L2_PIX_FMT_UV8 = v4l2_fourcc('U', 'V', '8', ' ');
+pub const V4L2_PIX_FMT_YUYV = v4l2_fourcc('Y', 'U', 'Y', 'V');
+pub const V4L2_PIX_FMT_YYUV = v4l2_fourcc('Y', 'Y', 'U', 'V');
+pub const V4L2_PIX_FMT_YVYU = v4l2_fourcc('Y', 'V', 'Y', 'U');
+pub const V4L2_PIX_FMT_UYVY = v4l2_fourcc('U', 'Y', 'V', 'Y');
+pub const V4L2_PIX_FMT_VYUY = v4l2_fourcc('V', 'Y', 'U', 'Y');
+pub const V4L2_PIX_FMT_Y41P = v4l2_fourcc('Y', '4', '1', 'P');
+pub const V4L2_PIX_FMT_YUV444 = v4l2_fourcc('Y', '4', '4', '4');
+pub const V4L2_PIX_FMT_YUV555 = v4l2_fourcc('Y', 'U', 'V', 'O');
+pub const V4L2_PIX_FMT_YUV565 = v4l2_fourcc('Y', 'U', 'V', 'P');
+pub const V4L2_PIX_FMT_YUV32 = v4l2_fourcc('Y', 'U', 'V', '4');
+pub const V4L2_PIX_FMT_AYUV32 = v4l2_fourcc('A', 'Y', 'U', 'V');
+pub const V4L2_PIX_FMT_XYUV32 = v4l2_fourcc('X', 'Y', 'U', 'V');
+pub const V4L2_PIX_FMT_VUYA32 = v4l2_fourcc('V', 'U', 'Y', 'A');
+pub const V4L2_PIX_FMT_VUYX32 = v4l2_fourcc('V', 'U', 'Y', 'X');
+pub const V4L2_PIX_FMT_HI240 = v4l2_fourcc('H', 'I', '2', '4');
+pub const V4L2_PIX_FMT_HM12 = v4l2_fourcc('H', 'M', '1', '2');
+pub const V4L2_PIX_FMT_M420 = v4l2_fourcc('M', '4', '2', '0');
+pub const V4L2_PIX_FMT_NV12 = v4l2_fourcc('N', 'V', '1', '2');
+pub const V4L2_PIX_FMT_NV21 = v4l2_fourcc('N', 'V', '2', '1');
+pub const V4L2_PIX_FMT_NV16 = v4l2_fourcc('N', 'V', '1', '6');
+pub const V4L2_PIX_FMT_NV61 = v4l2_fourcc('N', 'V', '6', '1');
+pub const V4L2_PIX_FMT_NV24 = v4l2_fourcc('N', 'V', '2', '4');
+pub const V4L2_PIX_FMT_NV42 = v4l2_fourcc('N', 'V', '4', '2');
+pub const V4L2_PIX_FMT_NV12M = v4l2_fourcc('N', 'M', '1', '2');
+pub const V4L2_PIX_FMT_NV21M = v4l2_fourcc('N', 'M', '2', '1');
+pub const V4L2_PIX_FMT_NV16M = v4l2_fourcc('N', 'M', '1', '6');
+pub const V4L2_PIX_FMT_NV61M = v4l2_fourcc('N', 'M', '6', '1');
+pub const V4L2_PIX_FMT_NV12MT = v4l2_fourcc('T', 'M', '1', '2');
+pub const V4L2_PIX_FMT_NV12MT_16X16 = v4l2_fourcc('V', 'M', '1', '2');
+pub const V4L2_PIX_FMT_YUV410 = v4l2_fourcc('Y', 'U', 'V', '9');
+pub const V4L2_PIX_FMT_YVU410 = v4l2_fourcc('Y', 'V', 'U', '9');
+pub const V4L2_PIX_FMT_YUV411P = v4l2_fourcc('4', '1', '1', 'P');
+pub const V4L2_PIX_FMT_YUV420 = v4l2_fourcc('Y', 'U', '1', '2');
+pub const V4L2_PIX_FMT_YVU420 = v4l2_fourcc('Y', 'V', '1', '2');
+pub const V4L2_PIX_FMT_YUV422P = v4l2_fourcc('4', '2', '2', 'P');
+pub const V4L2_PIX_FMT_YUV420M = v4l2_fourcc('Y', 'M', '1', '2');
+pub const V4L2_PIX_FMT_YVU420M = v4l2_fourcc('Y', 'M', '2', '1');
+pub const V4L2_PIX_FMT_YUV422M = v4l2_fourcc('Y', 'M', '1', '6');
+pub const V4L2_PIX_FMT_YVU422M = v4l2_fourcc('Y', 'M', '6', '1');
+pub const V4L2_PIX_FMT_YUV444M = v4l2_fourcc('Y', 'M', '2', '4');
+pub const V4L2_PIX_FMT_YVU444M = v4l2_fourcc('Y', 'M', '4', '2');
+pub const V4L2_PIX_FMT_SBGGR8 = v4l2_fourcc('B', 'A', '8', '1');
+pub const V4L2_PIX_FMT_SGBRG8 = v4l2_fourcc('G', 'B', 'R', 'G');
+pub const V4L2_PIX_FMT_SGRBG8 = v4l2_fourcc('G', 'R', 'B', 'G');
+pub const V4L2_PIX_FMT_SRGGB8 = v4l2_fourcc('R', 'G', 'G', 'B');
+pub const V4L2_PIX_FMT_SBGGR10 = v4l2_fourcc('B', 'G', '1', '0');
+pub const V4L2_PIX_FMT_SGBRG10 = v4l2_fourcc('G', 'B', '1', '0');
+pub const V4L2_PIX_FMT_SGRBG10 = v4l2_fourcc('B', 'A', '1', '0');
+pub const V4L2_PIX_FMT_SRGGB10 = v4l2_fourcc('R', 'G', '1', '0');
+pub const V4L2_PIX_FMT_SBGGR10P = v4l2_fourcc('p', 'B', 'A', 'A');
+pub const V4L2_PIX_FMT_SGBRG10P = v4l2_fourcc('p', 'G', 'A', 'A');
+pub const V4L2_PIX_FMT_SGRBG10P = v4l2_fourcc('p', 'g', 'A', 'A');
+pub const V4L2_PIX_FMT_SRGGB10P = v4l2_fourcc('p', 'R', 'A', 'A');
+pub const V4L2_PIX_FMT_SBGGR10ALAW8 = v4l2_fourcc('a', 'B', 'A', '8');
+pub const V4L2_PIX_FMT_SGBRG10ALAW8 = v4l2_fourcc('a', 'G', 'A', '8');
+pub const V4L2_PIX_FMT_SGRBG10ALAW8 = v4l2_fourcc('a', 'g', 'A', '8');
+pub const V4L2_PIX_FMT_SRGGB10ALAW8 = v4l2_fourcc('a', 'R', 'A', '8');
+pub const V4L2_PIX_FMT_SBGGR10DPCM8 = v4l2_fourcc('b', 'B', 'A', '8');
+pub const V4L2_PIX_FMT_SGBRG10DPCM8 = v4l2_fourcc('b', 'G', 'A', '8');
+pub const V4L2_PIX_FMT_SGRBG10DPCM8 = v4l2_fourcc('B', 'D', '1', '0');
+pub const V4L2_PIX_FMT_SRGGB10DPCM8 = v4l2_fourcc('b', 'R', 'A', '8');
+pub const V4L2_PIX_FMT_SBGGR12 = v4l2_fourcc('B', 'G', '1', '2');
+pub const V4L2_PIX_FMT_SGBRG12 = v4l2_fourcc('G', 'B', '1', '2');
+pub const V4L2_PIX_FMT_SGRBG12 = v4l2_fourcc('B', 'A', '1', '2');
+pub const V4L2_PIX_FMT_SRGGB12 = v4l2_fourcc('R', 'G', '1', '2');
+pub const V4L2_PIX_FMT_SBGGR12P = v4l2_fourcc('p', 'B', 'C', 'C');
+pub const V4L2_PIX_FMT_SGBRG12P = v4l2_fourcc('p', 'G', 'C', 'C');
+pub const V4L2_PIX_FMT_SGRBG12P = v4l2_fourcc('p', 'g', 'C', 'C');
+pub const V4L2_PIX_FMT_SRGGB12P = v4l2_fourcc('p', 'R', 'C', 'C');
+pub const V4L2_PIX_FMT_SBGGR14 = v4l2_fourcc('B', 'G', '1', '4');
+pub const V4L2_PIX_FMT_SGBRG14 = v4l2_fourcc('G', 'B', '1', '4');
+pub const V4L2_PIX_FMT_SGRBG14 = v4l2_fourcc('G', 'R', '1', '4');
+pub const V4L2_PIX_FMT_SRGGB14 = v4l2_fourcc('R', 'G', '1', '4');
+pub const V4L2_PIX_FMT_SBGGR14P = v4l2_fourcc('p', 'B', 'E', 'E');
+pub const V4L2_PIX_FMT_SGBRG14P = v4l2_fourcc('p', 'G', 'E', 'E');
+pub const V4L2_PIX_FMT_SGRBG14P = v4l2_fourcc('p', 'g', 'E', 'E');
+pub const V4L2_PIX_FMT_SRGGB14P = v4l2_fourcc('p', 'R', 'E', 'E');
+pub const V4L2_PIX_FMT_SBGGR16 = v4l2_fourcc('B', 'Y', 'R', '2');
+pub const V4L2_PIX_FMT_SGBRG16 = v4l2_fourcc('G', 'B', '1', '6');
+pub const V4L2_PIX_FMT_SGRBG16 = v4l2_fourcc('G', 'R', '1', '6');
+pub const V4L2_PIX_FMT_SRGGB16 = v4l2_fourcc('R', 'G', '1', '6');
+pub const V4L2_PIX_FMT_HSV24 = v4l2_fourcc('H', 'S', 'V', '3');
+pub const V4L2_PIX_FMT_HSV32 = v4l2_fourcc('H', 'S', 'V', '4');
+pub const V4L2_PIX_FMT_MJPEG = v4l2_fourcc('M', 'J', 'P', 'G');
+pub const V4L2_PIX_FMT_JPEG = v4l2_fourcc('J', 'P', 'E', 'G');
+pub const V4L2_PIX_FMT_DV = v4l2_fourcc('d', 'v', 's', 'd');
+pub const V4L2_PIX_FMT_MPEG = v4l2_fourcc('M', 'P', 'E', 'G');
+pub const V4L2_PIX_FMT_H264 = v4l2_fourcc('H', '2', '6', '4');
+pub const V4L2_PIX_FMT_H264_NO_SC = v4l2_fourcc('A', 'V', 'C', '1');
+pub const V4L2_PIX_FMT_H264_MVC = v4l2_fourcc('M', '2', '6', '4');
+pub const V4L2_PIX_FMT_H263 = v4l2_fourcc('H', '2', '6', '3');
+pub const V4L2_PIX_FMT_MPEG1 = v4l2_fourcc('M', 'P', 'G', '1');
+pub const V4L2_PIX_FMT_MPEG2 = v4l2_fourcc('M', 'P', 'G', '2');
+pub const V4L2_PIX_FMT_MPEG2_SLICE = v4l2_fourcc('M', 'G', '2', 'S');
+pub const V4L2_PIX_FMT_MPEG4 = v4l2_fourcc('M', 'P', 'G', '4');
+pub const V4L2_PIX_FMT_XVID = v4l2_fourcc('X', 'V', 'I', 'D');
+pub const V4L2_PIX_FMT_VC1_ANNEX_G = v4l2_fourcc('V', 'C', '1', 'G');
+pub const V4L2_PIX_FMT_VC1_ANNEX_L = v4l2_fourcc('V', 'C', '1', 'L');
+pub const V4L2_PIX_FMT_VP8 = v4l2_fourcc('V', 'P', '8', '0');
+pub const V4L2_PIX_FMT_VP9 = v4l2_fourcc('V', 'P', '9', '0');
+pub const V4L2_PIX_FMT_HEVC = v4l2_fourcc('H', 'E', 'V', 'C');
+pub const V4L2_PIX_FMT_FWHT = v4l2_fourcc('F', 'W', 'H', 'T');
+pub const V4L2_PIX_FMT_FWHT_STATELESS = v4l2_fourcc('S', 'F', 'W', 'H');
+pub const V4L2_PIX_FMT_CPIA1 = v4l2_fourcc('C', 'P', 'I', 'A');
+pub const V4L2_PIX_FMT_WNVA = v4l2_fourcc('W', 'N', 'V', 'A');
+pub const V4L2_PIX_FMT_SN9C10X = v4l2_fourcc('S', '9', '1', '0');
+pub const V4L2_PIX_FMT_SN9C20X_I420 = v4l2_fourcc('S', '9', '2', '0');
+pub const V4L2_PIX_FMT_PWC1 = v4l2_fourcc('P', 'W', 'C', '1');
+pub const V4L2_PIX_FMT_PWC2 = v4l2_fourcc('P', 'W', 'C', '2');
+pub const V4L2_PIX_FMT_ET61X251 = v4l2_fourcc('E', '6', '2', '5');
+pub const V4L2_PIX_FMT_SPCA501 = v4l2_fourcc('S', '5', '0', '1');
+pub const V4L2_PIX_FMT_SPCA505 = v4l2_fourcc('S', '5', '0', '5');
+pub const V4L2_PIX_FMT_SPCA508 = v4l2_fourcc('S', '5', '0', '8');
+pub const V4L2_PIX_FMT_SPCA561 = v4l2_fourcc('S', '5', '6', '1');
+pub const V4L2_PIX_FMT_PAC207 = v4l2_fourcc('P', '2', '0', '7');
+pub const V4L2_PIX_FMT_MR97310A = v4l2_fourcc('M', '3', '1', '0');
+pub const V4L2_PIX_FMT_JL2005BCD = v4l2_fourcc('J', 'L', '2', '0');
+pub const V4L2_PIX_FMT_SN9C2028 = v4l2_fourcc('S', 'O', 'N', 'X');
+pub const V4L2_PIX_FMT_SQ905C = v4l2_fourcc('9', '0', '5', 'C');
+pub const V4L2_PIX_FMT_PJPG = v4l2_fourcc('P', 'J', 'P', 'G');
+pub const V4L2_PIX_FMT_OV511 = v4l2_fourcc('O', '5', '1', '1');
+pub const V4L2_PIX_FMT_OV518 = v4l2_fourcc('O', '5', '1', '8');
+pub const V4L2_PIX_FMT_STV0680 = v4l2_fourcc('S', '6', '8', '0');
+pub const V4L2_PIX_FMT_TM6000 = v4l2_fourcc('T', 'M', '6', '0');
+pub const V4L2_PIX_FMT_CIT_YYVYUY = v4l2_fourcc('C', 'I', 'T', 'V');
+pub const V4L2_PIX_FMT_KONICA420 = v4l2_fourcc('K', 'O', 'N', 'I');
+pub const V4L2_PIX_FMT_JPGL = v4l2_fourcc('J', 'P', 'G', 'L');
+pub const V4L2_PIX_FMT_SE401 = v4l2_fourcc('S', '4', '0', '1');
+pub const V4L2_PIX_FMT_S5C_UYVY_JPG = v4l2_fourcc('S', '5', 'C', 'I');
+pub const V4L2_PIX_FMT_Y8I = v4l2_fourcc('Y', '8', 'I', ' ');
+pub const V4L2_PIX_FMT_Y12I = v4l2_fourcc('Y', '1', '2', 'I');
+pub const V4L2_PIX_FMT_Z16 = v4l2_fourcc('Z', '1', '6', ' ');
+pub const V4L2_PIX_FMT_MT21C = v4l2_fourcc('M', 'T', '2', '1');
+pub const V4L2_PIX_FMT_INZI = v4l2_fourcc('I', 'N', 'Z', 'I');
+pub const V4L2_PIX_FMT_SUNXI_TILED_NV12 = v4l2_fourcc('S', 'T', '1', '2');
+pub const V4L2_PIX_FMT_CNF4 = v4l2_fourcc('C', 'N', 'F', '4');
+pub const V4L2_PIX_FMT_IPU3_SBGGR10 = v4l2_fourcc('i', 'p', '3', 'b');
+pub const V4L2_PIX_FMT_IPU3_SGBRG10 = v4l2_fourcc('i', 'p', '3', 'g');
+pub const V4L2_PIX_FMT_IPU3_SGRBG10 = v4l2_fourcc('i', 'p', '3', 'G');
+pub const V4L2_PIX_FMT_IPU3_SRGGB10 = v4l2_fourcc('i', 'p', '3', 'r');
+pub const V4L2_SDR_FMT_CU8 = v4l2_fourcc('C', 'U', '0', '8');
+pub const V4L2_SDR_FMT_CU16LE = v4l2_fourcc('C', 'U', '1', '6');
+pub const V4L2_SDR_FMT_CS8 = v4l2_fourcc('C', 'S', '0', '8');
+pub const V4L2_SDR_FMT_CS14LE = v4l2_fourcc('C', 'S', '1', '4');
+pub const V4L2_SDR_FMT_RU12LE = v4l2_fourcc('R', 'U', '1', '2');
+pub const V4L2_SDR_FMT_PCU16BE = v4l2_fourcc('P', 'C', '1', '6');
+pub const V4L2_SDR_FMT_PCU18BE = v4l2_fourcc('P', 'C', '1', '8');
+pub const V4L2_SDR_FMT_PCU20BE = v4l2_fourcc('P', 'C', '2', '0');
+pub const V4L2_TCH_FMT_DELTA_TD16 = v4l2_fourcc('T', 'D', '1', '6');
+pub const V4L2_TCH_FMT_DELTA_TD08 = v4l2_fourcc('T', 'D', '0', '8');
+pub const V4L2_TCH_FMT_TU16 = v4l2_fourcc('T', 'U', '1', '6');
+pub const V4L2_TCH_FMT_TU08 = v4l2_fourcc('T', 'U', '0', '8');
+pub const V4L2_META_FMT_VSP1_HGO = v4l2_fourcc('V', 'S', 'P', 'H');
+pub const V4L2_META_FMT_VSP1_HGT = v4l2_fourcc('V', 'S', 'P', 'T');
+pub const V4L2_META_FMT_UVC = v4l2_fourcc('U', 'V', 'C', 'H');
+pub const V4L2_META_FMT_D4XX = v4l2_fourcc('D', '4', 'X', 'X');
+pub const V4L2_META_FMT_VIVID = v4l2_fourcc('V', 'I', 'V', 'D');
+pub const V4L2_PIX_FMT_PRIV_MAGIC = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0xfeedcafe, .hexadecimal);
+pub const V4L2_PIX_FMT_FLAG_PREMUL_ALPHA = @as(c_int, 0x00000001);
+pub const V4L2_PIX_FMT_FLAG_SET_CSC = @as(c_int, 0x00000002);
+pub const V4L2_FMT_FLAG_COMPRESSED = @as(c_int, 0x0001);
+pub const V4L2_FMT_FLAG_EMULATED = @as(c_int, 0x0002);
+pub const V4L2_FMT_FLAG_CONTINUOUS_BYTESTREAM = @as(c_int, 0x0004);
+pub const V4L2_FMT_FLAG_DYN_RESOLUTION = @as(c_int, 0x0008);
+pub const V4L2_FMT_FLAG_ENC_CAP_FRAME_INTERVAL = @as(c_int, 0x0010);
+pub const V4L2_FMT_FLAG_CSC_COLORSPACE = @as(c_int, 0x0020);
+pub const V4L2_FMT_FLAG_CSC_XFER_FUNC = @as(c_int, 0x0040);
+pub const V4L2_FMT_FLAG_CSC_YCBCR_ENC = @as(c_int, 0x0080);
+pub const V4L2_FMT_FLAG_CSC_HSV_ENC = V4L2_FMT_FLAG_CSC_YCBCR_ENC;
+pub const V4L2_FMT_FLAG_CSC_QUANTIZATION = @as(c_int, 0x0100);
+pub const V4L2_TC_TYPE_24FPS = @as(c_int, 1);
+pub const V4L2_TC_TYPE_25FPS = @as(c_int, 2);
+pub const V4L2_TC_TYPE_30FPS = @as(c_int, 3);
+pub const V4L2_TC_TYPE_50FPS = @as(c_int, 4);
+pub const V4L2_TC_TYPE_60FPS = @as(c_int, 5);
+pub const V4L2_TC_FLAG_DROPFRAME = @as(c_int, 0x0001);
+pub const V4L2_TC_FLAG_COLORFRAME = @as(c_int, 0x0002);
+pub const V4L2_TC_USERBITS_field = @as(c_int, 0x000C);
+pub const V4L2_TC_USERBITS_USERDEFINED = @as(c_int, 0x0000);
+pub const V4L2_TC_USERBITS_8BITCHARS = @as(c_int, 0x0008);
+pub const V4L2_JPEG_MARKER_DHT = @as(c_int, 1) << @as(c_int, 3);
+pub const V4L2_JPEG_MARKER_DQT = @as(c_int, 1) << @as(c_int, 4);
+pub const V4L2_JPEG_MARKER_DRI = @as(c_int, 1) << @as(c_int, 5);
+pub const V4L2_JPEG_MARKER_COM = @as(c_int, 1) << @as(c_int, 6);
+pub const V4L2_JPEG_MARKER_APP = @as(c_int, 1) << @as(c_int, 7);
+pub const V4L2_BUF_CAP_SUPPORTS_MMAP = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_BUF_CAP_SUPPORTS_USERPTR = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_BUF_CAP_SUPPORTS_DMABUF = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_BUF_CAP_SUPPORTS_REQUESTS = @as(c_int, 1) << @as(c_int, 3);
+pub const V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS = @as(c_int, 1) << @as(c_int, 4);
+pub const V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF = @as(c_int, 1) << @as(c_int, 5);
+pub const V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS = @as(c_int, 1) << @as(c_int, 6);
+pub const V4L2_BUF_FLAG_MAPPED = @as(c_int, 0x00000001);
+pub const V4L2_BUF_FLAG_QUEUED = @as(c_int, 0x00000002);
+pub const V4L2_BUF_FLAG_DONE = @as(c_int, 0x00000004);
+pub const V4L2_BUF_FLAG_KEYFRAME = @as(c_int, 0x00000008);
+pub const V4L2_BUF_FLAG_PFRAME = @as(c_int, 0x00000010);
+pub const V4L2_BUF_FLAG_BFRAME = @as(c_int, 0x00000020);
+pub const V4L2_BUF_FLAG_ERROR = @as(c_int, 0x00000040);
+pub const V4L2_BUF_FLAG_IN_REQUEST = @as(c_int, 0x00000080);
+pub const V4L2_BUF_FLAG_TIMECODE = @as(c_int, 0x00000100);
+pub const V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF = @as(c_int, 0x00000200);
+pub const V4L2_BUF_FLAG_PREPARED = @as(c_int, 0x00000400);
+pub const V4L2_BUF_FLAG_NO_CACHE_INVALIDATE = @as(c_int, 0x00000800);
+pub const V4L2_BUF_FLAG_NO_CACHE_CLEAN = @as(c_int, 0x00001000);
+pub const V4L2_BUF_FLAG_TIMESTAMP_MASK = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x0000e000, .hexadecimal);
+pub const V4L2_BUF_FLAG_TIMESTAMP_UNKNOWN = @as(c_int, 0x00000000);
+pub const V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC = @as(c_int, 0x00002000);
+pub const V4L2_BUF_FLAG_TIMESTAMP_COPY = @as(c_int, 0x00004000);
+pub const V4L2_BUF_FLAG_TSTAMP_SRC_MASK = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00070000, .hexadecimal);
+pub const V4L2_BUF_FLAG_TSTAMP_SRC_EOF = @as(c_int, 0x00000000);
+pub const V4L2_BUF_FLAG_TSTAMP_SRC_SOE = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00010000, .hexadecimal);
+pub const V4L2_BUF_FLAG_LAST = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00100000, .hexadecimal);
+pub const V4L2_BUF_FLAG_REQUEST_FD = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00800000, .hexadecimal);
+pub const V4L2_FBUF_CAP_EXTERNOVERLAY = @as(c_int, 0x0001);
+pub const V4L2_FBUF_CAP_CHROMAKEY = @as(c_int, 0x0002);
+pub const V4L2_FBUF_CAP_LIST_CLIPPING = @as(c_int, 0x0004);
+pub const V4L2_FBUF_CAP_BITMAP_CLIPPING = @as(c_int, 0x0008);
+pub const V4L2_FBUF_CAP_LOCAL_ALPHA = @as(c_int, 0x0010);
+pub const V4L2_FBUF_CAP_GLOBAL_ALPHA = @as(c_int, 0x0020);
+pub const V4L2_FBUF_CAP_LOCAL_INV_ALPHA = @as(c_int, 0x0040);
+pub const V4L2_FBUF_CAP_SRC_CHROMAKEY = @as(c_int, 0x0080);
+pub const V4L2_FBUF_FLAG_PRIMARY = @as(c_int, 0x0001);
+pub const V4L2_FBUF_FLAG_OVERLAY = @as(c_int, 0x0002);
+pub const V4L2_FBUF_FLAG_CHROMAKEY = @as(c_int, 0x0004);
+pub const V4L2_FBUF_FLAG_LOCAL_ALPHA = @as(c_int, 0x0008);
+pub const V4L2_FBUF_FLAG_GLOBAL_ALPHA = @as(c_int, 0x0010);
+pub const V4L2_FBUF_FLAG_LOCAL_INV_ALPHA = @as(c_int, 0x0020);
+pub const V4L2_FBUF_FLAG_SRC_CHROMAKEY = @as(c_int, 0x0040);
+pub const V4L2_MODE_HIGHQUALITY = @as(c_int, 0x0001);
+pub const V4L2_CAP_TIMEPERFRAME = @as(c_int, 0x1000);
+pub const V4L2_STD_PAL_B = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000001));
+pub const V4L2_STD_PAL_B1 = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000002));
+pub const V4L2_STD_PAL_G = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000004));
+pub const V4L2_STD_PAL_H = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000008));
+pub const V4L2_STD_PAL_I = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000010));
+pub const V4L2_STD_PAL_D = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000020));
+pub const V4L2_STD_PAL_D1 = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000040));
+pub const V4L2_STD_PAL_K = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000080));
+pub const V4L2_STD_PAL_M = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000100));
+pub const V4L2_STD_PAL_N = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000200));
+pub const V4L2_STD_PAL_Nc = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000400));
+pub const V4L2_STD_PAL_60 = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00000800));
+pub const V4L2_STD_NTSC_M = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00001000));
+pub const V4L2_STD_NTSC_M_JP = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00002000));
+pub const V4L2_STD_NTSC_443 = @import("std").zig.c_translation.cast(v4l2_std_id, @as(c_int, 0x00004000));
+pub const V4L2_STD_NTSC_M_KR = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00008000, .hexadecimal));
+pub const V4L2_STD_SECAM_B = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00010000, .hexadecimal));
+pub const V4L2_STD_SECAM_D = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00020000, .hexadecimal));
+pub const V4L2_STD_SECAM_G = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00040000, .hexadecimal));
+pub const V4L2_STD_SECAM_H = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00080000, .hexadecimal));
+pub const V4L2_STD_SECAM_K = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00100000, .hexadecimal));
+pub const V4L2_STD_SECAM_K1 = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00200000, .hexadecimal));
+pub const V4L2_STD_SECAM_L = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00400000, .hexadecimal));
+pub const V4L2_STD_SECAM_LC = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00800000, .hexadecimal));
+pub const V4L2_STD_ATSC_8_VSB = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x01000000, .hexadecimal));
+pub const V4L2_STD_ATSC_16_VSB = @import("std").zig.c_translation.cast(v4l2_std_id, @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x02000000, .hexadecimal));
+pub const V4L2_STD_NTSC = (V4L2_STD_NTSC_M | V4L2_STD_NTSC_M_JP) | V4L2_STD_NTSC_M_KR;
+pub const V4L2_STD_SECAM_DK = (V4L2_STD_SECAM_D | V4L2_STD_SECAM_K) | V4L2_STD_SECAM_K1;
+pub const V4L2_STD_SECAM = ((((V4L2_STD_SECAM_B | V4L2_STD_SECAM_G) | V4L2_STD_SECAM_H) | V4L2_STD_SECAM_DK) | V4L2_STD_SECAM_L) | V4L2_STD_SECAM_LC;
+pub const V4L2_STD_PAL_BG = (V4L2_STD_PAL_B | V4L2_STD_PAL_B1) | V4L2_STD_PAL_G;
+pub const V4L2_STD_PAL_DK = (V4L2_STD_PAL_D | V4L2_STD_PAL_D1) | V4L2_STD_PAL_K;
+pub const V4L2_STD_PAL = ((V4L2_STD_PAL_BG | V4L2_STD_PAL_DK) | V4L2_STD_PAL_H) | V4L2_STD_PAL_I;
+pub const V4L2_STD_B = (V4L2_STD_PAL_B | V4L2_STD_PAL_B1) | V4L2_STD_SECAM_B;
+pub const V4L2_STD_G = V4L2_STD_PAL_G | V4L2_STD_SECAM_G;
+pub const V4L2_STD_H = V4L2_STD_PAL_H | V4L2_STD_SECAM_H;
+pub const V4L2_STD_L = V4L2_STD_SECAM_L | V4L2_STD_SECAM_LC;
+pub const V4L2_STD_GH = V4L2_STD_G | V4L2_STD_H;
+pub const V4L2_STD_DK = V4L2_STD_PAL_DK | V4L2_STD_SECAM_DK;
+pub const V4L2_STD_BG = V4L2_STD_B | V4L2_STD_G;
+pub const V4L2_STD_MN = ((V4L2_STD_PAL_M | V4L2_STD_PAL_N) | V4L2_STD_PAL_Nc) | V4L2_STD_NTSC;
+pub const V4L2_STD_MTS = ((V4L2_STD_NTSC_M | V4L2_STD_PAL_M) | V4L2_STD_PAL_N) | V4L2_STD_PAL_Nc;
+pub const V4L2_STD_525_60 = ((V4L2_STD_PAL_M | V4L2_STD_PAL_60) | V4L2_STD_NTSC) | V4L2_STD_NTSC_443;
+pub const V4L2_STD_625_50 = ((V4L2_STD_PAL | V4L2_STD_PAL_N) | V4L2_STD_PAL_Nc) | V4L2_STD_SECAM;
+pub const V4L2_STD_ATSC = V4L2_STD_ATSC_8_VSB | V4L2_STD_ATSC_16_VSB;
+pub const V4L2_STD_UNKNOWN = @as(c_int, 0);
+pub const V4L2_STD_ALL = V4L2_STD_525_60 | V4L2_STD_625_50;
+pub const V4L2_DV_PROGRESSIVE = @as(c_int, 0);
+pub const V4L2_DV_INTERLACED = @as(c_int, 1);
+pub const V4L2_DV_VSYNC_POS_POL = @as(c_int, 0x00000001);
+pub const V4L2_DV_HSYNC_POS_POL = @as(c_int, 0x00000002);
+pub const V4L2_DV_BT_STD_CEA861 = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_DV_BT_STD_DMT = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_DV_BT_STD_CVT = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_DV_BT_STD_GTF = @as(c_int, 1) << @as(c_int, 3);
+pub const V4L2_DV_BT_STD_SDI = @as(c_int, 1) << @as(c_int, 4);
+pub const V4L2_DV_FL_REDUCED_BLANKING = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_DV_FL_CAN_REDUCE_FPS = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_DV_FL_REDUCED_FPS = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_DV_FL_HALF_LINE = @as(c_int, 1) << @as(c_int, 3);
+pub const V4L2_DV_FL_IS_CE_VIDEO = @as(c_int, 1) << @as(c_int, 4);
+pub const V4L2_DV_FL_FIRST_FIELD_EXTRA_LINE = @as(c_int, 1) << @as(c_int, 5);
+pub const V4L2_DV_FL_HAS_PICTURE_ASPECT = @as(c_int, 1) << @as(c_int, 6);
+pub const V4L2_DV_FL_HAS_CEA861_VIC = @as(c_int, 1) << @as(c_int, 7);
+pub const V4L2_DV_FL_HAS_HDMI_VIC = @as(c_int, 1) << @as(c_int, 8);
+pub const V4L2_DV_FL_CAN_DETECT_REDUCED_FPS = @as(c_int, 1) << @as(c_int, 9);
+pub inline fn V4L2_DV_BT_BLANKING_WIDTH(bt: anytype) @TypeOf((bt.*.hfrontporch + bt.*.hsync) + bt.*.hbackporch) {
+    return (bt.*.hfrontporch + bt.*.hsync) + bt.*.hbackporch;
+}
+pub inline fn V4L2_DV_BT_FRAME_WIDTH(bt: anytype) @TypeOf(bt.*.width + V4L2_DV_BT_BLANKING_WIDTH(bt)) {
+    return bt.*.width + V4L2_DV_BT_BLANKING_WIDTH(bt);
+}
+pub inline fn V4L2_DV_BT_BLANKING_HEIGHT(bt: anytype) @TypeOf(((bt.*.vfrontporch + bt.*.vsync) + bt.*.vbackporch) + (if (bt.*.interlaced) (bt.*.il_vfrontporch + bt.*.il_vsync) + bt.*.il_vbackporch else @as(c_int, 0))) {
+    return ((bt.*.vfrontporch + bt.*.vsync) + bt.*.vbackporch) + (if (bt.*.interlaced) (bt.*.il_vfrontporch + bt.*.il_vsync) + bt.*.il_vbackporch else @as(c_int, 0));
+}
+pub inline fn V4L2_DV_BT_FRAME_HEIGHT(bt: anytype) @TypeOf(bt.*.height + V4L2_DV_BT_BLANKING_HEIGHT(bt)) {
+    return bt.*.height + V4L2_DV_BT_BLANKING_HEIGHT(bt);
+}
+pub const V4L2_DV_BT_656_1120 = @as(c_int, 0);
+pub const V4L2_DV_BT_CAP_INTERLACED = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_DV_BT_CAP_PROGRESSIVE = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_DV_BT_CAP_REDUCED_BLANKING = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_DV_BT_CAP_CUSTOM = @as(c_int, 1) << @as(c_int, 3);
+pub const V4L2_INPUT_TYPE_TUNER = @as(c_int, 1);
+pub const V4L2_INPUT_TYPE_CAMERA = @as(c_int, 2);
+pub const V4L2_INPUT_TYPE_TOUCH = @as(c_int, 3);
+pub const V4L2_IN_ST_NO_POWER = @as(c_int, 0x00000001);
+pub const V4L2_IN_ST_NO_SIGNAL = @as(c_int, 0x00000002);
+pub const V4L2_IN_ST_NO_COLOR = @as(c_int, 0x00000004);
+pub const V4L2_IN_ST_HFLIP = @as(c_int, 0x00000010);
+pub const V4L2_IN_ST_VFLIP = @as(c_int, 0x00000020);
+pub const V4L2_IN_ST_NO_H_LOCK = @as(c_int, 0x00000100);
+pub const V4L2_IN_ST_COLOR_KILL = @as(c_int, 0x00000200);
+pub const V4L2_IN_ST_NO_V_LOCK = @as(c_int, 0x00000400);
+pub const V4L2_IN_ST_NO_STD_LOCK = @as(c_int, 0x00000800);
+pub const V4L2_IN_ST_NO_SYNC = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00010000, .hexadecimal);
+pub const V4L2_IN_ST_NO_EQU = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00020000, .hexadecimal);
+pub const V4L2_IN_ST_NO_CARRIER = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x00040000, .hexadecimal);
+pub const V4L2_IN_ST_MACROVISION = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x01000000, .hexadecimal);
+pub const V4L2_IN_ST_NO_ACCESS = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x02000000, .hexadecimal);
+pub const V4L2_IN_ST_VTR = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x04000000, .hexadecimal);
+pub const V4L2_IN_CAP_DV_TIMINGS = @as(c_int, 0x00000002);
+pub const V4L2_IN_CAP_CUSTOM_TIMINGS = V4L2_IN_CAP_DV_TIMINGS;
+pub const V4L2_IN_CAP_STD = @as(c_int, 0x00000004);
+pub const V4L2_IN_CAP_NATIVE_SIZE = @as(c_int, 0x00000008);
+pub const V4L2_OUTPUT_TYPE_MODULATOR = @as(c_int, 1);
+pub const V4L2_OUTPUT_TYPE_ANALOG = @as(c_int, 2);
+pub const V4L2_OUTPUT_TYPE_ANALOGVGAOVERLAY = @as(c_int, 3);
+pub const V4L2_OUT_CAP_DV_TIMINGS = @as(c_int, 0x00000002);
+pub const V4L2_OUT_CAP_CUSTOM_TIMINGS = V4L2_OUT_CAP_DV_TIMINGS;
+pub const V4L2_OUT_CAP_STD = @as(c_int, 0x00000004);
+pub const V4L2_OUT_CAP_NATIVE_SIZE = @as(c_int, 0x00000008);
+pub const V4L2_CTRL_ID_MASK = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x0fffffff, .hexadecimal);
+pub inline fn V4L2_CTRL_ID2CLASS(id: anytype) @TypeOf(id & @as(c_ulong, 0x0fff0000)) {
+    return id & @as(c_ulong, 0x0fff0000);
+}
+pub inline fn V4L2_CTRL_ID2WHICH(id: anytype) @TypeOf(id & @as(c_ulong, 0x0fff0000)) {
+    return id & @as(c_ulong, 0x0fff0000);
+}
+pub inline fn V4L2_CTRL_DRIVER_PRIV(id: anytype) @TypeOf((id & @import("std").zig.c_translation.promoteIntLiteral(c_int, 0xffff, .hexadecimal)) >= @as(c_int, 0x1000)) {
+    return (id & @import("std").zig.c_translation.promoteIntLiteral(c_int, 0xffff, .hexadecimal)) >= @as(c_int, 0x1000);
+}
+pub const V4L2_CTRL_MAX_DIMS = @as(c_int, 4);
+pub const V4L2_CTRL_WHICH_CUR_VAL = @as(c_int, 0);
+pub const V4L2_CTRL_WHICH_DEF_VAL = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x0f000000, .hexadecimal);
+pub const V4L2_CTRL_WHICH_REQUEST_VAL = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x0f010000, .hexadecimal);
+pub const V4L2_CTRL_FLAG_DISABLED = @as(c_int, 0x0001);
+pub const V4L2_CTRL_FLAG_GRABBED = @as(c_int, 0x0002);
+pub const V4L2_CTRL_FLAG_READ_ONLY = @as(c_int, 0x0004);
+pub const V4L2_CTRL_FLAG_UPDATE = @as(c_int, 0x0008);
+pub const V4L2_CTRL_FLAG_INACTIVE = @as(c_int, 0x0010);
+pub const V4L2_CTRL_FLAG_SLIDER = @as(c_int, 0x0020);
+pub const V4L2_CTRL_FLAG_WRITE_ONLY = @as(c_int, 0x0040);
+pub const V4L2_CTRL_FLAG_VOLATILE = @as(c_int, 0x0080);
+pub const V4L2_CTRL_FLAG_HAS_PAYLOAD = @as(c_int, 0x0100);
+pub const V4L2_CTRL_FLAG_EXECUTE_ON_WRITE = @as(c_int, 0x0200);
+pub const V4L2_CTRL_FLAG_MODIFY_LAYOUT = @as(c_int, 0x0400);
+pub const V4L2_CTRL_FLAG_NEXT_CTRL = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x80000000, .hexadecimal);
+pub const V4L2_CTRL_FLAG_NEXT_COMPOUND = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x40000000, .hexadecimal);
+pub const V4L2_CID_MAX_CTRLS = @as(c_int, 1024);
+pub const V4L2_CID_PRIVATE_BASE = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x08000000, .hexadecimal);
+pub const V4L2_TUNER_CAP_LOW = @as(c_int, 0x0001);
+pub const V4L2_TUNER_CAP_NORM = @as(c_int, 0x0002);
+pub const V4L2_TUNER_CAP_HWSEEK_BOUNDED = @as(c_int, 0x0004);
+pub const V4L2_TUNER_CAP_HWSEEK_WRAP = @as(c_int, 0x0008);
+pub const V4L2_TUNER_CAP_STEREO = @as(c_int, 0x0010);
+pub const V4L2_TUNER_CAP_LANG2 = @as(c_int, 0x0020);
+pub const V4L2_TUNER_CAP_SAP = @as(c_int, 0x0020);
+pub const V4L2_TUNER_CAP_LANG1 = @as(c_int, 0x0040);
+pub const V4L2_TUNER_CAP_RDS = @as(c_int, 0x0080);
+pub const V4L2_TUNER_CAP_RDS_BLOCK_IO = @as(c_int, 0x0100);
+pub const V4L2_TUNER_CAP_RDS_CONTROLS = @as(c_int, 0x0200);
+pub const V4L2_TUNER_CAP_FREQ_BANDS = @as(c_int, 0x0400);
+pub const V4L2_TUNER_CAP_HWSEEK_PROG_LIM = @as(c_int, 0x0800);
+pub const V4L2_TUNER_CAP_1HZ = @as(c_int, 0x1000);
+pub const V4L2_TUNER_SUB_MONO = @as(c_int, 0x0001);
+pub const V4L2_TUNER_SUB_STEREO = @as(c_int, 0x0002);
+pub const V4L2_TUNER_SUB_LANG2 = @as(c_int, 0x0004);
+pub const V4L2_TUNER_SUB_SAP = @as(c_int, 0x0004);
+pub const V4L2_TUNER_SUB_LANG1 = @as(c_int, 0x0008);
+pub const V4L2_TUNER_SUB_RDS = @as(c_int, 0x0010);
+pub const V4L2_TUNER_MODE_MONO = @as(c_int, 0x0000);
+pub const V4L2_TUNER_MODE_STEREO = @as(c_int, 0x0001);
+pub const V4L2_TUNER_MODE_LANG2 = @as(c_int, 0x0002);
+pub const V4L2_TUNER_MODE_SAP = @as(c_int, 0x0002);
+pub const V4L2_TUNER_MODE_LANG1 = @as(c_int, 0x0003);
+pub const V4L2_TUNER_MODE_LANG1_LANG2 = @as(c_int, 0x0004);
+pub const V4L2_BAND_MODULATION_VSB = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_BAND_MODULATION_FM = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_BAND_MODULATION_AM = @as(c_int, 1) << @as(c_int, 3);
+pub const V4L2_RDS_BLOCK_MSK = @as(c_int, 0x7);
+pub const V4L2_RDS_BLOCK_A = @as(c_int, 0);
+pub const V4L2_RDS_BLOCK_B = @as(c_int, 1);
+pub const V4L2_RDS_BLOCK_C = @as(c_int, 2);
+pub const V4L2_RDS_BLOCK_D = @as(c_int, 3);
+pub const V4L2_RDS_BLOCK_C_ALT = @as(c_int, 4);
+pub const V4L2_RDS_BLOCK_INVALID = @as(c_int, 7);
+pub const V4L2_RDS_BLOCK_CORRECTED = @as(c_int, 0x40);
+pub const V4L2_RDS_BLOCK_ERROR = @as(c_int, 0x80);
+pub const V4L2_AUDCAP_STEREO = @as(c_int, 0x00001);
+pub const V4L2_AUDCAP_AVL = @as(c_int, 0x00002);
+pub const V4L2_AUDMODE_AVL = @as(c_int, 0x00001);
+pub const V4L2_ENC_IDX_FRAME_I = @as(c_int, 0);
+pub const V4L2_ENC_IDX_FRAME_P = @as(c_int, 1);
+pub const V4L2_ENC_IDX_FRAME_B = @as(c_int, 2);
+pub const V4L2_ENC_IDX_FRAME_MASK = @as(c_int, 0xf);
+pub const V4L2_ENC_IDX_ENTRIES = @as(c_int, 64);
+pub const V4L2_ENC_CMD_START = @as(c_int, 0);
+pub const V4L2_ENC_CMD_STOP = @as(c_int, 1);
+pub const V4L2_ENC_CMD_PAUSE = @as(c_int, 2);
+pub const V4L2_ENC_CMD_RESUME = @as(c_int, 3);
+pub const V4L2_ENC_CMD_STOP_AT_GOP_END = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_DEC_CMD_START = @as(c_int, 0);
+pub const V4L2_DEC_CMD_STOP = @as(c_int, 1);
+pub const V4L2_DEC_CMD_PAUSE = @as(c_int, 2);
+pub const V4L2_DEC_CMD_RESUME = @as(c_int, 3);
+pub const V4L2_DEC_CMD_FLUSH = @as(c_int, 4);
+pub const V4L2_DEC_CMD_START_MUTE_AUDIO = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_DEC_CMD_PAUSE_TO_BLACK = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_DEC_CMD_STOP_TO_BLACK = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_DEC_CMD_STOP_IMMEDIATELY = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_DEC_START_FMT_NONE = @as(c_int, 0);
+pub const V4L2_DEC_START_FMT_GOP = @as(c_int, 1);
+pub const V4L2_VBI_UNSYNC = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_VBI_INTERLACED = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_VBI_ITU_525_F1_START = @as(c_int, 1);
+pub const V4L2_VBI_ITU_525_F2_START = @as(c_int, 264);
+pub const V4L2_VBI_ITU_625_F1_START = @as(c_int, 1);
+pub const V4L2_VBI_ITU_625_F2_START = @as(c_int, 314);
+pub const V4L2_SLICED_TELETEXT_B = @as(c_int, 0x0001);
+pub const V4L2_SLICED_VPS = @as(c_int, 0x0400);
+pub const V4L2_SLICED_CAPTION_525 = @as(c_int, 0x1000);
+pub const V4L2_SLICED_WSS_625 = @as(c_int, 0x4000);
+pub const V4L2_SLICED_VBI_525 = V4L2_SLICED_CAPTION_525;
+pub const V4L2_SLICED_VBI_625 = (V4L2_SLICED_TELETEXT_B | V4L2_SLICED_VPS) | V4L2_SLICED_WSS_625;
+pub const V4L2_MPEG_VBI_IVTV_TELETEXT_B = @as(c_int, 1);
+pub const V4L2_MPEG_VBI_IVTV_CAPTION_525 = @as(c_int, 4);
+pub const V4L2_MPEG_VBI_IVTV_WSS_625 = @as(c_int, 5);
+pub const V4L2_MPEG_VBI_IVTV_VPS = @as(c_int, 7);
+pub const V4L2_MPEG_VBI_IVTV_MAGIC0 = "itv0";
+pub const V4L2_MPEG_VBI_IVTV_MAGIC1 = "ITV0";
+pub const V4L2_EVENT_ALL = @as(c_int, 0);
+pub const V4L2_EVENT_VSYNC = @as(c_int, 1);
+pub const V4L2_EVENT_EOS = @as(c_int, 2);
+pub const V4L2_EVENT_CTRL = @as(c_int, 3);
+pub const V4L2_EVENT_FRAME_SYNC = @as(c_int, 4);
+pub const V4L2_EVENT_SOURCE_CHANGE = @as(c_int, 5);
+pub const V4L2_EVENT_MOTION_DET = @as(c_int, 6);
+pub const V4L2_EVENT_PRIVATE_START = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x08000000, .hexadecimal);
+pub const V4L2_EVENT_CTRL_CH_VALUE = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_EVENT_CTRL_CH_FLAGS = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_EVENT_CTRL_CH_RANGE = @as(c_int, 1) << @as(c_int, 2);
+pub const V4L2_EVENT_SRC_CH_RESOLUTION = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_EVENT_MD_FL_HAVE_FRAME_SEQ = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_EVENT_SUB_FL_SEND_INITIAL = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_EVENT_SUB_FL_ALLOW_FEEDBACK = @as(c_int, 1) << @as(c_int, 1);
+pub const V4L2_CHIP_MATCH_BRIDGE = @as(c_int, 0);
+pub const V4L2_CHIP_MATCH_SUBDEV = @as(c_int, 4);
+pub const V4L2_CHIP_MATCH_HOST = V4L2_CHIP_MATCH_BRIDGE;
+pub const V4L2_CHIP_MATCH_I2C_DRIVER = @as(c_int, 1);
+pub const V4L2_CHIP_MATCH_I2C_ADDR = @as(c_int, 2);
+pub const V4L2_CHIP_MATCH_AC97 = @as(c_int, 3);
+pub const V4L2_CHIP_FL_READABLE = @as(c_int, 1) << @as(c_int, 0);
+pub const V4L2_CHIP_FL_WRITABLE = @as(c_int, 1) << @as(c_int, 1);
+pub const VIDIOC_QUERYCAP = _IOR('V', @as(c_int, 0), struct_v4l2_capability);
+pub const VIDIOC_ENUM_FMT = _IOWR('V', @as(c_int, 2), struct_v4l2_fmtdesc);
+pub const VIDIOC_G_FMT = _IOWR('V', @as(c_int, 4), struct_v4l2_format);
+pub const VIDIOC_S_FMT = _IOWR('V', @as(c_int, 5), struct_v4l2_format);
+pub const VIDIOC_REQBUFS = _IOWR('V', @as(c_int, 8), struct_v4l2_requestbuffers);
+pub const VIDIOC_QUERYBUF = _IOWR('V', @as(c_int, 9), struct_v4l2_buffer);
+pub const VIDIOC_G_FBUF = _IOR('V', @as(c_int, 10), struct_v4l2_framebuffer);
+pub const VIDIOC_S_FBUF = _IOW('V', @as(c_int, 11), struct_v4l2_framebuffer);
+pub const VIDIOC_OVERLAY = _IOW('V', @as(c_int, 14), c_int);
+pub const VIDIOC_QBUF = _IOWR('V', @as(c_int, 15), struct_v4l2_buffer);
+pub const VIDIOC_EXPBUF = _IOWR('V', @as(c_int, 16), struct_v4l2_exportbuffer);
+pub const VIDIOC_DQBUF = _IOWR('V', @as(c_int, 17), struct_v4l2_buffer);
+pub const VIDIOC_STREAMON = _IOW('V', @as(c_int, 18), c_int);
+pub const VIDIOC_STREAMOFF = _IOW('V', @as(c_int, 19), c_int);
+pub const VIDIOC_G_PARM = _IOWR('V', @as(c_int, 21), struct_v4l2_streamparm);
+pub const VIDIOC_S_PARM = _IOWR('V', @as(c_int, 22), struct_v4l2_streamparm);
+pub const VIDIOC_G_STD = _IOR('V', @as(c_int, 23), v4l2_std_id);
+pub const VIDIOC_S_STD = _IOW('V', @as(c_int, 24), v4l2_std_id);
+pub const VIDIOC_ENUMSTD = _IOWR('V', @as(c_int, 25), struct_v4l2_standard);
+pub const VIDIOC_ENUMINPUT = _IOWR('V', @as(c_int, 26), struct_v4l2_input);
+pub const VIDIOC_G_CTRL = _IOWR('V', @as(c_int, 27), struct_v4l2_control);
+pub const VIDIOC_S_CTRL = _IOWR('V', @as(c_int, 28), struct_v4l2_control);
+pub const VIDIOC_G_TUNER = _IOWR('V', @as(c_int, 29), struct_v4l2_tuner);
+pub const VIDIOC_S_TUNER = _IOW('V', @as(c_int, 30), struct_v4l2_tuner);
+pub const VIDIOC_G_AUDIO = _IOR('V', @as(c_int, 33), struct_v4l2_audio);
+pub const VIDIOC_S_AUDIO = _IOW('V', @as(c_int, 34), struct_v4l2_audio);
+pub const VIDIOC_QUERYCTRL = _IOWR('V', @as(c_int, 36), struct_v4l2_queryctrl);
+pub const VIDIOC_QUERYMENU = _IOWR('V', @as(c_int, 37), struct_v4l2_querymenu);
+pub const VIDIOC_G_INPUT = _IOR('V', @as(c_int, 38), c_int);
+pub const VIDIOC_S_INPUT = _IOWR('V', @as(c_int, 39), c_int);
+pub const VIDIOC_G_EDID = _IOWR('V', @as(c_int, 40), struct_v4l2_edid);
+pub const VIDIOC_S_EDID = _IOWR('V', @as(c_int, 41), struct_v4l2_edid);
+pub const VIDIOC_G_OUTPUT = _IOR('V', @as(c_int, 46), c_int);
+pub const VIDIOC_S_OUTPUT = _IOWR('V', @as(c_int, 47), c_int);
+pub const VIDIOC_ENUMOUTPUT = _IOWR('V', @as(c_int, 48), struct_v4l2_output);
+pub const VIDIOC_G_AUDOUT = _IOR('V', @as(c_int, 49), struct_v4l2_audioout);
+pub const VIDIOC_S_AUDOUT = _IOW('V', @as(c_int, 50), struct_v4l2_audioout);
+pub const VIDIOC_G_MODULATOR = _IOWR('V', @as(c_int, 54), struct_v4l2_modulator);
+pub const VIDIOC_S_MODULATOR = _IOW('V', @as(c_int, 55), struct_v4l2_modulator);
+pub const VIDIOC_G_FREQUENCY = _IOWR('V', @as(c_int, 56), struct_v4l2_frequency);
+pub const VIDIOC_S_FREQUENCY = _IOW('V', @as(c_int, 57), struct_v4l2_frequency);
+pub const VIDIOC_CROPCAP = _IOWR('V', @as(c_int, 58), struct_v4l2_cropcap);
+pub const VIDIOC_G_CROP = _IOWR('V', @as(c_int, 59), struct_v4l2_crop);
+pub const VIDIOC_S_CROP = _IOW('V', @as(c_int, 60), struct_v4l2_crop);
+pub const VIDIOC_G_JPEGCOMP = _IOR('V', @as(c_int, 61), struct_v4l2_jpegcompression);
+pub const VIDIOC_S_JPEGCOMP = _IOW('V', @as(c_int, 62), struct_v4l2_jpegcompression);
+pub const VIDIOC_QUERYSTD = _IOR('V', @as(c_int, 63), v4l2_std_id);
+pub const VIDIOC_TRY_FMT = _IOWR('V', @as(c_int, 64), struct_v4l2_format);
+pub const VIDIOC_ENUMAUDIO = _IOWR('V', @as(c_int, 65), struct_v4l2_audio);
+pub const VIDIOC_ENUMAUDOUT = _IOWR('V', @as(c_int, 66), struct_v4l2_audioout);
+pub const VIDIOC_G_PRIORITY = _IOR('V', @as(c_int, 67), __u32);
+pub const VIDIOC_S_PRIORITY = _IOW('V', @as(c_int, 68), __u32);
+pub const VIDIOC_G_SLICED_VBI_CAP = _IOWR('V', @as(c_int, 69), struct_v4l2_sliced_vbi_cap);
+pub const VIDIOC_LOG_STATUS = _IO('V', @as(c_int, 70));
+pub const VIDIOC_G_EXT_CTRLS = _IOWR('V', @as(c_int, 71), struct_v4l2_ext_controls);
+pub const VIDIOC_S_EXT_CTRLS = _IOWR('V', @as(c_int, 72), struct_v4l2_ext_controls);
+pub const VIDIOC_TRY_EXT_CTRLS = _IOWR('V', @as(c_int, 73), struct_v4l2_ext_controls);
+pub const VIDIOC_ENUM_FRAMESIZES = _IOWR('V', @as(c_int, 74), struct_v4l2_frmsizeenum);
+pub const VIDIOC_ENUM_FRAMEINTERVALS = _IOWR('V', @as(c_int, 75), struct_v4l2_frmivalenum);
+pub const VIDIOC_G_ENC_INDEX = _IOR('V', @as(c_int, 76), struct_v4l2_enc_idx);
+pub const VIDIOC_ENCODER_CMD = _IOWR('V', @as(c_int, 77), struct_v4l2_encoder_cmd);
+pub const VIDIOC_TRY_ENCODER_CMD = _IOWR('V', @as(c_int, 78), struct_v4l2_encoder_cmd);
+pub const VIDIOC_DBG_S_REGISTER = _IOW('V', @as(c_int, 79), struct_v4l2_dbg_register);
+pub const VIDIOC_DBG_G_REGISTER = _IOWR('V', @as(c_int, 80), struct_v4l2_dbg_register);
+pub const VIDIOC_S_HW_FREQ_SEEK = _IOW('V', @as(c_int, 82), struct_v4l2_hw_freq_seek);
+pub const VIDIOC_S_DV_TIMINGS = _IOWR('V', @as(c_int, 87), struct_v4l2_dv_timings);
+pub const VIDIOC_G_DV_TIMINGS = _IOWR('V', @as(c_int, 88), struct_v4l2_dv_timings);
+pub const VIDIOC_DQEVENT = _IOR('V', @as(c_int, 89), struct_v4l2_event);
+pub const VIDIOC_SUBSCRIBE_EVENT = _IOW('V', @as(c_int, 90), struct_v4l2_event_subscription);
+pub const VIDIOC_UNSUBSCRIBE_EVENT = _IOW('V', @as(c_int, 91), struct_v4l2_event_subscription);
+pub const VIDIOC_CREATE_BUFS = _IOWR('V', @as(c_int, 92), struct_v4l2_create_buffers);
+pub const VIDIOC_PREPARE_BUF = _IOWR('V', @as(c_int, 93), struct_v4l2_buffer);
+pub const VIDIOC_G_SELECTION = _IOWR('V', @as(c_int, 94), struct_v4l2_selection);
+pub const VIDIOC_S_SELECTION = _IOWR('V', @as(c_int, 95), struct_v4l2_selection);
+pub const VIDIOC_DECODER_CMD = _IOWR('V', @as(c_int, 96), struct_v4l2_decoder_cmd);
+pub const VIDIOC_TRY_DECODER_CMD = _IOWR('V', @as(c_int, 97), struct_v4l2_decoder_cmd);
+pub const VIDIOC_ENUM_DV_TIMINGS = _IOWR('V', @as(c_int, 98), struct_v4l2_enum_dv_timings);
+pub const VIDIOC_QUERY_DV_TIMINGS = _IOR('V', @as(c_int, 99), struct_v4l2_dv_timings);
+pub const VIDIOC_DV_TIMINGS_CAP = _IOWR('V', @as(c_int, 100), struct_v4l2_dv_timings_cap);
+pub const VIDIOC_ENUM_FREQ_BANDS = _IOWR('V', @as(c_int, 101), struct_v4l2_frequency_band);
+pub const VIDIOC_DBG_G_CHIP_INFO = _IOWR('V', @as(c_int, 102), struct_v4l2_dbg_chip_info);
+pub const VIDIOC_QUERY_EXT_CTRL = _IOWR('V', @as(c_int, 103), struct_v4l2_query_ext_ctrl);
+pub const BASE_VIDIOC_PRIVATE = @as(c_int, 192);
 pub const rkERR_LEVEL_E = enum_rkERR_LEVEL_E;
 pub const rkEN_ERR_CODE_E = enum_rkEN_ERR_CODE_E;
 pub const rkMB_UID_E = enum_rkMB_UID_E;
@@ -4329,3 +6958,167 @@ pub const rk_VO_HDMI_PARAM_S = struct_rk_VO_HDMI_PARAM_S;
 pub const rk356X_VO_LAYER_NAME_E = enum_rk356X_VO_LAYER_NAME_E;
 pub const rkVOP2_LAYER_NAME_E = enum_rkVOP2_LAYER_NAME_E;
 pub const rkVO_VIR_LAYER_NAME_E = enum_rkVO_VIR_LAYER_NAME_E;
+pub const timeval = struct_timeval;
+pub const timespec = struct_timespec;
+pub const timezone = struct_timezone;
+pub const __itimer_which = enum___itimer_which;
+pub const itimerval = struct_itimerval;
+pub const v4l2_edid = struct_v4l2_edid;
+pub const v4l2_power_line_frequency = enum_v4l2_power_line_frequency;
+pub const v4l2_colorfx = enum_v4l2_colorfx;
+pub const v4l2_mpeg_stream_type = enum_v4l2_mpeg_stream_type;
+pub const v4l2_mpeg_stream_vbi_fmt = enum_v4l2_mpeg_stream_vbi_fmt;
+pub const v4l2_mpeg_audio_sampling_freq = enum_v4l2_mpeg_audio_sampling_freq;
+pub const v4l2_mpeg_audio_encoding = enum_v4l2_mpeg_audio_encoding;
+pub const v4l2_mpeg_audio_l1_bitrate = enum_v4l2_mpeg_audio_l1_bitrate;
+pub const v4l2_mpeg_audio_l2_bitrate = enum_v4l2_mpeg_audio_l2_bitrate;
+pub const v4l2_mpeg_audio_l3_bitrate = enum_v4l2_mpeg_audio_l3_bitrate;
+pub const v4l2_mpeg_audio_mode = enum_v4l2_mpeg_audio_mode;
+pub const v4l2_mpeg_audio_mode_extension = enum_v4l2_mpeg_audio_mode_extension;
+pub const v4l2_mpeg_audio_emphasis = enum_v4l2_mpeg_audio_emphasis;
+pub const v4l2_mpeg_audio_crc = enum_v4l2_mpeg_audio_crc;
+pub const v4l2_mpeg_audio_ac3_bitrate = enum_v4l2_mpeg_audio_ac3_bitrate;
+pub const v4l2_mpeg_audio_dec_playback = enum_v4l2_mpeg_audio_dec_playback;
+pub const v4l2_mpeg_video_encoding = enum_v4l2_mpeg_video_encoding;
+pub const v4l2_mpeg_video_aspect = enum_v4l2_mpeg_video_aspect;
+pub const v4l2_mpeg_video_bitrate_mode = enum_v4l2_mpeg_video_bitrate_mode;
+pub const v4l2_mpeg_video_header_mode = enum_v4l2_mpeg_video_header_mode;
+pub const v4l2_mpeg_video_multi_slice_mode = enum_v4l2_mpeg_video_multi_slice_mode;
+pub const v4l2_mpeg_video_mpeg2_level = enum_v4l2_mpeg_video_mpeg2_level;
+pub const v4l2_mpeg_video_mpeg2_profile = enum_v4l2_mpeg_video_mpeg2_profile;
+pub const v4l2_mpeg_video_h264_entropy_mode = enum_v4l2_mpeg_video_h264_entropy_mode;
+pub const v4l2_mpeg_video_h264_level = enum_v4l2_mpeg_video_h264_level;
+pub const v4l2_mpeg_video_h264_loop_filter_mode = enum_v4l2_mpeg_video_h264_loop_filter_mode;
+pub const v4l2_mpeg_video_h264_profile = enum_v4l2_mpeg_video_h264_profile;
+pub const v4l2_mpeg_video_h264_vui_sar_idc = enum_v4l2_mpeg_video_h264_vui_sar_idc;
+pub const v4l2_mpeg_video_h264_sei_fp_arrangement_type = enum_v4l2_mpeg_video_h264_sei_fp_arrangement_type;
+pub const v4l2_mpeg_video_h264_fmo_map_type = enum_v4l2_mpeg_video_h264_fmo_map_type;
+pub const v4l2_mpeg_video_h264_fmo_change_dir = enum_v4l2_mpeg_video_h264_fmo_change_dir;
+pub const v4l2_mpeg_video_h264_hierarchical_coding_type = enum_v4l2_mpeg_video_h264_hierarchical_coding_type;
+pub const v4l2_mpeg_video_mpeg4_level = enum_v4l2_mpeg_video_mpeg4_level;
+pub const v4l2_mpeg_video_mpeg4_profile = enum_v4l2_mpeg_video_mpeg4_profile;
+pub const v4l2_vp8_num_partitions = enum_v4l2_vp8_num_partitions;
+pub const v4l2_vp8_num_ref_frames = enum_v4l2_vp8_num_ref_frames;
+pub const v4l2_vp8_golden_frame_sel = enum_v4l2_vp8_golden_frame_sel;
+pub const v4l2_mpeg_video_vp8_profile = enum_v4l2_mpeg_video_vp8_profile;
+pub const v4l2_mpeg_video_vp9_profile = enum_v4l2_mpeg_video_vp9_profile;
+pub const v4l2_mpeg_video_vp9_level = enum_v4l2_mpeg_video_vp9_level;
+pub const v4l2_mpeg_video_hevc_hier_coding_type = enum_v4l2_mpeg_video_hevc_hier_coding_type;
+pub const v4l2_mpeg_video_hevc_profile = enum_v4l2_mpeg_video_hevc_profile;
+pub const v4l2_mpeg_video_hevc_level = enum_v4l2_mpeg_video_hevc_level;
+pub const v4l2_mpeg_video_hevc_tier = enum_v4l2_mpeg_video_hevc_tier;
+pub const v4l2_cid_mpeg_video_hevc_loop_filter_mode = enum_v4l2_cid_mpeg_video_hevc_loop_filter_mode;
+pub const v4l2_cid_mpeg_video_hevc_refresh_type = enum_v4l2_cid_mpeg_video_hevc_refresh_type;
+pub const v4l2_cid_mpeg_video_hevc_size_of_length_field = enum_v4l2_cid_mpeg_video_hevc_size_of_length_field;
+pub const v4l2_mpeg_video_frame_skip_mode = enum_v4l2_mpeg_video_frame_skip_mode;
+pub const v4l2_mpeg_cx2341x_video_spatial_filter_mode = enum_v4l2_mpeg_cx2341x_video_spatial_filter_mode;
+pub const v4l2_mpeg_cx2341x_video_luma_spatial_filter_type = enum_v4l2_mpeg_cx2341x_video_luma_spatial_filter_type;
+pub const v4l2_mpeg_cx2341x_video_chroma_spatial_filter_type = enum_v4l2_mpeg_cx2341x_video_chroma_spatial_filter_type;
+pub const v4l2_mpeg_cx2341x_video_temporal_filter_mode = enum_v4l2_mpeg_cx2341x_video_temporal_filter_mode;
+pub const v4l2_mpeg_cx2341x_video_median_filter_type = enum_v4l2_mpeg_cx2341x_video_median_filter_type;
+pub const v4l2_mpeg_mfc51_video_frame_skip_mode = enum_v4l2_mpeg_mfc51_video_frame_skip_mode;
+pub const v4l2_mpeg_mfc51_video_force_frame_type = enum_v4l2_mpeg_mfc51_video_force_frame_type;
+pub const v4l2_exposure_auto_type = enum_v4l2_exposure_auto_type;
+pub const v4l2_auto_n_preset_white_balance = enum_v4l2_auto_n_preset_white_balance;
+pub const v4l2_iso_sensitivity_auto_type = enum_v4l2_iso_sensitivity_auto_type;
+pub const v4l2_exposure_metering = enum_v4l2_exposure_metering;
+pub const v4l2_scene_mode = enum_v4l2_scene_mode;
+pub const v4l2_auto_focus_range = enum_v4l2_auto_focus_range;
+pub const v4l2_preemphasis = enum_v4l2_preemphasis;
+pub const v4l2_flash_led_mode = enum_v4l2_flash_led_mode;
+pub const v4l2_flash_strobe_source = enum_v4l2_flash_strobe_source;
+pub const v4l2_jpeg_chroma_subsampling = enum_v4l2_jpeg_chroma_subsampling;
+pub const v4l2_dv_tx_mode = enum_v4l2_dv_tx_mode;
+pub const v4l2_dv_rgb_range = enum_v4l2_dv_rgb_range;
+pub const v4l2_dv_it_content_type = enum_v4l2_dv_it_content_type;
+pub const v4l2_deemphasis = enum_v4l2_deemphasis;
+pub const v4l2_detect_md_mode = enum_v4l2_detect_md_mode;
+pub const v4l2_field = enum_v4l2_field;
+pub const v4l2_buf_type = enum_v4l2_buf_type;
+pub const v4l2_tuner_type = enum_v4l2_tuner_type;
+pub const v4l2_memory = enum_v4l2_memory;
+pub const v4l2_colorspace = enum_v4l2_colorspace;
+pub const v4l2_xfer_func = enum_v4l2_xfer_func;
+pub const v4l2_ycbcr_encoding = enum_v4l2_ycbcr_encoding;
+pub const v4l2_hsv_encoding = enum_v4l2_hsv_encoding;
+pub const v4l2_quantization = enum_v4l2_quantization;
+pub const v4l2_priority = enum_v4l2_priority;
+pub const v4l2_rect = struct_v4l2_rect;
+pub const v4l2_fract = struct_v4l2_fract;
+pub const v4l2_area = struct_v4l2_area;
+pub const v4l2_capability = struct_v4l2_capability;
+pub const v4l2_pix_format = struct_v4l2_pix_format;
+pub const v4l2_fmtdesc = struct_v4l2_fmtdesc;
+pub const v4l2_frmsizetypes = enum_v4l2_frmsizetypes;
+pub const v4l2_frmsize_discrete = struct_v4l2_frmsize_discrete;
+pub const v4l2_frmsize_stepwise = struct_v4l2_frmsize_stepwise;
+pub const v4l2_frmsizeenum = struct_v4l2_frmsizeenum;
+pub const v4l2_frmivaltypes = enum_v4l2_frmivaltypes;
+pub const v4l2_frmival_stepwise = struct_v4l2_frmival_stepwise;
+pub const v4l2_frmivalenum = struct_v4l2_frmivalenum;
+pub const v4l2_timecode = struct_v4l2_timecode;
+pub const v4l2_jpegcompression = struct_v4l2_jpegcompression;
+pub const v4l2_requestbuffers = struct_v4l2_requestbuffers;
+pub const v4l2_plane = struct_v4l2_plane;
+pub const v4l2_buffer = struct_v4l2_buffer;
+pub const v4l2_exportbuffer = struct_v4l2_exportbuffer;
+pub const v4l2_framebuffer = struct_v4l2_framebuffer;
+pub const v4l2_clip = struct_v4l2_clip;
+pub const v4l2_window = struct_v4l2_window;
+pub const v4l2_captureparm = struct_v4l2_captureparm;
+pub const v4l2_outputparm = struct_v4l2_outputparm;
+pub const v4l2_cropcap = struct_v4l2_cropcap;
+pub const v4l2_crop = struct_v4l2_crop;
+pub const v4l2_selection = struct_v4l2_selection;
+pub const v4l2_standard = struct_v4l2_standard;
+pub const v4l2_bt_timings = struct_v4l2_bt_timings;
+pub const v4l2_dv_timings = struct_v4l2_dv_timings;
+pub const v4l2_enum_dv_timings = struct_v4l2_enum_dv_timings;
+pub const v4l2_bt_timings_cap = struct_v4l2_bt_timings_cap;
+pub const v4l2_dv_timings_cap = struct_v4l2_dv_timings_cap;
+pub const v4l2_input = struct_v4l2_input;
+pub const v4l2_output = struct_v4l2_output;
+pub const v4l2_control = struct_v4l2_control;
+pub const v4l2_ext_control = struct_v4l2_ext_control;
+pub const v4l2_ext_controls = struct_v4l2_ext_controls;
+pub const v4l2_ctrl_type = enum_v4l2_ctrl_type;
+pub const v4l2_queryctrl = struct_v4l2_queryctrl;
+pub const v4l2_query_ext_ctrl = struct_v4l2_query_ext_ctrl;
+pub const v4l2_querymenu = struct_v4l2_querymenu;
+pub const v4l2_tuner = struct_v4l2_tuner;
+pub const v4l2_modulator = struct_v4l2_modulator;
+pub const v4l2_frequency = struct_v4l2_frequency;
+pub const v4l2_frequency_band = struct_v4l2_frequency_band;
+pub const v4l2_hw_freq_seek = struct_v4l2_hw_freq_seek;
+pub const v4l2_rds_data = struct_v4l2_rds_data;
+pub const v4l2_audio = struct_v4l2_audio;
+pub const v4l2_audioout = struct_v4l2_audioout;
+pub const v4l2_enc_idx_entry = struct_v4l2_enc_idx_entry;
+pub const v4l2_enc_idx = struct_v4l2_enc_idx;
+pub const v4l2_encoder_cmd = struct_v4l2_encoder_cmd;
+pub const v4l2_decoder_cmd = struct_v4l2_decoder_cmd;
+pub const v4l2_vbi_format = struct_v4l2_vbi_format;
+pub const v4l2_sliced_vbi_format = struct_v4l2_sliced_vbi_format;
+pub const v4l2_sliced_vbi_cap = struct_v4l2_sliced_vbi_cap;
+pub const v4l2_sliced_vbi_data = struct_v4l2_sliced_vbi_data;
+pub const v4l2_mpeg_vbi_itv0_line = struct_v4l2_mpeg_vbi_itv0_line;
+pub const v4l2_mpeg_vbi_itv0 = struct_v4l2_mpeg_vbi_itv0;
+pub const v4l2_mpeg_vbi_ITV0 = struct_v4l2_mpeg_vbi_ITV0;
+pub const v4l2_mpeg_vbi_fmt_ivtv = struct_v4l2_mpeg_vbi_fmt_ivtv;
+pub const v4l2_plane_pix_format = struct_v4l2_plane_pix_format;
+pub const v4l2_pix_format_mplane = struct_v4l2_pix_format_mplane;
+pub const v4l2_sdr_format = struct_v4l2_sdr_format;
+pub const v4l2_meta_format = struct_v4l2_meta_format;
+pub const v4l2_format = struct_v4l2_format;
+pub const v4l2_streamparm = struct_v4l2_streamparm;
+pub const v4l2_event_vsync = struct_v4l2_event_vsync;
+pub const v4l2_event_ctrl = struct_v4l2_event_ctrl;
+pub const v4l2_event_frame_sync = struct_v4l2_event_frame_sync;
+pub const v4l2_event_src_change = struct_v4l2_event_src_change;
+pub const v4l2_event_motion_det = struct_v4l2_event_motion_det;
+pub const v4l2_event = struct_v4l2_event;
+pub const v4l2_event_subscription = struct_v4l2_event_subscription;
+pub const v4l2_dbg_match = struct_v4l2_dbg_match;
+pub const v4l2_dbg_register = struct_v4l2_dbg_register;
+pub const v4l2_dbg_chip_info = struct_v4l2_dbg_chip_info;
+pub const v4l2_create_buffers = struct_v4l2_create_buffers;
