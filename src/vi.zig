@@ -311,7 +311,7 @@ pub const V4l2Vi = struct {
     }
 
     /// mmap
-    pub fn query_buffer(self: @This()) !void {
+    pub fn query_buffer(self: *@This()) !void {
         var fd = self.file_desc;
         for (0..num_buffer) |i| {
             var buf = std.mem.zeroes(c.v4l2_buffer);
@@ -326,7 +326,7 @@ pub const V4l2Vi = struct {
         }
     }
 
-    pub fn queue_buffer(self: @This()) !void {
+    pub fn queue_buffer(self: *@This()) !void {
         var fd = self.file_desc;
         for (0..num_buffer) |i| {
             var buf = std.mem.zeroes(c.v4l2_buffer);
@@ -340,7 +340,7 @@ pub const V4l2Vi = struct {
         }
     }
 
-    pub fn init(self: @This()) !void {
+    pub fn init(self: *@This()) !void {
         self.file_desc = try std.os.open(&self.device, std.os.O_RDWR | std.os.O_NONBLOCK, 0);
         const format = std.mem.zeroes(c.v4l2_format);
         format.type = c.V4L2_CAP_VIDEO_CAPTURE;
@@ -357,7 +357,21 @@ pub const V4l2Vi = struct {
         try self.queue_buffer(self.file_desc);
     }
 
-    pub fn grab(self: @This()) !void {
+    /// won't free the frame buffer
+    /// call `destory`
+    pub fn deinit(self: *@This()) void {
+        video_disable(self.file_desc);
+        for (self.mems) |m| {
+            std.os.munmap(m);
+        }
+        std.os.close(self.file_desc);
+    }
+
+    pub fn destory(self: *@This()) void {
+        self.allocator.free(self.frame_buffer);
+    }
+
+    pub fn grab(self: *@This()) !void {
         var buf = std.mem.zeroes(c.v4l2_buffer);
         buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory = c.V4L2_MEMORY_MMAP;
