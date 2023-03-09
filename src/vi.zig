@@ -4,6 +4,8 @@ const sucess = rk.sucess;
 const std = @import("std");
 const log = std.log.scoped(.log);
 const utils = @import("utils.zig");
+const _e = @import("error.zig");
+const Err = _e.Err;
 const set_zeros = utils.set_zeros;
 
 const VIErr = error{
@@ -295,6 +297,28 @@ const munmap = c.v4l2_munmap;
 const fd_t = std.os.fd_t;
 const mem = std.mem;
 const num_buffer = 16;
+const l = std.os.linux;
+
+pub const V4lError = error{
+    /// VIDIOC_DEQBUF failed
+    NoDqBuf,
+    /// VIDIOC_QBUF failed
+    NoQBuf,
+    /// VIDIOC_REQBUF failed
+    NoReqBufs,
+    /// VIDIOC_STREAMON failed
+    NoStreamOn,
+    /// VIDIOC_STREAMOFF failed
+    NoStreamOff,
+    /// VIDIOC_S_FMT failed
+    NoSFMT,
+    /// VIDIOC_QUERY_BUF
+    NoQueryBuf,
+    /// Not a V4L2 device
+    NoDevice,
+    /// Not a VIDEO_CAPTURE device
+    NoCapture,
+};
 
 pub const V4l2Vi = struct {
     /// Don't mutate this field directly, `videoEnable` and `videoDisable`
@@ -336,11 +360,11 @@ pub const V4l2Vi = struct {
             buf.index = @intCast(c_uint, i);
             const res = ioctl(fd, c.VIDIOC_QUERYBUF, @ptrToInt(&buf));
             if (res == -1) {
-                return error.QueryV4l2BufferFailed;
+                return V4lError.NoQueryBuf;
             }
             var ptr = mmap(null, buf.length, std.os.linux.PROT.READ | std.os.linux.PROT.WRITE, std.os.linux.MAP.SHARED, fd, buf.m.offset);
             if (ptr == null) {
-                return error.NullPtr;
+                return Err.NullPtr;
             }
             var p = @ptrCast([*]u8, ptr);
             self.mems[i].ptr = @alignCast(mem.page_size, p);
@@ -381,7 +405,7 @@ pub const V4l2Vi = struct {
             buf.index = @intCast(c_uint, i);
             const res = ioctl(fd, c.VIDIOC_QBUF, @ptrToInt(&buf));
             if (res == -1) {
-                return error.QueueV4l2BufferFailed;
+                return V4lError.NoQBuf;
             }
         }
     }
@@ -407,11 +431,11 @@ pub const V4l2Vi = struct {
         var cap = std.mem.zeroes(c.v4l2_capability);
         var err = ioctl(self.file_desc, c.VIDIOC_QUERYCAP, @ptrToInt(&cap));
         if (err == -1) {
-            return error.NoV4l2Device;
+            return V4lError.NoDevice;
         }
 
         if (cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE <= 0) {
-            return error.NoV4l2CaptureDevice;
+            return V4lError.NoCapture;
         }
 
         var format = std.mem.zeroes(c.v4l2_format);
@@ -422,7 +446,7 @@ pub const V4l2Vi = struct {
         format.fmt.pix.field = c.V4L2_FIELD_NONE;
         const res = ioctl(self.file_desc, c.VIDIOC_S_FMT, @ptrToInt(&format));
         if (res == -1) {
-            return error.SetV4l2FormatFailed;
+            return V4lError.NoSFMT;
         }
         try requestBuffersRaw(self.file_desc, num_buffer);
         try self.queryBuffer();
@@ -443,6 +467,8 @@ pub const V4l2Vi = struct {
         self.allocator.free(self.frame_buffer);
     }
 
+    /// could retur Err.Again (in `error.zig`)
+    /// in Non-Blocking IO
     pub fn grab(self: *@This()) !void {
         var buf = std.mem.zeroes(c.v4l2_buffer);
         buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -453,10 +479,10 @@ pub const V4l2Vi = struct {
         if (res == -1) {
             const e = std.os.errno(res);
             switch (e) {
-                E.AGAIN => return error.Again,
+                E.AGAIN => return Err.Again,
                 else => {
                     log.err("dequeue: {}", .{e});
-                    return error.DequeueV4l2BufferFailed;
+                    return V4lError.NoDqBuf;
                 },
             }
         }
@@ -469,7 +495,7 @@ pub const V4l2Vi = struct {
                 log.info("resize frame buffer. {} -> {}", .{ self.frame_buffer.len, mem_buf.len });
                 const ret = self.allocator.resize(self.frame_buffer, buf.bytesused);
                 if (!ret) {
-                    return error.ResizeV4l2BufferFailed;
+                    return Err.BadResize;
                 }
             }
             std.mem.copy(u8, self.frame_buffer, mem_buf);
@@ -478,7 +504,7 @@ pub const V4l2Vi = struct {
         {
             const ret = ioctl(self.file_desc, c.VIDIOC_QBUF, @ptrToInt(&buf));
             if (ret == -1) {
-                return error.RequeueV4l2BufferFailed;
+                return V4lError.NoQBuf;
             }
         }
     }
@@ -491,7 +517,7 @@ pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
     req.memory = c.V4L2_MEMORY_MMAP;
     const res = ioctl(fd, c.VIDIOC_REQBUFS, @ptrToInt(&req));
     if (res == -1) {
-        return error.RequestV4l2BufferFailed;
+        return V4lError.NoReqBufs;
     }
     log.info("requested count: {d}", .{req.count});
 }
@@ -500,7 +526,7 @@ pub fn videoEnableRaw(fd: fd_t) !void {
     var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
     const res = ioctl(fd, c.VIDIOC_STREAMON, @ptrToInt(&t));
     if (res == -1) {
-        return error.StartV4l2StreamingFailed;
+        return V4lError.NoStreamOn;
     }
 }
 
@@ -508,7 +534,7 @@ pub fn videoDisableRaw(fd: fd_t) !void {
     var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
     const res = ioctl(fd, c.VIDIOC_STREAMOFF, @ptrToInt(&t));
     if (res == -1) {
-        return error.StopV4l2StreamingFailed;
+        return V4lError.NoStreamOff;
     }
 }
 

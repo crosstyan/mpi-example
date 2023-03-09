@@ -2,6 +2,8 @@ const std = @import("std");
 const mb = @import("mb.zig");
 const c = @import("bindings/common.zig");
 const log = std.log.scoped(.rockit);
+const e = @import("error.zig");
+const Err = e.Err;
 
 pub const sucess: i32 = c.RK_SUCCESS;
 pub const failure: i32 = c.RK_FAILURE;
@@ -14,10 +16,6 @@ pub const SysError = error{
     IllegalParam,
     SysBusy,
     NotSupport,
-};
-
-pub const CustomError = error{
-    General,
 };
 
 // https://nathancraddock.com/blog/2022/zig-naming-conventions/
@@ -45,9 +43,9 @@ pub fn deinit() SysError!void {
 }
 
 /// 计算VGS、VPSS输出所需图像buffer大小
-pub fn calPicBufferSizeVgs(pic_buf_attr: *const c.PIC_BUF_ATTR_S, pic_cal: *c.MB_PIC_CAL_S) CustomError!void {
+pub fn calPicBufferSizeVgs(pic_buf_attr: *const c.PIC_BUF_ATTR_S, pic_cal: *c.MB_PIC_CAL_S) Err!void {
     const ret = c.RK_MPI_CAL_VGS_GetPicBufferSize(pic_buf_attr, pic_cal);
-    if (ret < 0) return CustomError.General;
+    if (ret < 0) return Err.BadCalculation;
 }
 
 pub fn calPicBufferSizeVgsAlloc(allocator: std.mem.Allocator, pic_buf_attr: *const c.PIC_BUF_ATTR_S) !c.MB_PIC_CAL_S {
