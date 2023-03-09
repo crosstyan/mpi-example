@@ -281,6 +281,7 @@ pub const VICtx = struct {
 pub const PicFormat = enum {
     YUYV,
     NV12,
+    MJPG,
 };
 
 /// tranlate from
@@ -306,13 +307,15 @@ pub fn format2V4l2(format: PicFormat) u32 {
     return switch (format) {
         .YUYV => c.V4L2_PIX_FMT_YUYV,
         .NV12 => c.V4L2_PIX_FMT_NV12,
+        .MJPG => c.V4L2_PIX_FMT_MJPEG,
     };
 }
 
-pub fn format2Rk(format: PicFormat) i32 {
+pub fn format2Rk(format: PicFormat) !i32 {
     return switch (format) {
         .YUYV => c.RK_FMT_YUV422_YUYV,
         .NV12 => c.RK_FMT_YUV420SP,
+        else => Err.BadParm,
     };
 }
 
@@ -610,6 +613,10 @@ pub const V4l2Vi = struct {
         const i = buf.index;
         var r: []align(mem.page_size) u8 = self.mems[i];
         log.debug("[grab] index {d}, size {d}", .{ i, buf.bytesused });
+        // it happends when using MJPEG since the buffer size is variable
+        if (buf.bytesused != r.len) {
+            r = r[0..buf.bytesused];
+        }
         {
             const ret = ioctl(self.file_desc, c.VIDIOC_QBUF, @ptrToInt(&buf));
             if (ret == -1) {

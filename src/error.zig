@@ -6,6 +6,7 @@ pub const Err = error{
     BadCalc,
     /// Bad Return Value for C
     BadRet,
+    BadParm,
     NullPtr,
     /// Indicate allocator error
     BadResize,
