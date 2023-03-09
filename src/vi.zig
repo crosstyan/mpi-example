@@ -140,6 +140,8 @@ pub const TestOptions = struct {
     /// delay ms. -1 is blocking. 0 is non-blocking.
     delay: i32 = 33,
     v4l2: bool = false,
+    // whether to use
+    mplane: bool = false,
     @"buf-type": AllocBufType = AllocBufType.External,
     @"mem-type": V4l2MemoryType = V4l2MemoryType.Mmap,
     pub const shorthands = .{
@@ -240,7 +242,12 @@ pub const VICtx = struct {
         self.chn_attr.stIspOpt.enMemoryType = @enumToInt(opts.@"mem-type");
         // 当图像类型为 mmap 方式获取时需要设置为外部申请。
         self.chn_attr.enAllocBufType = @enumToInt(opts.@"buf-type");
-        self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE;
+        if (opts.mplane) {
+            log.info("using mplane", .{});
+            self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE_MPLANE;
+        } else {
+            self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE;
+        }
         self.chn_attr.enPixelFormat = c.RK_FMT_YUV420SP;
         self.chn_attr.stIspOpt.bNoUseLibV4L2 = @intCast(c_uint, @boolToInt(!opts.v4l2));
         if (opts.v4l2) {
@@ -326,6 +333,8 @@ pub const V4l2Options = struct {
     fps: u32 = 30,
     format: PicFormat = PicFormat.NV12,
     @"out-path": ?[]const u8 = null,
+    /// skip setting parm
+    @"skip-check": bool = false,
     pub const shorthands = .{
         .d = "device",
         .w = "width",
@@ -369,6 +378,12 @@ pub const V4lError = error{
     NoSetParm,
 };
 
+pub const CapType = enum {
+    None,
+    VideoCapture,
+    VideoCaptureMplane,
+};
+
 pub const V4l2Vi = struct {
     /// Don't mutate this field directly, `videoEnable` and `videoDisable`
     _is_capturing: bool = false,
@@ -383,6 +398,8 @@ pub const V4l2Vi = struct {
     mems: [num_buffer][]align(mem.page_size) u8,
     fps: u32,
     format: u32,
+    cap_type: CapType = CapType.None,
+    is_skip_check: bool = false,
     out_path: ?[]const u8 = null,
     allocator: std.mem.Allocator,
 
@@ -399,6 +416,7 @@ pub const V4l2Vi = struct {
         self.fps = opts.fps;
         self.format = format2V4l2(opts.format);
         self.out_path = opts.@"out-path";
+        self.is_skip_check = opts.@"skip-check";
         const frame_buffer_size = self.width * self.height * 2;
         self.frame_buffer = try self.allocator.alloc(u8, frame_buffer_size);
         return self;
@@ -493,7 +511,11 @@ pub const V4l2Vi = struct {
     fn setCaptureParm(self: *@This(), fps: u32) !void {
         var fd = self.file_desc;
         var parm = std.mem.zeroes(c.v4l2_streamparm);
-        parm.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        parm.type = switch (self.cap_type) {
+            CapType.VideoCaptureMplane => c.V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
+            CapType.VideoCapture => c.V4L2_BUF_TYPE_VIDEO_CAPTURE,
+            else => unreachable,
+        };
         parm.parm.capture.timeperframe.numerator = 1;
         parm.parm.capture.timeperframe.denominator = fps;
         parm.parm.capture.capturemode = 0;
@@ -501,8 +523,33 @@ pub const V4l2Vi = struct {
         parm.parm.capture.readbuffers = 0;
         const res = ioctl(fd, c.VIDIOC_S_PARM, @ptrToInt(&parm));
         if (res == -1) {
+            const err = os.errno(res);
+            log.err("VIDIOC_S_PARM: {?}", .{err});
             return V4lError.NoSetParm;
         }
+    }
+
+    /// https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-parm.html?highlight=vidioc_s_parm#c.VIDIOC_G_PARM
+    ///
+    /// NOTE: the function return only part of the stack variable.
+    /// Could this works...?
+    pub fn getCapturePram(self: *@This()) !c.v4l2_captureparm {
+        const fd = self.file_desc;
+        var stream = std.mem.zeroes(c.v4l2_streamparm);
+        // have to specify the type
+        stream.type = switch (self.cap_type) {
+            CapType.VideoCaptureMplane => c.V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
+            CapType.VideoCapture => c.V4L2_BUF_TYPE_VIDEO_CAPTURE,
+            else => unreachable,
+        };
+        const res = ioctl(fd, c.VIDIOC_G_PARM, @ptrToInt(&stream));
+        if (res == -1) {
+            const err = os.errno(res);
+            log.err("VIDIOC_G_PARM: {?}", .{err});
+            return V4lError.NoGetParm;
+        }
+        const cap = @ptrCast(*const c.v4l2_captureparm, &stream.parm);
+        return cap.*;
     }
 
     fn videoEnable(self: *@This()) !void {
@@ -533,6 +580,14 @@ pub const V4l2Vi = struct {
             return V4lError.NoCapture;
         }
 
+        if (cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE_MPLANE > 0) {
+            self.cap_type = CapType.VideoCaptureMplane;
+        } else {
+            self.cap_type = CapType.VideoCapture;
+        }
+        log.info("capabilities: 0b{b}, 0x{x}", .{ cap.capabilities, cap.capabilities });
+        log.info("cap_type: {?}", .{self.cap_type});
+
         var format = std.mem.zeroes(c.v4l2_format);
         format.type = c.V4L2_CAP_VIDEO_CAPTURE;
         format.fmt.pix.width = self.width;
@@ -553,6 +608,8 @@ pub const V4l2Vi = struct {
         // sudo v4l2-ctl -d /dev/video9 --list-formats
         //  --list-formats-ext
         // So this USB Camera only support YUYV 1080p at 5 fps
+        // check capabilites
+        // v4l2-ctl --all
         // https://www.systutorials.com/docs/linux/man/1-lav2yuv/
         if (format.fmt.pix.width != self.width or format.fmt.pix.height != self.height) {
             log.err("width or height not match. expect {}x{} but get {}x{}", .{ self.width, self.height, format.fmt.pix.width, format.fmt.pix.height });
@@ -565,10 +622,12 @@ pub const V4l2Vi = struct {
             return V4lError.NoSetFmt;
         }
 
-        try self.setCaptureParm(self.fps);
-        const parm = try getCapturePram(self.file_desc);
-        // user should check if fps is correct
-        log.info("Time Per Frame: {}/{}s", .{ parm.timeperframe.numerator, parm.timeperframe.denominator });
+        if (!self.is_skip_check) {
+            try self.setCaptureParm(self.fps);
+            const parm = try self.getCapturePram();
+            // user should check if fps is correct
+            log.info("Time Per Frame: {}/{}s", .{ parm.timeperframe.numerator, parm.timeperframe.denominator });
+        }
 
         try requestBuffersRaw(self.file_desc, num_buffer);
         try self.queryBuffer();
@@ -643,24 +702,6 @@ pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
         return V4lError.NoReqBufs;
     }
     log.info("requested count: {d}", .{req.count});
-}
-
-/// https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-parm.html?highlight=vidioc_s_parm#c.VIDIOC_G_PARM
-///
-/// NOTE: the function return only part of the stack variable.
-/// Could this works...?
-pub fn getCapturePram(fd: fd_t) !c.v4l2_captureparm {
-    var stream = std.mem.zeroes(c.v4l2_streamparm);
-    // have to specify the type
-    stream.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    const res = ioctl(fd, c.VIDIOC_G_PARM, @ptrToInt(&stream));
-    if (res == -1) {
-        const err = os.errno(res);
-        log.err("VIDIOC_G_PARM: {?}", .{err});
-        return V4lError.NoGetParm;
-    }
-    const cap = @ptrCast(*const c.v4l2_captureparm, &stream.parm);
-    return cap.*;
 }
 
 pub fn videoEnableRaw(fd: fd_t) !void {
