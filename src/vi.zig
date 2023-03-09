@@ -140,7 +140,8 @@ pub const TestOptions = struct {
     /// delay ms. -1 is blocking. 0 is non-blocking.
     delay: i32 = 33,
     v4l2: bool = false,
-    // whether to use
+    /// whether to use VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE_MPLANE
+    /// No idea how this works.
     mplane: bool = false,
     @"buf-type": AllocBufType = AllocBufType.External,
     @"mem-type": V4l2MemoryType = V4l2MemoryType.Mmap,
@@ -566,17 +567,20 @@ pub const V4l2Vi = struct {
 
     pub fn init(self: *@This()) !void {
         var p = @ptrCast([*:0]u8, &self.device);
-        log.info("device: {s}", .{p});
+        log.info("Try to open {s}", .{p});
         // blocking could be good but I love non blocking
         self.file_desc = open(p, std.os.linux.O.RDWR | std.os.linux.O.NONBLOCK);
 
         var cap = std.mem.zeroes(c.v4l2_capability);
         var err = ioctl(self.file_desc, c.VIDIOC_QUERYCAP, @ptrToInt(&cap));
         if (err == -1) {
+            const eno = os.errno(err);
+            log.err("VIDIOC_QUERYCAP: {?}", .{eno});
             return V4lError.NoDevice;
         }
 
-        if (cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE <= 0) {
+        // eihter capture or capture_mplane
+        if (!(cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE > 0) and !(cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE_MPLANE > 0)) {
             return V4lError.NoCapture;
         }
 
@@ -585,8 +589,14 @@ pub const V4l2Vi = struct {
         } else {
             self.cap_type = CapType.VideoCapture;
         }
-        log.info("capabilities: 0b{b}, 0x{x}", .{ cap.capabilities, cap.capabilities });
-        log.info("cap_type: {?}", .{self.cap_type});
+        log.info("Device        : {s}", .{p});
+        log.info("Driver name   : {s}", .{cap.driver});
+        log.info("Card type     : {s}", .{cap.card});
+        log.info("Bus info      : {s}", .{cap.bus_info});
+        log.info("Driver version: {d}.{d}.{d}", .{ cap.version >> 16, (cap.version >> 8) & 0xFF, cap.version & 0xFF });
+        log.info("Capabilities  : 0x{x}", .{cap.capabilities});
+        log.info("Device Caps   : 0x{x}", .{cap.device_caps});
+        log.info("Cap Type      : {?}", .{self.cap_type});
 
         var format = std.mem.zeroes(c.v4l2_format);
         format.type = c.V4L2_CAP_VIDEO_CAPTURE;
