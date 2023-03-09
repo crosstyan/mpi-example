@@ -391,13 +391,13 @@ pub const V4l2Vi = struct {
         var poll_fd = std.mem.zeroes(os.pollfd);
         poll_fd.events = os.POLL.IN;
         poll_fd.fd = self.file_desc;
+        poll_fds[0] = poll_fd;
         while (i < max_cnt) : (i += 1) {
             const ret = try os.poll(&poll_fds, 1000);
-            // if (ret == 0) {
-            //     log.info("[{}] timeout", .{i});
-            //     continue;
-            // }
-            _ = ret;
+            if (ret == 0) {
+                log.info("[{}] timeout", .{i});
+                continue;
+            }
             self.grab() catch |err| {
                 log.err("[{}] err {?}", .{ i, err });
             };
