@@ -380,10 +380,27 @@ pub const V4l2Vi = struct {
         try self.init();
         defer self.deinit();
         try self.videoEnable();
-        for (0..30) |i| {
-            self.grab() catch |err| {
-                log.err("[{}] err {?}", .{ i, err });
-            };
+        const epoll_fd = @intCast(i32, l.epoll_create());
+        defer std.os.close(epoll_fd);
+        var ev = std.mem.zeroes(l.epoll_event);
+        ev.events = l.EPOLL.IN;
+        ev.data.fd = self.file_desc;
+        _ = l.epoll_ctl(epoll_fd, l.EPOLL.CTL_ADD, 0, &ev);
+
+        var i: usize = 0;
+        const max_cnt = 30;
+        const max_ev = 4;
+        var evs: [max_ev]l.epoll_event = .{};
+        evs[0] = ev;
+        while (i < max_cnt) : (i += 1) {
+            const ev_count = l.epoll_wait(epoll_fd, &evs, max_ev, 3000);
+            log.info("[{d}] ev_count: {}", .{ i, ev_count });
+            for (0..ev_count) |_i| {
+                _ = _i;
+                self.grab() catch |err| {
+                    log.err("[{}] err {?}", .{ i, err });
+                };
+            }
         }
         try self.writeToFile("test.yuv");
         log.info("sucess! ", .{});

@@ -45,10 +45,10 @@ pub fn deinit() SysError!void {
 /// 计算VGS、VPSS输出所需图像buffer大小
 pub fn calPicBufferSizeVgs(pic_buf_attr: *const c.PIC_BUF_ATTR_S, pic_cal: *c.MB_PIC_CAL_S) Err!void {
     const ret = c.RK_MPI_CAL_VGS_GetPicBufferSize(pic_buf_attr, pic_cal);
-    if (ret < 0) return Err.BadCalculation;
+    if (ret < 0) return Err.BadCalc;
 }
 
-pub fn calPicBufferSizeVgsAlloc(allocator: std.mem.Allocator, pic_buf_attr: *const c.PIC_BUF_ATTR_S) !c.MB_PIC_CAL_S {
+pub fn calPicBufferSizeVgsAlloc(allocator: std.mem.Allocator, pic_buf_attr: *const c.PIC_BUF_ATTR_S) Err!c.MB_PIC_CAL_S {
     var cal = try allocator.create(c.MB_PIC_CAL_S);
     try calPicBufferSizeVgs(pic_buf_attr, cal);
     return cal;

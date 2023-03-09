@@ -1,9 +1,14 @@
 /// Project wide general error
 pub const Err = error{
-    BadCalculation,
+    /// init
+    BadInit,
+    /// no side effect
+    BadCalc,
+    /// Bad Return Value for C
+    BadRet,
     NullPtr,
     /// Indicate allocator error
     BadResize,
-    /// no frame available
+    /// E.AGAIN
     Again,
 };
