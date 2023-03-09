@@ -384,14 +384,17 @@ pub const V4l2Vi = struct {
         defer std.os.close(epoll_fd);
 
         const os = std.os;
-        var i: usize = 0;
-        const max_cnt = 30;
-        const max_ev = 2;
-        var poll_fds: [max_ev]std.os.pollfd = .{};
+        const max_poll_fd = 2;
+
+        var poll_fds: [max_poll_fd]std.os.pollfd = .{};
         var poll_fd = std.mem.zeroes(os.pollfd);
         poll_fd.events = os.POLL.IN;
         poll_fd.fd = self.file_desc;
         poll_fds[0] = poll_fd;
+
+        var elapse = utils.Elapsed.new();
+        var i: usize = 0;
+        const max_cnt = 30;
         while (i < max_cnt) : (i += 1) {
             const ret = try os.poll(&poll_fds, 1000);
             if (ret == 0) {
@@ -401,6 +404,8 @@ pub const V4l2Vi = struct {
             self.grab() catch |err| {
                 log.err("[{}] err {?}", .{ i, err });
             };
+            const e = elapse.reset_elapsed();
+            log.debug("[{}] elapsed: {}ms", .{ i, e });
         }
         try self.writeToFile("test.yuv");
         log.info("sucess! ", .{});
@@ -507,7 +512,7 @@ pub const V4l2Vi = struct {
         {
             const i = buf.index;
             const mem_buf = self.mems[i];
-            log.info("get mem buf from index {d}, size {d}", .{ i, buf.bytesused });
+            log.debug("[grab] index {d}, size {d}", .{ i, buf.bytesused });
             if (mem_buf.len != self.frame_buffer.len) {
                 log.info("resize frame buffer. {} -> {}", .{ self.frame_buffer.len, mem_buf.len });
                 const ret = self.allocator.resize(self.frame_buffer, buf.bytesused);
