@@ -283,6 +283,25 @@ pub const PicFormat = enum {
     NV12,
 };
 
+/// tranlate from
+/// https://patchwork.kernel.org/project/linux-media/patch/e6dfbe4afd3f1db4c3f8a81c0813dc418896f5e1.1505916622.git.dave.stevenson@raspberrypi.org/
+pub fn fourcc2s(fourcc: u32) [8]u8 {
+    var buf: [8]u8 = .{};
+    buf[0] = @intCast(u8, fourcc & 0x7f);
+    buf[1] = @intCast(u8, (fourcc >> 8) & 0x7f);
+    buf[2] = @intCast(u8, (fourcc >> 16) & 0x7f);
+    buf[3] = @intCast(u8, (fourcc >> 24) & 0x7f);
+    if (fourcc & (1 << 31) != 0) {
+        buf[4] = '-';
+        buf[5] = 'B';
+        buf[6] = 'E';
+        buf[7] = 0;
+    } else {
+        buf[4] = 0;
+    }
+    return buf;
+}
+
 pub fn format2V4l2(format: PicFormat) u32 {
     return switch (format) {
         .YUYV => c.V4L2_PIX_FMT_YUYV,
@@ -336,6 +355,7 @@ pub const V4lError = error{
     NoStreamOff,
     /// VIDIOC_S_FMT failed
     NoSetFmt,
+    NoGetFmt,
     /// VIDIOC_QUERY_BUF
     NoQueryBuf,
     /// Not a V4L2 device
@@ -353,7 +373,8 @@ pub const V4l2Vi = struct {
     width: u32,
     height: u32,
     file_desc: std.os.fd_t,
-    /// mapped buffer would be copied to here
+    /// ~~mapped buffer would be copied to here~~
+    /// Not anymore
     frame_buffer: []u8,
     /// addr and length
     mems: [num_buffer][]align(mem.page_size) u8,
@@ -509,8 +530,6 @@ pub const V4l2Vi = struct {
             return V4lError.NoCapture;
         }
 
-        try self.setCaptureParm(self.fps);
-
         var format = std.mem.zeroes(c.v4l2_format);
         format.type = c.V4L2_CAP_VIDEO_CAPTURE;
         format.fmt.pix.width = self.width;
@@ -519,10 +538,35 @@ pub const V4l2Vi = struct {
         // How? Did I select the wrong channel?
         format.fmt.pix.pixelformat = self.format;
         format.fmt.pix.field = c.V4L2_FIELD_NONE;
-        const res = ioctl(self.file_desc, c.VIDIOC_S_FMT, @ptrToInt(&format));
+        var res = ioctl(self.file_desc, c.VIDIOC_S_FMT, @ptrToInt(&format));
         if (res == -1) {
             return V4lError.NoSetFmt;
         }
+        // check if fmt set correctly
+        res = ioctl(self.file_desc, c.VIDIOC_G_FMT, @ptrToInt(&format));
+        if (res == -1) {
+            return V4lError.NoGetFmt;
+        }
+        // sudo v4l2-ctl -d /dev/video9 --list-formats
+        //  --list-formats-ext
+        // So this USB Camera only support YUYV 1080p at 5 fps
+        // https://www.systutorials.com/docs/linux/man/1-lav2yuv/
+        if (format.fmt.pix.width != self.width or format.fmt.pix.height != self.height) {
+            log.err("width or height not match. expect {}x{} but get {}x{}", .{ self.width, self.height, format.fmt.pix.width, format.fmt.pix.height });
+            return V4lError.NoSetFmt;
+        }
+        if (format.fmt.pix.pixelformat != self.format) {
+            const exp = fourcc2s(self.format);
+            const get = fourcc2s(format.fmt.pix.pixelformat);
+            log.err("format not match. expect {s} but get {s}", .{ &exp, &get });
+            return V4lError.NoSetFmt;
+        }
+
+        try self.setCaptureParm(self.fps);
+        const parm = try getCapturePram(self.file_desc);
+        // user should check if fps is correct
+        log.info("Time Per Frame: {}/{}s", .{ parm.timeperframe.numerator, parm.timeperframe.denominator });
+
         try requestBuffersRaw(self.file_desc, num_buffer);
         try self.queryBuffer();
         try self.queueBuffer();
@@ -596,20 +640,28 @@ pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
 
 /// https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-parm.html?highlight=vidioc_s_parm#c.VIDIOC_G_PARM
 ///
-/// Weird, it won't work
+/// NOTE: the function return only part of the stack variable.
+/// Could this works...?
 pub fn getCapturePram(fd: fd_t) !c.v4l2_captureparm {
-    var cap = std.mem.zeroes(c.v4l2_captureparm);
-    const res = ioctl(fd, c.VIDIOC_G_PARM, @ptrToInt(&cap));
+    var stream = std.mem.zeroes(c.v4l2_streamparm);
+    // have to specify the type
+    stream.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    const res = ioctl(fd, c.VIDIOC_G_PARM, @ptrToInt(&stream));
     if (res == -1) {
+        const err = os.errno(res);
+        log.err("VIDIOC_G_PARM: {?}", .{err});
         return V4lError.NoGetParm;
     }
-    return cap;
+    const cap = @ptrCast(*const c.v4l2_captureparm, &stream.parm);
+    return cap.*;
 }
 
 pub fn videoEnableRaw(fd: fd_t) !void {
     var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
     const res = ioctl(fd, c.VIDIOC_STREAMON, @ptrToInt(&t));
     if (res == -1) {
+        const err = os.errno(res);
+        log.err("VIDIOC_STREAMON: {?}", .{err});
         return V4lError.NoStreamOn;
     }
 }
@@ -618,6 +670,8 @@ pub fn videoDisableRaw(fd: fd_t) !void {
     var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
     const res = ioctl(fd, c.VIDIOC_STREAMOFF, @ptrToInt(&t));
     if (res == -1) {
+        const err = os.errno(res);
+        log.err("VIDIOC_STREAMOFF: {?}", .{err});
         return V4lError.NoStreamOff;
     }
 }
