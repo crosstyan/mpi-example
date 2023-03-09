@@ -384,7 +384,7 @@ pub const V4l2Vi = struct {
         defer std.os.close(epoll_fd);
 
         const os = std.os;
-        const max_poll_fd = 2;
+        const max_poll_fd = 1;
 
         var poll_fds: [max_poll_fd]std.os.pollfd = .{};
         var poll_fd = std.mem.zeroes(os.pollfd);
