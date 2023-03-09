@@ -312,13 +312,15 @@ pub const V4lError = error{
     /// VIDIOC_STREAMOFF failed
     NoStreamOff,
     /// VIDIOC_S_FMT failed
-    NoSFMT,
+    NoSetFmt,
     /// VIDIOC_QUERY_BUF
     NoQueryBuf,
     /// Not a V4L2 device
     NoDevice,
     /// Not a VIDEO_CAPTURE device
     NoCapture,
+    NoGetParm,
+    NoSetParm,
 };
 
 pub const V4l2Vi = struct {
@@ -430,6 +432,22 @@ pub const V4l2Vi = struct {
         }
     }
 
+    /// https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-parm.html?highlight=vidioc_s_parm
+    fn setCaptureParm(self: *@This(), fps: u32) !void {
+        var fd = self.file_desc;
+        var parm = std.mem.zeroes(c.v4l2_streamparm);
+        parm.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        parm.parm.capture.timeperframe.numerator = 1;
+        parm.parm.capture.timeperframe.denominator = fps;
+        parm.parm.capture.capturemode = 0;
+        parm.parm.capture.extendedmode = 0;
+        parm.parm.capture.readbuffers = 0;
+        const res = ioctl(fd, c.VIDIOC_S_PARM, @ptrToInt(&parm));
+        if (res == -1) {
+            return V4lError.NoSetParm;
+        }
+    }
+
     fn videoEnable(self: *@This()) !void {
         if (self._is_capturing) return;
         try videoEnableRaw(self.file_desc);
@@ -457,16 +475,22 @@ pub const V4l2Vi = struct {
         if (cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE <= 0) {
             return V4lError.NoCapture;
         }
+        try self.setCaptureParm(30);
+        // No idea why get won't work.
+        // var parm = try getCapturePram(self.file_desc);
+        // log.info("parm: {?}", .{parm});
 
         var format = std.mem.zeroes(c.v4l2_format);
         format.type = c.V4L2_CAP_VIDEO_CAPTURE;
         format.fmt.pix.width = self.width;
         format.fmt.pix.height = self.height;
-        format.fmt.pix.pixelformat = c.V4L2_PIX_FMT_YUYV;
+        // RK ISP only support NV12?
+        // How? Did I select the wrong channel?
+        format.fmt.pix.pixelformat = c.V4L2_PIX_FMT_NV12;
         format.fmt.pix.field = c.V4L2_FIELD_NONE;
         const res = ioctl(self.file_desc, c.VIDIOC_S_FMT, @ptrToInt(&format));
         if (res == -1) {
-            return V4lError.NoSFMT;
+            return V4lError.NoSetFmt;
         }
         try requestBuffersRaw(self.file_desc, num_buffer);
         try self.queryBuffer();
@@ -537,6 +561,16 @@ pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
         return V4lError.NoReqBufs;
     }
     log.info("requested count: {d}", .{req.count});
+}
+
+/// https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-parm.html?highlight=vidioc_s_parm#c.VIDIOC_G_PARM
+pub fn getCapturePram(fd: fd_t) !c.v4l2_captureparm {
+    var cap = std.mem.zeroes(c.v4l2_captureparm);
+    const res = ioctl(fd, c.VIDIOC_G_PARM, @ptrToInt(&cap));
+    if (res == -1) {
+        return V4lError.NoGetParm;
+    }
+    return cap;
 }
 
 pub fn videoEnableRaw(fd: fd_t) !void {
