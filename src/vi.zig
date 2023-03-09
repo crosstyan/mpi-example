@@ -278,14 +278,37 @@ pub const VICtx = struct {
     }
 };
 
+pub const PicFormat = enum {
+    YUYV,
+    NV12,
+};
+
+pub fn format2V4l2(format: PicFormat) u32 {
+    return switch (format) {
+        .YUYV => c.V4L2_PIX_FMT_YUYV,
+        .NV12 => c.V4L2_PIX_FMT_NV12,
+    };
+}
+
+pub fn format2Rk(format: PicFormat) i32 {
+    return switch (format) {
+        .YUYV => c.RK_FMT_YUV422_YUYV,
+        .NV12 => c.RK_FMT_YUV420SP,
+    };
+}
+
 pub const V4l2Options = struct {
     device: ?[]const u8 = null,
     width: u32 = 640,
     height: u32 = 480,
+    fps: u32 = 30,
+    format: PicFormat = PicFormat.NV12,
+    @"out-path": ?[]const u8 = null,
     pub const shorthands = .{
         .d = "device",
         .w = "width",
         .h = "height",
+        .o = "out-path",
     };
 };
 
@@ -334,6 +357,9 @@ pub const V4l2Vi = struct {
     frame_buffer: []u8,
     /// addr and length
     mems: [num_buffer][]align(mem.page_size) u8,
+    fps: u32,
+    format: u32,
+    out_path: ?[]const u8 = null,
     allocator: std.mem.Allocator,
 
     pub fn new(allocator: std.mem.Allocator, opts: *const V4l2Options) !V4l2Vi {
@@ -346,6 +372,9 @@ pub const V4l2Vi = struct {
         self.width = opts.width;
         self.height = opts.height;
         self.allocator = allocator;
+        self.fps = opts.fps;
+        self.format = format2V4l2(opts.format);
+        self.out_path = opts.@"out-path";
         const frame_buffer_size = self.width * self.height * 2;
         self.frame_buffer = try self.allocator.alloc(u8, frame_buffer_size);
         return self;
@@ -411,8 +440,12 @@ pub const V4l2Vi = struct {
             const e = elapse.reset_elapsed();
             log.debug("[{}] elapsed: {}ms", .{ i, e });
         }
+
         if (ret) |r| {
-            try writeToFile(r, "test.yuv");
+            if (self.out_path) |path| {
+                try writeToFile(r, path);
+                log.info("write to file: {s}", .{path});
+            }
             log.info("sucess! ", .{});
         }
     }
@@ -475,10 +508,8 @@ pub const V4l2Vi = struct {
         if (cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE <= 0) {
             return V4lError.NoCapture;
         }
-        try self.setCaptureParm(30);
-        // No idea why get won't work.
-        // var parm = try getCapturePram(self.file_desc);
-        // log.info("parm: {?}", .{parm});
+
+        try self.setCaptureParm(self.fps);
 
         var format = std.mem.zeroes(c.v4l2_format);
         format.type = c.V4L2_CAP_VIDEO_CAPTURE;
@@ -486,7 +517,7 @@ pub const V4l2Vi = struct {
         format.fmt.pix.height = self.height;
         // RK ISP only support NV12?
         // How? Did I select the wrong channel?
-        format.fmt.pix.pixelformat = c.V4L2_PIX_FMT_NV12;
+        format.fmt.pix.pixelformat = self.format;
         format.fmt.pix.field = c.V4L2_FIELD_NONE;
         const res = ioctl(self.file_desc, c.VIDIOC_S_FMT, @ptrToInt(&format));
         if (res == -1) {
@@ -564,6 +595,8 @@ pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
 }
 
 /// https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-parm.html?highlight=vidioc_s_parm#c.VIDIOC_G_PARM
+///
+/// Weird, it won't work
 pub fn getCapturePram(fd: fd_t) !c.v4l2_captureparm {
     var cap = std.mem.zeroes(c.v4l2_captureparm);
     const res = ioctl(fd, c.VIDIOC_G_PARM, @ptrToInt(&cap));
