@@ -2,6 +2,7 @@ const c = @import("bindings/common.zig");
 const rk = @import("rockit.zig");
 const sucess = rk.sucess;
 const std = @import("std");
+const os = std.os;
 const log = std.log.scoped(.log);
 const utils = @import("utils.zig");
 const _e = @import("error.zig");
@@ -192,8 +193,8 @@ pub const VICtx = struct {
     pub fn setEntityName(self: *@This(), entity_name: ?[]const u8) void {
         // C use this piece of string which should be zero ended
         set_zeros(&self.chn_attr.stIspOpt.aEntityName);
-        if (entity_name != null) {
-            std.mem.copy(u8, &self.chn_attr.stIspOpt.aEntityName, entity_name.?);
+        if (entity_name) |name| {
+            std.mem.copy(u8, &self.chn_attr.stIspOpt.aEntityName, name);
         }
     }
 
@@ -383,7 +384,6 @@ pub const V4l2Vi = struct {
         const epoll_fd = @intCast(i32, l.epoll_create());
         defer std.os.close(epoll_fd);
 
-        const os = std.os;
         const max_poll_fd = 1;
 
         var poll_fds: [max_poll_fd]std.os.pollfd = .{};
@@ -395,26 +395,24 @@ pub const V4l2Vi = struct {
         var elapse = utils.Elapsed.new();
         var i: usize = 0;
         const max_cnt = 30;
+        var ret: ?[]align(mem.page_size) u8 = null;
         while (i < max_cnt) : (i += 1) {
-            const ret = try os.poll(&poll_fds, 1000);
-            if (ret == 0) {
+            const rp = try os.poll(&poll_fds, 1000);
+            if (rp == 0) {
                 log.info("[{}] timeout", .{i});
                 continue;
             }
-            self.grab() catch |err| {
+            ret = self.grab() catch |err| {
                 log.err("[{}] err {?}", .{ i, err });
+                return err;
             };
             const e = elapse.reset_elapsed();
             log.debug("[{}] elapsed: {}ms", .{ i, e });
         }
-        try self.writeToFile("test.yuv");
-        log.info("sucess! ", .{});
-    }
-
-    pub fn writeToFile(self: *const @This(), filename: []const u8) !void {
-        const file = try std.fs.cwd().createFile(filename, .{});
-        defer file.close();
-        try file.writer().writeAll(self.frame_buffer);
+        if (ret) |r| {
+            try writeToFile(r, "test.yuv");
+            log.info("sucess! ", .{});
+        }
     }
 
     /// called in `init`
@@ -491,7 +489,7 @@ pub const V4l2Vi = struct {
 
     /// could retur Err.Again (in `error.zig`)
     /// in Non-Blocking IO
-    pub fn grab(self: *@This()) !void {
+    pub fn grab(self: *@This()) ![]align(mem.page_size) u8 {
         var buf = std.mem.zeroes(c.v4l2_buffer);
         buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory = c.V4L2_MEMORY_MMAP;
@@ -508,29 +506,26 @@ pub const V4l2Vi = struct {
                 },
             }
         }
-        // copy buffer
-        {
-            const i = buf.index;
-            const mem_buf = self.mems[i];
-            log.debug("[grab] index {d}, size {d}", .{ i, buf.bytesused });
-            if (mem_buf.len != self.frame_buffer.len) {
-                log.info("resize frame buffer. {} -> {}", .{ self.frame_buffer.len, mem_buf.len });
-                const ret = self.allocator.resize(self.frame_buffer, buf.bytesused);
-                if (!ret) {
-                    return Err.BadResize;
-                }
-            }
-            std.mem.copy(u8, self.frame_buffer, mem_buf);
-        }
-        // requeue buffer
+        // no need to copy buffer
+        // return the memory buffer
+        const i = buf.index;
+        var r: []align(mem.page_size) u8 = self.mems[i];
+        log.debug("[grab] index {d}, size {d}", .{ i, buf.bytesused });
         {
             const ret = ioctl(self.file_desc, c.VIDIOC_QBUF, @ptrToInt(&buf));
             if (ret == -1) {
                 return V4lError.NoQBuf;
             }
         }
+        return r;
     }
 };
+
+pub fn writeToFile(buf: []align(mem.page_size) u8, filename: []const u8) !void {
+    const file = try std.fs.cwd().createFile(filename, .{});
+    defer file.close();
+    try file.writer().writeAll(buf);
+}
 
 pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
     var req = std.mem.zeroes(c.v4l2_requestbuffers);
