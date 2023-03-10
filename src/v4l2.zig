@@ -111,9 +111,6 @@ pub const V4l2Vi = struct {
     width: u32,
     height: u32,
     file_desc: std.os.fd_t,
-    /// ~~mapped buffer would be copied to here~~
-    /// Not anymore
-    frame_buffer: []u8,
     /// addr and length
     mems: [num_buffer][]align(mem.page_size) u8,
     fps: u32,
@@ -136,8 +133,6 @@ pub const V4l2Vi = struct {
         self.format = format2V4l2(opts.format);
         self.out_path = opts.@"out-path";
         self.no_cvt = opts.@"no-cvt";
-        const frame_buffer_size = self.width * self.height * 2;
-        self.frame_buffer = try self.allocator.alloc(u8, frame_buffer_size);
         return self;
     }
 
@@ -379,7 +374,8 @@ pub const V4l2Vi = struct {
     }
 
     pub fn destory(self: *@This()) void {
-        self.allocator.free(self.frame_buffer);
+        _ = self;
+        // Do Nothing
     }
 
     /// could retur Err.Again (in `error.zig`)
