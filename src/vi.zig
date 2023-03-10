@@ -139,8 +139,9 @@ pub const TestOptions = struct {
     width: i32 = 1920,
     height: i32 = 1080,
     /// delay ms. -1 is blocking. 0 is non-blocking.
-    delay: i32 = 33,
-    v4l2: bool = false,
+    delay: i32 = -1,
+    /// whether to use `libv4l2`
+    libv4l2: bool = false,
     /// whether to use VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE_MPLANE
     /// No idea how this works.
     mplane: bool = false,
@@ -227,7 +228,7 @@ pub const VICtx = struct {
             self.pipe.PipeId[0] = self.pipe_id;
             try setDevBindPipe(self.dev_id, &self.pipe);
         } else {
-            log.info("vi dev {} is enabled", .{self.dev_id});
+            log.info("VI device {} has been enabled", .{self.dev_id});
         }
         self.chn_attr.stSize.u32Width = @intCast(u32, self.width);
         self.chn_attr.stSize.u32Height = @intCast(u32, self.height);
@@ -254,11 +255,12 @@ pub const VICtx = struct {
         } else {
             self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE;
         }
-        log.info("format:{?}", .{opts.format});
+        log.info("capture type: 0x{x}", .{self.chn_attr.stIspOpt.enCaptureType});
+        log.info("format      : {?}", .{opts.format});
         self.chn_attr.enPixelFormat = try v4l2.format2Rk(opts.format);
-        self.chn_attr.stIspOpt.bNoUseLibV4L2 = @intCast(c_uint, @boolToInt(!opts.v4l2));
-        if (opts.v4l2) {
-            log.info("using V4L2", .{});
+        self.chn_attr.stIspOpt.bNoUseLibV4L2 = @intCast(c_uint, @boolToInt(!opts.libv4l2));
+        if (opts.libv4l2) {
+            log.info("using `libv4l2`", .{});
         }
         self.chn_attr.stFrameRate.s32SrcFrameRate = -1;
         self.chn_attr.stFrameRate.s32DstFrameRate = -1;
@@ -273,8 +275,8 @@ pub const VICtx = struct {
     }
 
     pub fn test_vi(self: *@This(), opts: TestOptions) !void {
-        log.info("entity name: {s}", .{&self.chn_attr.stIspOpt.aEntityName});
         try self.init_test(&opts);
+        log.info("entity name: {s}", .{&self.chn_attr.stIspOpt.aEntityName});
         defer self.deinit();
         var frame = std.mem.zeroes(c.VIDEO_FRAME_INFO_S);
         var last = utils.Elapsed.new();
