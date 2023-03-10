@@ -261,13 +261,13 @@ pub const V4l2Vi = struct {
 
     fn videoEnable(self: *@This()) !void {
         if (self._is_capturing) return;
-        try videoEnableRaw(self.file_desc);
+        try videoEnableFd(self.file_desc);
         self._is_capturing = true;
     }
 
     fn videoDisable(self: *@This()) !void {
         if (!self._is_capturing) return;
-        try videoDisableRaw(self.file_desc);
+        try videoDisableFd(self.file_desc);
         self._is_capturing = false;
     }
 
@@ -289,8 +289,8 @@ pub const V4l2Vi = struct {
             log.err("v4l2_fd_open: {?}", .{eno});
             return V4lError.NoDevice;
         }
-        const raw_cap = getCapabilityRaw(self.file_desc).?;
-        const cap = getCapability(self.file_desc).?;
+        const raw_cap = getCapabilityFdRaw(self.file_desc).?;
+        const cap = getCapabilityFd(self.file_desc).?;
         log.info("Device        : {s}", .{p});
         log.info("Driver name   : {s}", .{cap.driver});
         log.info("Card type     : {s}", .{cap.card});
@@ -315,7 +315,7 @@ pub const V4l2Vi = struct {
             return V4lError.NoSetFmt;
         }
 
-        var fmt = getFmt(self.file_desc);
+        var fmt = getFmtFd(self.file_desc);
         if (fmt) |f| {
             if (f.fmt.pix.width != self.width or f.fmt.pix.height != self.height) {
                 log.err("width or height not match. expect {}x{} but get {}x{}", .{ self.width, self.height, f.fmt.pix.width, f.fmt.pix.height });
@@ -345,7 +345,7 @@ pub const V4l2Vi = struct {
             log.warn("Invalid Time Per Frame: {}/{}s", .{ nu, de });
         }
 
-        try requestBuffersRaw(self.file_desc, num_buffer);
+        try requestBuffersFd(self.file_desc, num_buffer);
         try self.queryBuffer();
         try self.queueBuffer();
     }
@@ -353,7 +353,7 @@ pub const V4l2Vi = struct {
     /// won't free the frame buffer
     /// call `destory`
     pub fn deinit(self: *@This()) void {
-        videoDisableRaw(self.file_desc) catch unreachable;
+        videoDisableFd(self.file_desc) catch unreachable;
         for (self.mems) |m| {
             _ = munmap(m.ptr, m.len);
         }
@@ -408,7 +408,7 @@ pub fn writeToFile(buf: []align(mem.page_size) u8, filename: []const u8) !void {
     try file.writer().writeAll(buf);
 }
 
-pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
+pub fn requestBuffersFd(fd: fd_t, count: usize) !void {
     var req = std.mem.zeroes(c.v4l2_requestbuffers);
     req.count = @intCast(c_uint, count);
     req.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -419,7 +419,7 @@ pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
     }
 }
 
-pub fn videoEnableRaw(fd: fd_t) !void {
+pub fn videoEnableFd(fd: fd_t) !void {
     var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
     const res = ioctl(fd, c.VIDIOC_STREAMON, @ptrToInt(&t));
     if (res == -1) {
@@ -429,7 +429,7 @@ pub fn videoEnableRaw(fd: fd_t) !void {
     }
 }
 
-pub fn videoDisableRaw(fd: fd_t) !void {
+pub fn videoDisableFd(fd: fd_t) !void {
     var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
     const res = ioctl(fd, c.VIDIOC_STREAMOFF, @ptrToInt(&t));
     if (res == -1) {
@@ -439,7 +439,7 @@ pub fn videoDisableRaw(fd: fd_t) !void {
     }
 }
 
-pub fn getFmt(fd: fd_t) ?c.v4l2_format {
+pub fn getFmtFd(fd: fd_t) ?c.v4l2_format {
     var format = std.mem.zeroes(c.v4l2_format);
     format.type = c.V4L2_CAP_VIDEO_CAPTURE;
     // check if fmt set correctly
@@ -452,7 +452,7 @@ pub fn getFmt(fd: fd_t) ?c.v4l2_format {
     return format;
 }
 
-pub fn getCapability(fd: fd_t) ?c.v4l2_capability {
+pub fn getCapabilityFd(fd: fd_t) ?c.v4l2_capability {
     var cap = std.mem.zeroes(c.v4l2_capability);
     // in `libv4l2` lib/libv4l-mplane/libv4l-mplane.c#L114
     // Using mplane plugin for capture... What?
@@ -466,7 +466,7 @@ pub fn getCapability(fd: fd_t) ?c.v4l2_capability {
 }
 
 /// Not using `ioctl` from `libv4l2`
-pub fn getCapabilityRaw(fd: fd_t) ?c.v4l2_capability {
+pub fn getCapabilityFdRaw(fd: fd_t) ?c.v4l2_capability {
     var cap = std.mem.zeroes(c.v4l2_capability);
     const ret = l.ioctl(fd, c.VIDIOC_QUERYCAP, @ptrToInt(&cap));
     if (ret == -1) {
