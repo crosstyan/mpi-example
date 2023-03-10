@@ -8,6 +8,7 @@ const utils = @import("utils.zig");
 const _e = @import("error.zig");
 const Err = _e.Err;
 const set_zeros = utils.set_zeros;
+const v4l2 = @import("v4l2.zig");
 
 const VIErr = error{
     InvalidPara,
@@ -145,12 +146,14 @@ pub const TestOptions = struct {
     mplane: bool = false,
     @"buf-type": AllocBufType = AllocBufType.External,
     @"mem-type": V4l2MemoryType = V4l2MemoryType.Mmap,
+    format: v4l2.PicFormat = v4l2.PicFormat.NV12,
     pub const shorthands = .{
         .w = "width",
         .h = "height",
         .e = "entity-name",
         .c = "count",
         .D = "delay",
+        .f = "format",
     };
 };
 
@@ -249,7 +252,8 @@ pub const VICtx = struct {
         } else {
             self.chn_attr.stIspOpt.enCaptureType = c.VI_V4L2_CAPTURE_TYPE_VIDEO_CAPTURE;
         }
-        self.chn_attr.enPixelFormat = c.RK_FMT_YUV420SP;
+        log.info("format:{?}", .{opts.format});
+        self.chn_attr.enPixelFormat = try v4l2.format2Rk(opts.format);
         self.chn_attr.stIspOpt.bNoUseLibV4L2 = @intCast(c_uint, @boolToInt(!opts.v4l2));
         if (opts.v4l2) {
             log.info("using V4L2", .{});
@@ -272,6 +276,8 @@ pub const VICtx = struct {
         defer self.deinit();
         var frame = std.mem.zeroes(c.VIDEO_FRAME_INFO_S);
         var last = utils.Elapsed.new();
+        var file = try std.fs.cwd().createFile("test.yuv", .{ .truncate = true });
+        defer file.close();
         for (0..opts.count) |i| {
             getChnFrame(self.pipe_id, self.chn_id, &frame, opts.delay) catch |err| {
                 log.err("[{d}] get chn frame failed: {?}", .{ i, err });
@@ -281,6 +287,7 @@ pub const VICtx = struct {
             var status = std.mem.zeroes(c.VI_CHN_STATUS_S);
             try queryChnStatus(self.pipe_id, self.chn_id, &status);
             log.info("[{d}] w:{d}, h:{d}, frame id:{d}, elapsed: {d}ms", .{ i, status.stSize.u32Width, status.stSize.u32Height, status.u32CurFrameID, elapsed });
+            try rk.fileWriteOneFrame(&file, &frame);
             try releaseChnFrame(self.pipe_id, self.chn_id, &frame);
         }
     }

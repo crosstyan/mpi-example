@@ -23,7 +23,7 @@ pub fn format2V4l2(format: PicFormat) u32 {
     };
 }
 
-pub fn format2Rk(format: PicFormat) !i32 {
+pub fn format2Rk(format: PicFormat) !u32 {
     return switch (format) {
         .YUYV => c.RK_FMT_YUV422_YUYV,
         .NV12 => c.RK_FMT_YUV420SP,
@@ -45,6 +45,7 @@ pub const V4l2Options = struct {
         .w = "width",
         .h = "height",
         .o = "out-path",
+        .f = "format",
     };
 };
 
