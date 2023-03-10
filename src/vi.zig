@@ -281,8 +281,8 @@ pub const VICtx = struct {
         var file: ?std.fs.File = null;
         if (opts.@"out-path") |path| {
             file = try std.fs.cwd().createFile(path, .{ .truncate = true });
-            defer file.?.close();
         }
+        defer if (file) |*f| f.close();
         for (0..opts.count) |i| {
             getChnFrame(self.pipe_id, self.chn_id, &frame, opts.delay) catch |err| {
                 log.err("[{d}] get chn frame failed: {?}", .{ i, err });
@@ -292,9 +292,7 @@ pub const VICtx = struct {
             var status = std.mem.zeroes(c.VI_CHN_STATUS_S);
             try queryChnStatus(self.pipe_id, self.chn_id, &status);
             log.info("[{d}] w:{d}, h:{d}, frame id:{d}, elapsed: {d}ms", .{ i, status.stSize.u32Width, status.stSize.u32Height, status.u32CurFrameID, elapsed });
-            if (file) |*f| {
-                try rk.fileWriteOneFrame(f, &frame);
-            }
+            if (file) |*f| try rk.fileWriteOneFrame(f, &frame);
             try releaseChnFrame(self.pipe_id, self.chn_id, &frame);
         }
     }
