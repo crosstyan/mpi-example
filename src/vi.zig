@@ -146,6 +146,7 @@ pub const TestOptions = struct {
     mplane: bool = false,
     @"buf-type": AllocBufType = AllocBufType.External,
     @"mem-type": V4l2MemoryType = V4l2MemoryType.Mmap,
+    @"out-path": ?[]const u8 = null,
     format: v4l2.PicFormat = v4l2.PicFormat.NV12,
     pub const shorthands = .{
         .w = "width",
@@ -154,6 +155,7 @@ pub const TestOptions = struct {
         .c = "count",
         .D = "delay",
         .f = "format",
+        .o = "out-path",
     };
 };
 
@@ -276,8 +278,11 @@ pub const VICtx = struct {
         defer self.deinit();
         var frame = std.mem.zeroes(c.VIDEO_FRAME_INFO_S);
         var last = utils.Elapsed.new();
-        var file = try std.fs.cwd().createFile("test.yuv", .{ .truncate = true });
-        defer file.close();
+        var file: ?std.fs.File = null;
+        if (opts.@"out-path") |path| {
+            file = try std.fs.cwd().createFile(path, .{ .truncate = true });
+            defer file.?.close();
+        }
         for (0..opts.count) |i| {
             getChnFrame(self.pipe_id, self.chn_id, &frame, opts.delay) catch |err| {
                 log.err("[{d}] get chn frame failed: {?}", .{ i, err });
@@ -287,7 +292,9 @@ pub const VICtx = struct {
             var status = std.mem.zeroes(c.VI_CHN_STATUS_S);
             try queryChnStatus(self.pipe_id, self.chn_id, &status);
             log.info("[{d}] w:{d}, h:{d}, frame id:{d}, elapsed: {d}ms", .{ i, status.stSize.u32Width, status.stSize.u32Height, status.u32CurFrameID, elapsed });
-            try rk.fileWriteOneFrame(&file, &frame);
+            if (file) |*f| {
+                try rk.fileWriteOneFrame(f, &frame);
+            }
             try releaseChnFrame(self.pipe_id, self.chn_id, &frame);
         }
     }
