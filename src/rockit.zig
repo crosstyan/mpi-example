@@ -79,9 +79,6 @@ pub fn mmzAllocCached(blk: *c.MB_BLK, len: u32) SysError!void {
 
 pub fn fileWriteOneFrame(file: *std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void {
     const v_frame = frame.stVFrame;
-    if (frame.stVFrame.enPixelFormat != c.RK_FMT_YUV420SP) {
-        log.warn("Should be RK_FMT_YUV420SP, got 0x{x}. ", .{frame.stVFrame.enPixelFormat});
-    }
     const buf_attr = c.PIC_BUF_ATTR_S{
         .u32Width = v_frame.u32VirWidth,
         .u32Height = v_frame.u32VirHeight,
@@ -89,7 +86,7 @@ pub fn fileWriteOneFrame(file: *std.fs.File, frame: *c.VIDEO_FRAME_INFO_S) !void
         .enCompMode = v_frame.enCompressMode,
     };
     var cal = std.mem.zeroes(c.MB_PIC_CAL_S);
-    log.debug("buf_attr: {?}\n", .{buf_attr});
+    log.debug("[buff attr] w:{} h:{} format:0x{x} compression mode:0x{x}", .{ buf_attr.u32Width, buf_attr.u32Height, buf_attr.enPixelFormat, buf_attr.enCompMode });
     try calPicBufferSizeVgs(&buf_attr, &cal);
     try mmzFlushCache(v_frame.pMbBlk, true);
     const addr = try mb.handle2VirAddr(v_frame.pMbBlk);
