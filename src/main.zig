@@ -32,7 +32,7 @@ pub fn main() !u8 {
         union(enum) {
             @"egl-test": struct {},
             @"vi-test": vi.TestOptions,
-            @"v4l2-test": v4l2.V4l2Options,
+            @"v4l2-test": v4l2.V4l2TestOptions,
         },
         allocator,
         .print,
@@ -50,7 +50,7 @@ pub fn main() !u8 {
             .@"v4l2-test" => |opts| {
                 var v = try v4l2.V4l2Vi.new(allocator, &opts);
                 defer v.destory();
-                try v.v4l2_test();
+                try v.v4l2_test(&opts);
             },
         }
     } else {

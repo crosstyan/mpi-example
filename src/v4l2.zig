@@ -31,13 +31,15 @@ pub fn format2Rk(format: PicFormat) !u32 {
     };
 }
 
-pub const V4l2Options = struct {
+pub const V4l2TestOptions = struct {
     device: ?[]const u8 = null,
     width: u32 = 640,
     height: u32 = 480,
     fps: u32 = 30,
+    count: usize = 100,
     format: PicFormat = PicFormat.NV12,
     @"out-path": ?[]const u8 = null,
+    continuous: bool = false,
     /// set `V4L2_DISABLE_CONVERSION`
     @"no-cvt": bool = false,
     pub const shorthands = .{
@@ -46,6 +48,7 @@ pub const V4l2Options = struct {
         .h = "height",
         .o = "out-path",
         .f = "format",
+        .c = "count",
     };
 };
 
@@ -119,7 +122,7 @@ pub const V4l2Vi = struct {
     allocator: std.mem.Allocator,
     no_cvt: bool = false,
 
-    pub fn new(allocator: std.mem.Allocator, opts: *const V4l2Options) !V4l2Vi {
+    pub fn new(allocator: std.mem.Allocator, opts: *const V4l2TestOptions) !V4l2Vi {
         var self: V4l2Vi = undefined;
         if (opts.device == null) {
             return error.IllegalParam;
@@ -166,7 +169,7 @@ pub const V4l2Vi = struct {
         return self._is_capturing;
     }
 
-    pub fn v4l2_test(self: *@This()) !void {
+    pub fn v4l2_test(self: *@This(), opts: *const V4l2TestOptions) !void {
         try self.init();
         defer self.deinit();
         try self.videoEnable();
@@ -181,9 +184,17 @@ pub const V4l2Vi = struct {
         poll_fd.fd = self.file_desc;
         poll_fds[0] = poll_fd;
 
+        var file: ?std.fs.File = null;
+        if (opts.@"out-path") |path| {
+            file = try std.fs.cwd().createFile(path, .{ .truncate = true });
+            log.info("about to write to file: {s}", .{path});
+        }
+        const continuous = opts.continuous;
+        defer if (file) |*f| f.close();
+
         var elapse = utils.Elapsed.new();
         var i: usize = 0;
-        const max_cnt = 30;
+        const max_cnt = opts.count;
         var ret: ?[]align(mem.page_size) u8 = null;
         while (i < max_cnt) : (i += 1) {
             const rp = try os.poll(&poll_fds, 1000);
@@ -197,14 +208,20 @@ pub const V4l2Vi = struct {
             };
             const e = elapse.reset_elapsed();
             log.debug("[{}] elapsed: {}ms", .{ i, e });
+            // write to file per frame
+            if (continuous) {
+                if (ret) |r| {
+                    if (file) |*f| _ = try f.write(r);
+                }
+            }
         }
 
-        if (ret) |r| {
-            if (self.out_path) |path| {
-                try writeToFile(r, path);
-                log.info("write to file: {s}", .{path});
+        // write to file once at the last frame
+        if (!continuous) {
+            if (ret) |r| {
+                if (file) |*f| _ = try f.write(r);
+                log.info("sucess! ", .{});
             }
-            log.info("sucess! ", .{});
         }
     }
 
@@ -277,7 +294,7 @@ pub const V4l2Vi = struct {
         log.info("Try to open {s}", .{p});
 
         // NOTE: NONBLOCK
-        self.file_desc = open(p, std.os.linux.O.RDWR | std.os.linux.O.NONBLOCK);
+        self.file_desc = try std.os.openZ(p, std.os.linux.O.RDWR | std.os.linux.O.NONBLOCK, 0);
         var flag: i32 = 0;
         if (self.no_cvt) {
             flag |= c.V4L2_DISABLE_CONVERSION;
