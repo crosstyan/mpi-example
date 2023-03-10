@@ -34,3 +34,22 @@ pub const Elapsed = struct {
         return e;
     }
 };
+
+/// tranlate from
+/// https://patchwork.kernel.org/project/linux-media/patch/e6dfbe4afd3f1db4c3f8a81c0813dc418896f5e1.1505916622.git.dave.stevenson@raspberrypi.org/
+pub fn fourcc2s(fourcc: u32) [8]u8 {
+    var buf: [8]u8 = .{};
+    buf[0] = @intCast(u8, fourcc & 0x7f);
+    buf[1] = @intCast(u8, (fourcc >> 8) & 0x7f);
+    buf[2] = @intCast(u8, (fourcc >> 16) & 0x7f);
+    buf[3] = @intCast(u8, (fourcc >> 24) & 0x7f);
+    if (fourcc & (1 << 31) != 0) {
+        buf[4] = '-';
+        buf[5] = 'B';
+        buf[6] = 'E';
+        buf[7] = 0;
+    } else {
+        buf[4] = 0;
+    }
+    return buf;
+}

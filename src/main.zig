@@ -7,6 +7,7 @@ const common = @import("bindings/common.zig");
 const rk = @import("rockit.zig");
 const avs = @import("avs.zig");
 const vi = @import("vi.zig");
+const v4l2 = @import("v4l2.zig");
 
 fn eglTest() void {
     // RK_MPI_SYS_Init hasn't use external EGL?
@@ -31,7 +32,7 @@ pub fn main() !u8 {
         union(enum) {
             @"egl-test": struct {},
             @"vi-test": vi.TestOptions,
-            @"v4l2-test": vi.V4l2Options,
+            @"v4l2-test": v4l2.V4l2Options,
         },
         allocator,
         .print,
@@ -47,7 +48,7 @@ pub fn main() !u8 {
                 defer rk.deinit() catch unreachable;
             },
             .@"v4l2-test" => |opts| {
-                var v = try vi.V4l2Vi.new(allocator, &opts);
+                var v = try v4l2.V4l2Vi.new(allocator, &opts);
                 defer v.destory();
                 try v.v4l2_test();
             },
