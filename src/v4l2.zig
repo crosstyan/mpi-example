@@ -38,8 +38,8 @@ pub const V4l2Options = struct {
     fps: u32 = 30,
     format: PicFormat = PicFormat.NV12,
     @"out-path": ?[]const u8 = null,
-    /// skip setting parm
-    @"skip-check": bool = false,
+    /// set `V4L2_DISABLE_CONVERSION`
+    @"no-cvt": bool = false,
     pub const shorthands = .{
         .d = "device",
         .w = "width",
@@ -48,7 +48,6 @@ pub const V4l2Options = struct {
     };
 };
 
-// use equivent in libv4l2
 const ioctl = c.v4l2_ioctl;
 const open = c.v4l2_open;
 const close = c.v4l2_close;
@@ -58,6 +57,14 @@ const fd_t = std.os.fd_t;
 const mem = std.mem;
 const num_buffer = 16;
 const l = std.os.linux;
+
+///  `v4l2_fd_open`: open an already opened fd for further use through
+///  v4l2lib and possibly modify libv4l2's default behavior through the
+///  `v4l2_flags` argument.
+///
+///  Returns fd on success, -1 if the fd is not suitable for use through libv4l2
+///  (note the fd is left open in this case).
+const fd_open = c.v4l2_fd_open;
 
 pub const V4lError = error{
     /// VIDIOC_DEQBUF failed
@@ -83,11 +90,15 @@ pub const V4lError = error{
     NoSetParm,
 };
 
-pub const CapType = enum {
-    None,
-    VideoCapture,
-    VideoCaptureMplane,
-};
+// fmt.pix.priv == c.V4L2_PIX_FMT_PRIV_MAGIC
+// This field indicates whether the remaining fields of the struct v4l2_pix_format,
+// also called the extended fields, are valid. When set to V4L2_PIX_FMT_PRIV_MAGIC,
+// it indicates that the extended fields have been correctly initialized. When set
+// to any other value it indicates that the extended fields contain undefined
+// values.
+//
+// This field indicates the the extended fields are valid. We support these extended fields
+// since struct v4l2_pix_format_mplane supports those fields as well.
 
 pub const V4l2Vi = struct {
     /// Don't mutate this field directly, `videoEnable` and `videoDisable`
@@ -103,10 +114,9 @@ pub const V4l2Vi = struct {
     mems: [num_buffer][]align(mem.page_size) u8,
     fps: u32,
     format: u32,
-    cap_type: CapType = CapType.None,
-    is_skip_check: bool = false,
     out_path: ?[]const u8 = null,
     allocator: std.mem.Allocator,
+    no_cvt: bool = false,
 
     pub fn new(allocator: std.mem.Allocator, opts: *const V4l2Options) !V4l2Vi {
         var self: V4l2Vi = undefined;
@@ -121,7 +131,7 @@ pub const V4l2Vi = struct {
         self.fps = opts.fps;
         self.format = format2V4l2(opts.format);
         self.out_path = opts.@"out-path";
-        self.is_skip_check = opts.@"skip-check";
+        self.no_cvt = opts.@"no-cvt";
         const frame_buffer_size = self.width * self.height * 2;
         self.frame_buffer = try self.allocator.alloc(u8, frame_buffer_size);
         return self;
@@ -177,7 +187,7 @@ pub const V4l2Vi = struct {
         while (i < max_cnt) : (i += 1) {
             const rp = try os.poll(&poll_fds, 1000);
             if (rp == 0) {
-                log.info("[{}] timeout", .{i});
+                log.warn("[{}] timeout", .{i});
                 continue;
             }
             ret = self.grab() catch |err| {
@@ -216,11 +226,7 @@ pub const V4l2Vi = struct {
     fn setCaptureParm(self: *@This(), fps: u32) !void {
         var fd = self.file_desc;
         var parm = std.mem.zeroes(c.v4l2_streamparm);
-        parm.type = switch (self.cap_type) {
-            CapType.VideoCaptureMplane => c.V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
-            CapType.VideoCapture => c.V4L2_BUF_TYPE_VIDEO_CAPTURE,
-            else => unreachable,
-        };
+        parm.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
         parm.parm.capture.timeperframe.numerator = 1;
         parm.parm.capture.timeperframe.denominator = fps;
         parm.parm.capture.capturemode = 0;
@@ -238,20 +244,16 @@ pub const V4l2Vi = struct {
     ///
     /// NOTE: the function return only part of the stack variable.
     /// Could this works...?
-    pub fn getCapturePram(self: *@This()) !c.v4l2_captureparm {
+    pub fn getCapturePram(self: *@This()) ?c.v4l2_captureparm {
         const fd = self.file_desc;
         var stream = std.mem.zeroes(c.v4l2_streamparm);
         // have to specify the type
-        stream.type = switch (self.cap_type) {
-            CapType.VideoCaptureMplane => c.V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
-            CapType.VideoCapture => c.V4L2_BUF_TYPE_VIDEO_CAPTURE,
-            else => unreachable,
-        };
+        stream.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
         const res = ioctl(fd, c.VIDIOC_G_PARM, @ptrToInt(&stream));
         if (res == -1) {
             const err = os.errno(res);
             log.err("VIDIOC_G_PARM: {?}", .{err});
-            return V4lError.NoGetParm;
+            return null;
         }
         const cap = @ptrCast(*const c.v4l2_captureparm, &stream.parm);
         return cap.*;
@@ -272,67 +274,57 @@ pub const V4l2Vi = struct {
     pub fn init(self: *@This()) !void {
         var p = @ptrCast([*:0]u8, &self.device);
         log.info("Try to open {s}", .{p});
-        // blocking could be good but I love non blocking
-        self.file_desc = open(p, std.os.linux.O.RDWR | std.os.linux.O.NONBLOCK);
 
-        var cap = std.mem.zeroes(c.v4l2_capability);
-        // in `libv4l2` lib/libv4l-mplane/libv4l-mplane.c#L114
-        // Using mplane plugin for capture... What?
-        // since I'm using open from `libv4l2`
-        // `v4l2_plugin_init` is called
-        var err = ioctl(self.file_desc, c.VIDIOC_QUERYCAP, @ptrToInt(&cap));
-        if (err == -1) {
-            const eno = os.errno(err);
-            log.err("VIDIOC_QUERYCAP: {?}", .{eno});
+        // NOTE: NONBLOCK
+        self.file_desc = open(p, std.os.linux.O.RDWR | std.os.linux.O.NONBLOCK);
+        var flag: i32 = 0;
+        if (self.no_cvt) {
+            flag |= c.V4L2_DISABLE_CONVERSION;
+            log.info("Disable `libv4lconvert`", .{});
+        }
+        // Do check by `libv4l2`
+        var ret = fd_open(self.file_desc, flag);
+        if (ret == -1) {
+            const eno = os.errno(ret);
+            log.err("v4l2_fd_open: {?}", .{eno});
             return V4lError.NoDevice;
         }
-        // https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-querycap.html#device-capabilities
-        // eihter capture or capture_mplane
-        if (!(cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE > 0) and !(cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE_MPLANE > 0)) {
-            return V4lError.NoCapture;
-        }
-
-        if (cap.capabilities & c.V4L2_CAP_VIDEO_CAPTURE_MPLANE > 0) {
-            self.cap_type = CapType.VideoCaptureMplane;
-        } else {
-            self.cap_type = CapType.VideoCapture;
-        }
+        const raw_cap = getCapabilityRaw(self.file_desc).?;
+        const cap = getCapability(self.file_desc).?;
         log.info("Device        : {s}", .{p});
         log.info("Driver name   : {s}", .{cap.driver});
         log.info("Card type     : {s}", .{cap.card});
         log.info("Bus info      : {s}", .{cap.bus_info});
         log.info("Driver version: {d}.{d}.{d}", .{ cap.version >> 16, (cap.version >> 8) & 0xFF, cap.version & 0xFF });
         log.info("Capabilities  : 0x{x}", .{cap.capabilities});
+        log.info("Raw Cap       : 0x{x}", .{raw_cap.capabilities});
         log.info("Device Caps   : 0x{x}", .{cap.device_caps});
-        log.info("Cap Type      : {?}", .{self.cap_type});
+        log.info("Raw Dev Cap   : 0x{x}", .{raw_cap.device_caps});
+        if (raw_cap.capabilities != cap.capabilities) {
+            log.warn("Capabilities not match. Plugins might be messing around. Behaviours might be unexpected.", .{});
+        }
 
         var format = std.mem.zeroes(c.v4l2_format);
         format.type = c.V4L2_CAP_VIDEO_CAPTURE;
         format.fmt.pix.width = self.width;
         format.fmt.pix.height = self.height;
-        // RK ISP only support NV12?
-        // How? Did I select the wrong channel?
         format.fmt.pix.pixelformat = self.format;
         format.fmt.pix.field = c.V4L2_FIELD_NONE;
         var res = ioctl(self.file_desc, c.VIDIOC_S_FMT, @ptrToInt(&format));
         if (res == -1) {
             return V4lError.NoSetFmt;
         }
-        // check if fmt set correctly
-        res = ioctl(self.file_desc, c.VIDIOC_G_FMT, @ptrToInt(&format));
-        if (res == -1) {
+
+        var fmt = getFmt(self.file_desc);
+        if (fmt) |f| {
+            if (f.fmt.pix.width != self.width or f.fmt.pix.height != self.height) {
+                log.err("width or height not match. expect {}x{} but get {}x{}", .{ self.width, self.height, f.fmt.pix.width, f.fmt.pix.height });
+                return V4lError.NoSetFmt;
+            }
+        } else {
             return V4lError.NoGetFmt;
         }
-        // sudo v4l2-ctl -d /dev/video9 --list-formats
-        //  --list-formats-ext
-        // So this USB Camera only support YUYV 1080p at 5 fps
-        // check capabilites
-        // v4l2-ctl --all
-        // https://www.systutorials.com/docs/linux/man/1-lav2yuv/
-        if (format.fmt.pix.width != self.width or format.fmt.pix.height != self.height) {
-            log.err("width or height not match. expect {}x{} but get {}x{}", .{ self.width, self.height, format.fmt.pix.width, format.fmt.pix.height });
-            return V4lError.NoSetFmt;
-        }
+
         if (format.fmt.pix.pixelformat != self.format) {
             const exp = utils.fourcc2s(self.format);
             const get = utils.fourcc2s(format.fmt.pix.pixelformat);
@@ -340,11 +332,17 @@ pub const V4l2Vi = struct {
             return V4lError.NoSetFmt;
         }
 
-        if (!self.is_skip_check) {
-            try self.setCaptureParm(self.fps);
-            const parm = try self.getCapturePram();
-            // user should check if fps is correct
-            log.info("Time Per Frame: {}/{}s", .{ parm.timeperframe.numerator, parm.timeperframe.denominator });
+        // Set frame rate. Keeps it working even fails.
+        self.setCaptureParm(self.fps) catch |err| {
+            log.err("set capture parm failed: {?}", .{err});
+        };
+        const parm = self.getCapturePram() orelse std.mem.zeroes(c.v4l2_captureparm);
+        const nu = parm.timeperframe.numerator;
+        const de = parm.timeperframe.denominator;
+        if (nu != 0 and de != 0) {
+            log.info("Time Per Frame: {}/{}s", .{ nu, de });
+        } else {
+            log.warn("Invalid Time Per Frame: {}/{}s", .{ nu, de });
         }
 
         try requestBuffersRaw(self.file_desc, num_buffer);
@@ -419,7 +417,6 @@ pub fn requestBuffersRaw(fd: fd_t, count: usize) !void {
     if (res == -1) {
         return V4lError.NoReqBufs;
     }
-    log.info("requested count: {d}", .{req.count});
 }
 
 pub fn videoEnableRaw(fd: fd_t) !void {
@@ -440,6 +437,44 @@ pub fn videoDisableRaw(fd: fd_t) !void {
         log.err("VIDIOC_STREAMOFF: {?}", .{err});
         return V4lError.NoStreamOff;
     }
+}
+
+pub fn getFmt(fd: fd_t) ?c.v4l2_format {
+    var format = std.mem.zeroes(c.v4l2_format);
+    format.type = c.V4L2_CAP_VIDEO_CAPTURE;
+    // check if fmt set correctly
+    const res = ioctl(fd, c.VIDIOC_G_FMT, @ptrToInt(&format));
+    if (res == -1) {
+        const err = os.errno(res);
+        log.err("VIDIOC_G_FMT: {?}", .{err});
+        return null;
+    }
+    return format;
+}
+
+pub fn getCapability(fd: fd_t) ?c.v4l2_capability {
+    var cap = std.mem.zeroes(c.v4l2_capability);
+    // in `libv4l2` lib/libv4l-mplane/libv4l-mplane.c#L114
+    // Using mplane plugin for capture... What?
+    const ret = ioctl(fd, c.VIDIOC_QUERYCAP, @ptrToInt(&cap));
+    if (ret == -1) {
+        const eno = os.errno(ret);
+        log.err("VIDIOC_QUERYCAP: {?}", .{eno});
+        return null;
+    }
+    return cap;
+}
+
+/// Not using `ioctl` from `libv4l2`
+pub fn getCapabilityRaw(fd: fd_t) ?c.v4l2_capability {
+    var cap = std.mem.zeroes(c.v4l2_capability);
+    const ret = l.ioctl(fd, c.VIDIOC_QUERYCAP, @ptrToInt(&cap));
+    if (ret == -1) {
+        const eno = os.errno(ret);
+        log.err("VIDIOC_QUERYCAP: {?}", .{eno});
+        return null;
+    }
+    return cap;
 }
 
 // https://github.com/ziglang/zig/pull/14744
