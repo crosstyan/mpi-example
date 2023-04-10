@@ -51,6 +51,7 @@ pub fn build(b: *std.Build) !void {
     var opt = std.build.TranslateCStep.Options{ .source_file = src, .optimize = optimize, .target = target };
     const c = b.addTranslateC(opt);
     c.addIncludeDir("include");
+    c.addIncludeDir("/usr/local/include");
     // c.addIncludeDir("/usr/include/EGL");
     var cwd = b.build_root;
     var last_hash_path = cwd.join(b.allocator, &.{"src/bindings/common.xxhash"}) catch unreachable;
@@ -99,10 +100,14 @@ pub fn build(b: *std.Build) !void {
     // https://github.com/ziglang/zig/issues/14278
     // https://github.com/ziglang/zig/issues/14307
     // https://github.com/natecraddock/ziglua
-    var clap_module = std.build.CreateModuleOptions{
+    var args_module = std.build.CreateModuleOptions{
         .source_file = .{ .path = "lib/zig-args/args.zig" },
     };
-    exe.addAnonymousModule("args", clap_module);
+    var yaml_module = std.build.CreateModuleOptions{
+        .source_file = .{ .path = "lib/zig-yaml/src/yaml.zig" },
+    };
+    exe.addAnonymousModule("args", args_module);
+    exe.addAnonymousModule("yaml", yaml_module);
 
     // librockit.so
     exe.linkSystemLibrary("rockit");
@@ -116,6 +121,7 @@ pub fn build(b: *std.Build) !void {
     // exe.linkSystemLibrary("EGL");
     // exe.linkSystemLibrary("GLESv2");
     exe.linkSystemLibrary("v4l2");
+    exe.linkSystemLibrary("ev");
     exe.linkLibC();
     exe.install();
 

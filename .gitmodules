@@ -1,3 +1,9 @@
 [submodule "lib/zig-args"]
 	path = lib/zig-args
 	url = https://github.com/MasterQ32/zig-args
+[submodule "lib/libev"]
+	path = lib/libev
+	url = https://github.com/crosstyan/libev
+[submodule "lib/zig-yaml"]
+	path = lib/zig-yaml
+	url = https://github.com/kubkon/zig-yaml

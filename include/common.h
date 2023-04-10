@@ -11,3 +11,4 @@
 #include <linux/videodev2.h>
 #include <linux/v4l2-common.h>
 #include <libv4l2.h>
+#include <ev.h>

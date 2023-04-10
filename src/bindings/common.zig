@@ -4768,6 +4768,924 @@ pub extern fn v4l2_munmap(_start: ?*anyopaque, length: usize) c_int;
 pub extern fn v4l2_set_control(fd: c_int, cid: c_int, value: c_int) c_int;
 pub extern fn v4l2_get_control(fd: c_int, cid: c_int) c_int;
 pub extern fn v4l2_fd_open(fd: c_int, v4l2_flags: c_int) c_int;
+pub const ev_tstamp = f64;
+pub extern fn memcpy(__dest: ?*anyopaque, __src: ?*const anyopaque, __n: c_ulong) ?*anyopaque;
+pub extern fn memmove(__dest: ?*anyopaque, __src: ?*const anyopaque, __n: c_ulong) ?*anyopaque;
+pub extern fn memccpy(__dest: ?*anyopaque, __src: ?*const anyopaque, __c: c_int, __n: c_ulong) ?*anyopaque;
+pub extern fn memset(__s: ?*anyopaque, __c: c_int, __n: c_ulong) ?*anyopaque;
+pub extern fn memcmp(__s1: ?*const anyopaque, __s2: ?*const anyopaque, __n: c_ulong) c_int;
+pub extern fn memchr(__s: ?*const anyopaque, __c: c_int, __n: c_ulong) ?*anyopaque;
+pub extern fn strcpy(__dest: [*c]u8, __src: [*c]const u8) [*c]u8;
+pub extern fn strncpy(__dest: [*c]u8, __src: [*c]const u8, __n: c_ulong) [*c]u8;
+pub extern fn strcat(__dest: [*c]u8, __src: [*c]const u8) [*c]u8;
+pub extern fn strncat(__dest: [*c]u8, __src: [*c]const u8, __n: c_ulong) [*c]u8;
+pub extern fn strcmp(__s1: [*c]const u8, __s2: [*c]const u8) c_int;
+pub extern fn strncmp(__s1: [*c]const u8, __s2: [*c]const u8, __n: c_ulong) c_int;
+pub extern fn strcoll(__s1: [*c]const u8, __s2: [*c]const u8) c_int;
+pub extern fn strxfrm(__dest: [*c]u8, __src: [*c]const u8, __n: c_ulong) c_ulong;
+pub const struct___locale_data = opaque {};
+pub const struct___locale_struct = extern struct {
+    __locales: [13]?*struct___locale_data,
+    __ctype_b: [*c]const c_ushort,
+    __ctype_tolower: [*c]const c_int,
+    __ctype_toupper: [*c]const c_int,
+    __names: [13][*c]const u8,
+};
+pub const __locale_t = [*c]struct___locale_struct;
+pub const locale_t = __locale_t;
+pub extern fn strcoll_l(__s1: [*c]const u8, __s2: [*c]const u8, __l: locale_t) c_int;
+pub extern fn strxfrm_l(__dest: [*c]u8, __src: [*c]const u8, __n: usize, __l: locale_t) usize;
+pub extern fn strdup(__s: [*c]const u8) [*c]u8;
+pub extern fn strndup(__string: [*c]const u8, __n: c_ulong) [*c]u8;
+pub extern fn strchr(__s: [*c]const u8, __c: c_int) [*c]u8;
+pub extern fn strrchr(__s: [*c]const u8, __c: c_int) [*c]u8;
+pub extern fn strcspn(__s: [*c]const u8, __reject: [*c]const u8) c_ulong;
+pub extern fn strspn(__s: [*c]const u8, __accept: [*c]const u8) c_ulong;
+pub extern fn strpbrk(__s: [*c]const u8, __accept: [*c]const u8) [*c]u8;
+pub extern fn strstr(__haystack: [*c]const u8, __needle: [*c]const u8) [*c]u8;
+pub extern fn strtok(__s: [*c]u8, __delim: [*c]const u8) [*c]u8;
+pub extern fn __strtok_r(noalias __s: [*c]u8, noalias __delim: [*c]const u8, noalias __save_ptr: [*c][*c]u8) [*c]u8;
+pub extern fn strtok_r(noalias __s: [*c]u8, noalias __delim: [*c]const u8, noalias __save_ptr: [*c][*c]u8) [*c]u8;
+pub extern fn strlen(__s: [*c]const u8) c_ulong;
+pub extern fn strnlen(__string: [*c]const u8, __maxlen: usize) usize;
+pub extern fn strerror(__errnum: c_int) [*c]u8;
+pub extern fn strerror_r(__errnum: c_int, __buf: [*c]u8, __buflen: usize) c_int;
+pub extern fn strerror_l(__errnum: c_int, __l: locale_t) [*c]u8;
+pub extern fn bcmp(__s1: ?*const anyopaque, __s2: ?*const anyopaque, __n: c_ulong) c_int;
+pub extern fn bcopy(__src: ?*const anyopaque, __dest: ?*anyopaque, __n: usize) void;
+pub extern fn bzero(__s: ?*anyopaque, __n: c_ulong) void;
+pub extern fn index(__s: [*c]const u8, __c: c_int) [*c]u8;
+pub extern fn rindex(__s: [*c]const u8, __c: c_int) [*c]u8;
+pub extern fn ffs(__i: c_int) c_int;
+pub extern fn ffsl(__l: c_long) c_int;
+pub extern fn ffsll(__ll: c_longlong) c_int;
+pub extern fn strcasecmp(__s1: [*c]const u8, __s2: [*c]const u8) c_int;
+pub extern fn strncasecmp(__s1: [*c]const u8, __s2: [*c]const u8, __n: c_ulong) c_int;
+pub extern fn strcasecmp_l(__s1: [*c]const u8, __s2: [*c]const u8, __loc: locale_t) c_int;
+pub extern fn strncasecmp_l(__s1: [*c]const u8, __s2: [*c]const u8, __n: usize, __loc: locale_t) c_int;
+pub extern fn explicit_bzero(__s: ?*anyopaque, __n: usize) void;
+pub extern fn strsep(noalias __stringp: [*c][*c]u8, noalias __delim: [*c]const u8) [*c]u8;
+pub extern fn strsignal(__sig: c_int) [*c]u8;
+pub extern fn __stpcpy(noalias __dest: [*c]u8, noalias __src: [*c]const u8) [*c]u8;
+pub extern fn stpcpy(__dest: [*c]u8, __src: [*c]const u8) [*c]u8;
+pub extern fn __stpncpy(noalias __dest: [*c]u8, noalias __src: [*c]const u8, __n: usize) [*c]u8;
+pub extern fn stpncpy(__dest: [*c]u8, __src: [*c]const u8, __n: c_ulong) [*c]u8;
+pub const sig_atomic_t = __sig_atomic_t;
+pub const union_sigval = extern union {
+    sival_int: c_int,
+    sival_ptr: ?*anyopaque,
+};
+pub const __sigval_t = union_sigval;
+const struct_unnamed_40 = extern struct {
+    si_pid: __pid_t,
+    si_uid: __uid_t,
+};
+const struct_unnamed_41 = extern struct {
+    si_tid: c_int,
+    si_overrun: c_int,
+    si_sigval: __sigval_t,
+};
+const struct_unnamed_42 = extern struct {
+    si_pid: __pid_t,
+    si_uid: __uid_t,
+    si_sigval: __sigval_t,
+};
+const struct_unnamed_43 = extern struct {
+    si_pid: __pid_t,
+    si_uid: __uid_t,
+    si_status: c_int,
+    si_utime: __clock_t,
+    si_stime: __clock_t,
+};
+const struct_unnamed_46 = extern struct {
+    _lower: ?*anyopaque,
+    _upper: ?*anyopaque,
+};
+const union_unnamed_45 = extern union {
+    _addr_bnd: struct_unnamed_46,
+    _pkey: __uint32_t,
+};
+const struct_unnamed_44 = extern struct {
+    si_addr: ?*anyopaque,
+    si_addr_lsb: c_short,
+    _bounds: union_unnamed_45,
+};
+const struct_unnamed_47 = extern struct {
+    si_band: c_long,
+    si_fd: c_int,
+};
+const struct_unnamed_48 = extern struct {
+    _call_addr: ?*anyopaque,
+    _syscall: c_int,
+    _arch: c_uint,
+};
+const union_unnamed_39 = extern union {
+    _pad: [28]c_int,
+    _kill: struct_unnamed_40,
+    _timer: struct_unnamed_41,
+    _rt: struct_unnamed_42,
+    _sigchld: struct_unnamed_43,
+    _sigfault: struct_unnamed_44,
+    _sigpoll: struct_unnamed_47,
+    _sigsys: struct_unnamed_48,
+};
+pub const siginfo_t = extern struct {
+    si_signo: c_int,
+    si_errno: c_int,
+    si_code: c_int,
+    __pad0: c_int,
+    _sifields: union_unnamed_39,
+};
+pub const SI_ASYNCNL: c_int = -60;
+pub const SI_DETHREAD: c_int = -7;
+pub const SI_TKILL: c_int = -6;
+pub const SI_SIGIO: c_int = -5;
+pub const SI_ASYNCIO: c_int = -4;
+pub const SI_MESGQ: c_int = -3;
+pub const SI_TIMER: c_int = -2;
+pub const SI_QUEUE: c_int = -1;
+pub const SI_USER: c_int = 0;
+pub const SI_KERNEL: c_int = 128;
+const enum_unnamed_49 = c_int;
+pub const ILL_ILLOPC: c_int = 1;
+pub const ILL_ILLOPN: c_int = 2;
+pub const ILL_ILLADR: c_int = 3;
+pub const ILL_ILLTRP: c_int = 4;
+pub const ILL_PRVOPC: c_int = 5;
+pub const ILL_PRVREG: c_int = 6;
+pub const ILL_COPROC: c_int = 7;
+pub const ILL_BADSTK: c_int = 8;
+pub const ILL_BADIADDR: c_int = 9;
+const enum_unnamed_50 = c_uint;
+pub const FPE_INTDIV: c_int = 1;
+pub const FPE_INTOVF: c_int = 2;
+pub const FPE_FLTDIV: c_int = 3;
+pub const FPE_FLTOVF: c_int = 4;
+pub const FPE_FLTUND: c_int = 5;
+pub const FPE_FLTRES: c_int = 6;
+pub const FPE_FLTINV: c_int = 7;
+pub const FPE_FLTSUB: c_int = 8;
+pub const FPE_FLTUNK: c_int = 14;
+pub const FPE_CONDTRAP: c_int = 15;
+const enum_unnamed_51 = c_uint;
+pub const SEGV_MAPERR: c_int = 1;
+pub const SEGV_ACCERR: c_int = 2;
+pub const SEGV_BNDERR: c_int = 3;
+pub const SEGV_PKUERR: c_int = 4;
+pub const SEGV_ACCADI: c_int = 5;
+pub const SEGV_ADIDERR: c_int = 6;
+pub const SEGV_ADIPERR: c_int = 7;
+const enum_unnamed_52 = c_uint;
+pub const BUS_ADRALN: c_int = 1;
+pub const BUS_ADRERR: c_int = 2;
+pub const BUS_OBJERR: c_int = 3;
+pub const BUS_MCEERR_AR: c_int = 4;
+pub const BUS_MCEERR_AO: c_int = 5;
+const enum_unnamed_53 = c_uint;
+pub const CLD_EXITED: c_int = 1;
+pub const CLD_KILLED: c_int = 2;
+pub const CLD_DUMPED: c_int = 3;
+pub const CLD_TRAPPED: c_int = 4;
+pub const CLD_STOPPED: c_int = 5;
+pub const CLD_CONTINUED: c_int = 6;
+const enum_unnamed_54 = c_uint;
+pub const POLL_IN: c_int = 1;
+pub const POLL_OUT: c_int = 2;
+pub const POLL_MSG: c_int = 3;
+pub const POLL_ERR: c_int = 4;
+pub const POLL_PRI: c_int = 5;
+pub const POLL_HUP: c_int = 6;
+const enum_unnamed_55 = c_uint;
+pub const sigval_t = __sigval_t;
+pub const union_pthread_attr_t = extern union {
+    __size: [64]u8,
+    __align: c_long,
+};
+pub const pthread_attr_t = union_pthread_attr_t;
+const struct_unnamed_57 = extern struct {
+    _function: ?*const fn (__sigval_t) callconv(.C) void,
+    _attribute: [*c]pthread_attr_t,
+};
+const union_unnamed_56 = extern union {
+    _pad: [12]c_int,
+    _tid: __pid_t,
+    _sigev_thread: struct_unnamed_57,
+};
+pub const struct_sigevent = extern struct {
+    sigev_value: __sigval_t,
+    sigev_signo: c_int,
+    sigev_notify: c_int,
+    _sigev_un: union_unnamed_56,
+};
+pub const sigevent_t = struct_sigevent;
+pub const SIGEV_SIGNAL: c_int = 0;
+pub const SIGEV_NONE: c_int = 1;
+pub const SIGEV_THREAD: c_int = 2;
+pub const SIGEV_THREAD_ID: c_int = 4;
+const enum_unnamed_58 = c_uint;
+pub const __sighandler_t = ?*const fn (c_int) callconv(.C) void;
+pub extern fn __sysv_signal(__sig: c_int, __handler: __sighandler_t) __sighandler_t;
+pub extern fn signal(__sig: c_int, __handler: __sighandler_t) __sighandler_t;
+pub extern fn kill(__pid: __pid_t, __sig: c_int) c_int;
+pub extern fn killpg(__pgrp: __pid_t, __sig: c_int) c_int;
+pub extern fn raise(__sig: c_int) c_int;
+pub extern fn ssignal(__sig: c_int, __handler: __sighandler_t) __sighandler_t;
+pub extern fn gsignal(__sig: c_int) c_int;
+pub extern fn psignal(__sig: c_int, __s: [*c]const u8) void;
+pub extern fn psiginfo(__pinfo: [*c]const siginfo_t, __s: [*c]const u8) void;
+pub extern fn sigblock(__mask: c_int) c_int;
+pub extern fn sigsetmask(__mask: c_int) c_int;
+pub extern fn siggetmask() c_int;
+pub const sig_t = __sighandler_t;
+pub extern fn sigemptyset(__set: [*c]sigset_t) c_int;
+pub extern fn sigfillset(__set: [*c]sigset_t) c_int;
+pub extern fn sigaddset(__set: [*c]sigset_t, __signo: c_int) c_int;
+pub extern fn sigdelset(__set: [*c]sigset_t, __signo: c_int) c_int;
+pub extern fn sigismember(__set: [*c]const sigset_t, __signo: c_int) c_int;
+const union_unnamed_59 = extern union {
+    sa_handler: __sighandler_t,
+    sa_sigaction: ?*const fn (c_int, [*c]siginfo_t, ?*anyopaque) callconv(.C) void,
+};
+pub const struct_sigaction = extern struct {
+    __sigaction_handler: union_unnamed_59,
+    sa_mask: __sigset_t,
+    sa_flags: c_int,
+    sa_restorer: ?*const fn () callconv(.C) void,
+};
+pub extern fn sigprocmask(__how: c_int, noalias __set: [*c]const sigset_t, noalias __oset: [*c]sigset_t) c_int;
+pub extern fn sigsuspend(__set: [*c]const sigset_t) c_int;
+pub extern fn sigaction(__sig: c_int, noalias __act: [*c]const struct_sigaction, noalias __oact: [*c]struct_sigaction) c_int;
+pub extern fn sigpending(__set: [*c]sigset_t) c_int;
+pub extern fn sigwait(noalias __set: [*c]const sigset_t, noalias __sig: [*c]c_int) c_int;
+pub extern fn sigwaitinfo(noalias __set: [*c]const sigset_t, noalias __info: [*c]siginfo_t) c_int;
+pub extern fn sigtimedwait(noalias __set: [*c]const sigset_t, noalias __info: [*c]siginfo_t, noalias __timeout: [*c]const struct_timespec) c_int;
+pub extern fn sigqueue(__pid: __pid_t, __sig: c_int, __val: union_sigval) c_int;
+pub extern const _sys_siglist: [65][*c]const u8;
+pub extern const sys_siglist: [65][*c]const u8;
+pub const struct_sigcontext = extern struct {
+    fault_address: __u64,
+    regs: [31]__u64,
+    sp: __u64,
+    pc: __u64,
+    pstate: __u64,
+    __reserved: [4096]__u8 align(16),
+};
+pub const struct__aarch64_ctx = extern struct {
+    magic: __u32,
+    size: __u32,
+};
+pub const __uint128_t = u128;
+pub const struct_fpsimd_context = extern struct {
+    head: struct__aarch64_ctx,
+    fpsr: __u32,
+    fpcr: __u32,
+    vregs: [32]__uint128_t,
+};
+pub const struct_esr_context = extern struct {
+    head: struct__aarch64_ctx,
+    esr: __u64,
+};
+pub const struct_extra_context = extern struct {
+    head: struct__aarch64_ctx,
+    datap: __u64,
+    size: __u32,
+    __reserved: [3]__u32,
+};
+pub const struct_sve_context = extern struct {
+    head: struct__aarch64_ctx,
+    vl: __u16,
+    __reserved: [3]__u16,
+};
+pub extern fn sigreturn(__scp: [*c]struct_sigcontext) c_int;
+pub const stack_t = extern struct {
+    ss_sp: ?*anyopaque,
+    ss_flags: c_int,
+    ss_size: usize,
+};
+pub const u_char = __u_char;
+pub const u_short = __u_short;
+pub const u_int = __u_int;
+pub const u_long = __u_long;
+pub const quad_t = __quad_t;
+pub const u_quad_t = __u_quad_t;
+pub const fsid_t = __fsid_t;
+pub const loff_t = __loff_t;
+pub const ino_t = __ino_t;
+pub const dev_t = __dev_t;
+pub const mode_t = __mode_t;
+pub const nlink_t = __nlink_t;
+pub const id_t = __id_t;
+pub const daddr_t = __daddr_t;
+pub const caddr_t = __caddr_t;
+pub const key_t = __key_t;
+pub const clock_t = __clock_t;
+pub const clockid_t = __clockid_t;
+pub const timer_t = __timer_t;
+pub const ulong = c_ulong;
+pub const ushort = c_ushort;
+pub const uint = c_uint;
+pub const u_int8_t = __uint8_t;
+pub const u_int16_t = __uint16_t;
+pub const u_int32_t = __uint32_t;
+pub const u_int64_t = __uint64_t;
+pub const register_t = c_long;
+pub fn __bswap_16(arg___bsx: __uint16_t) callconv(.C) __uint16_t {
+    var __bsx = arg___bsx;
+    return @bitCast(__uint16_t, @truncate(c_short, ((@bitCast(c_int, @as(c_uint, __bsx)) >> @intCast(@import("std").math.Log2Int(c_int), 8)) & @as(c_int, 255)) | ((@bitCast(c_int, @as(c_uint, __bsx)) & @as(c_int, 255)) << @intCast(@import("std").math.Log2Int(c_int), 8))));
+}
+pub fn __bswap_32(arg___bsx: __uint32_t) callconv(.C) __uint32_t {
+    var __bsx = arg___bsx;
+    return ((((__bsx & @as(c_uint, 4278190080)) >> @intCast(@import("std").math.Log2Int(c_uint), 24)) | ((__bsx & @as(c_uint, 16711680)) >> @intCast(@import("std").math.Log2Int(c_uint), 8))) | ((__bsx & @as(c_uint, 65280)) << @intCast(@import("std").math.Log2Int(c_uint), 8))) | ((__bsx & @as(c_uint, 255)) << @intCast(@import("std").math.Log2Int(c_uint), 24));
+}
+pub fn __bswap_64(arg___bsx: __uint64_t) callconv(.C) __uint64_t {
+    var __bsx = arg___bsx;
+    return @bitCast(__uint64_t, @truncate(c_ulong, ((((((((@bitCast(c_ulonglong, @as(c_ulonglong, __bsx)) & @as(c_ulonglong, 18374686479671623680)) >> @intCast(@import("std").math.Log2Int(c_ulonglong), 56)) | ((@bitCast(c_ulonglong, @as(c_ulonglong, __bsx)) & @as(c_ulonglong, 71776119061217280)) >> @intCast(@import("std").math.Log2Int(c_ulonglong), 40))) | ((@bitCast(c_ulonglong, @as(c_ulonglong, __bsx)) & @as(c_ulonglong, 280375465082880)) >> @intCast(@import("std").math.Log2Int(c_ulonglong), 24))) | ((@bitCast(c_ulonglong, @as(c_ulonglong, __bsx)) & @as(c_ulonglong, 1095216660480)) >> @intCast(@import("std").math.Log2Int(c_ulonglong), 8))) | ((@bitCast(c_ulonglong, @as(c_ulonglong, __bsx)) & @as(c_ulonglong, 4278190080)) << @intCast(@import("std").math.Log2Int(c_ulonglong), 8))) | ((@bitCast(c_ulonglong, @as(c_ulonglong, __bsx)) & @as(c_ulonglong, 16711680)) << @intCast(@import("std").math.Log2Int(c_ulonglong), 24))) | ((@bitCast(c_ulonglong, @as(c_ulonglong, __bsx)) & @as(c_ulonglong, 65280)) << @intCast(@import("std").math.Log2Int(c_ulonglong), 40))) | ((@bitCast(c_ulonglong, @as(c_ulonglong, __bsx)) & @as(c_ulonglong, 255)) << @intCast(@import("std").math.Log2Int(c_ulonglong), 56))));
+}
+pub fn __uint16_identity(arg___x: __uint16_t) callconv(.C) __uint16_t {
+    var __x = arg___x;
+    return __x;
+}
+pub fn __uint32_identity(arg___x: __uint32_t) callconv(.C) __uint32_t {
+    var __x = arg___x;
+    return __x;
+}
+pub fn __uint64_identity(arg___x: __uint64_t) callconv(.C) __uint64_t {
+    var __x = arg___x;
+    return __x;
+}
+pub const blksize_t = __blksize_t;
+pub const blkcnt_t = __blkcnt_t;
+pub const fsblkcnt_t = __fsblkcnt_t;
+pub const fsfilcnt_t = __fsfilcnt_t;
+pub const struct___pthread_internal_list = extern struct {
+    __prev: [*c]struct___pthread_internal_list,
+    __next: [*c]struct___pthread_internal_list,
+};
+pub const __pthread_list_t = struct___pthread_internal_list;
+pub const struct___pthread_internal_slist = extern struct {
+    __next: [*c]struct___pthread_internal_slist,
+};
+pub const __pthread_slist_t = struct___pthread_internal_slist;
+pub const struct___pthread_mutex_s = extern struct {
+    __lock: c_int,
+    __count: c_uint,
+    __owner: c_int,
+    __nusers: c_uint,
+    __kind: c_int,
+    __spins: c_int,
+    __list: __pthread_list_t,
+};
+pub const struct___pthread_rwlock_arch_t = extern struct {
+    __readers: c_uint,
+    __writers: c_uint,
+    __wrphase_futex: c_uint,
+    __writers_futex: c_uint,
+    __pad3: c_uint,
+    __pad4: c_uint,
+    __cur_writer: c_int,
+    __shared: c_int,
+    __pad1: c_ulong,
+    __pad2: c_ulong,
+    __flags: c_uint,
+};
+const struct_unnamed_61 = extern struct {
+    __low: c_uint,
+    __high: c_uint,
+};
+const union_unnamed_60 = extern union {
+    __wseq: c_ulonglong,
+    __wseq32: struct_unnamed_61,
+};
+const struct_unnamed_63 = extern struct {
+    __low: c_uint,
+    __high: c_uint,
+};
+const union_unnamed_62 = extern union {
+    __g1_start: c_ulonglong,
+    __g1_start32: struct_unnamed_63,
+};
+pub const struct___pthread_cond_s = extern struct {
+    unnamed_0: union_unnamed_60,
+    unnamed_1: union_unnamed_62,
+    __g_refs: [2]c_uint,
+    __g_size: [2]c_uint,
+    __g1_orig_size: c_uint,
+    __wrefs: c_uint,
+    __g_signals: [2]c_uint,
+};
+pub const pthread_t = c_ulong;
+pub const pthread_mutexattr_t = extern union {
+    __size: [8]u8,
+    __align: c_int,
+};
+pub const pthread_condattr_t = extern union {
+    __size: [8]u8,
+    __align: c_int,
+};
+pub const pthread_key_t = c_uint;
+pub const pthread_once_t = c_int;
+pub const pthread_mutex_t = extern union {
+    __data: struct___pthread_mutex_s,
+    __size: [48]u8,
+    __align: c_long,
+};
+pub const pthread_cond_t = extern union {
+    __data: struct___pthread_cond_s,
+    __size: [48]u8,
+    __align: c_longlong,
+};
+pub const pthread_rwlock_t = extern union {
+    __data: struct___pthread_rwlock_arch_t,
+    __size: [56]u8,
+    __align: c_long,
+};
+pub const pthread_rwlockattr_t = extern union {
+    __size: [8]u8,
+    __align: c_long,
+};
+pub const pthread_spinlock_t = c_int;
+pub const pthread_barrier_t = extern union {
+    __size: [32]u8,
+    __align: c_long,
+};
+pub const pthread_barrierattr_t = extern union {
+    __size: [8]u8,
+    __align: c_int,
+};
+pub const struct_user_regs_struct = extern struct {
+    regs: [31]c_ulonglong,
+    sp: c_ulonglong,
+    pc: c_ulonglong,
+    pstate: c_ulonglong,
+};
+pub const struct_user_fpsimd_struct = extern struct {
+    vregs: [32]__uint128_t,
+    fpsr: c_uint,
+    fpcr: c_uint,
+};
+pub const elf_greg_t = __uint64_t;
+pub const elf_gregset_t = [34]elf_greg_t;
+pub const elf_fpregset_t = struct_user_fpsimd_struct;
+pub const __pr_uid_t = c_uint;
+pub const __pr_gid_t = c_uint;
+pub const struct_elf_siginfo = extern struct {
+    si_signo: c_int,
+    si_code: c_int,
+    si_errno: c_int,
+};
+pub const struct_elf_prstatus = extern struct {
+    pr_info: struct_elf_siginfo,
+    pr_cursig: c_short,
+    pr_sigpend: c_ulong,
+    pr_sighold: c_ulong,
+    pr_pid: __pid_t,
+    pr_ppid: __pid_t,
+    pr_pgrp: __pid_t,
+    pr_sid: __pid_t,
+    pr_utime: struct_timeval,
+    pr_stime: struct_timeval,
+    pr_cutime: struct_timeval,
+    pr_cstime: struct_timeval,
+    pr_reg: elf_gregset_t,
+    pr_fpvalid: c_int,
+};
+pub const struct_elf_prpsinfo = extern struct {
+    pr_state: u8,
+    pr_sname: u8,
+    pr_zomb: u8,
+    pr_nice: u8,
+    pr_flag: c_ulong,
+    pr_uid: __pr_uid_t,
+    pr_gid: __pr_gid_t,
+    pr_pid: c_int,
+    pr_ppid: c_int,
+    pr_pgrp: c_int,
+    pr_sid: c_int,
+    pr_fname: [16]u8,
+    pr_psargs: [80]u8,
+};
+pub const psaddr_t = ?*anyopaque;
+pub const __prgregset_t = elf_gregset_t;
+pub const __prfpregset_t = elf_fpregset_t;
+pub const prgregset_t = __prgregset_t;
+pub const prfpregset_t = __prfpregset_t;
+pub const lwpid_t = __pid_t;
+pub const prstatus_t = struct_elf_prstatus;
+pub const prpsinfo_t = struct_elf_prpsinfo;
+pub const greg_t = elf_greg_t;
+pub const gregset_t = elf_gregset_t;
+pub const fpregset_t = elf_fpregset_t;
+pub const mcontext_t = extern struct {
+    fault_address: c_ulonglong,
+    regs: [31]c_ulonglong,
+    sp: c_ulonglong,
+    pc: c_ulonglong,
+    pstate: c_ulonglong,
+    __reserved: [4096]u8 align(16),
+};
+pub const struct_ucontext_t = extern struct {
+    uc_flags: c_ulong,
+    uc_link: [*c]struct_ucontext_t,
+    uc_stack: stack_t,
+    uc_sigmask: sigset_t,
+    uc_mcontext: mcontext_t,
+};
+pub const ucontext_t = struct_ucontext_t;
+pub extern fn siginterrupt(__sig: c_int, __interrupt: c_int) c_int;
+pub const SS_ONSTACK: c_int = 1;
+pub const SS_DISABLE: c_int = 2;
+const enum_unnamed_64 = c_uint;
+pub extern fn sigaltstack(noalias __ss: [*c]const stack_t, noalias __oss: [*c]stack_t) c_int;
+pub const struct_sigstack = extern struct {
+    ss_sp: ?*anyopaque,
+    ss_onstack: c_int,
+};
+pub extern fn sigstack(__ss: [*c]struct_sigstack, __oss: [*c]struct_sigstack) c_int;
+pub extern fn pthread_sigmask(__how: c_int, noalias __newmask: [*c]const __sigset_t, noalias __oldmask: [*c]__sigset_t) c_int;
+pub extern fn pthread_kill(__threadid: pthread_t, __signo: c_int) c_int;
+pub extern fn __libc_current_sigrtmin() c_int;
+pub extern fn __libc_current_sigrtmax() c_int;
+pub const struct_stat = extern struct {
+    st_dev: __dev_t,
+    st_ino: __ino_t,
+    st_mode: __mode_t,
+    st_nlink: __nlink_t,
+    st_uid: __uid_t,
+    st_gid: __gid_t,
+    st_rdev: __dev_t,
+    __pad1: __dev_t,
+    st_size: __off_t,
+    st_blksize: __blksize_t,
+    __pad2: c_int,
+    st_blocks: __blkcnt_t,
+    st_atim: struct_timespec,
+    st_mtim: struct_timespec,
+    st_ctim: struct_timespec,
+    __glibc_reserved: [2]c_int,
+};
+pub extern fn stat(noalias __file: [*c]const u8, noalias __buf: [*c]struct_stat) c_int;
+pub extern fn fstat(__fd: c_int, __buf: [*c]struct_stat) c_int;
+pub extern fn fstatat(__fd: c_int, noalias __file: [*c]const u8, noalias __buf: [*c]struct_stat, __flag: c_int) c_int;
+pub extern fn lstat(noalias __file: [*c]const u8, noalias __buf: [*c]struct_stat) c_int;
+pub extern fn chmod(__file: [*c]const u8, __mode: __mode_t) c_int;
+pub extern fn lchmod(__file: [*c]const u8, __mode: __mode_t) c_int;
+pub extern fn fchmod(__fd: c_int, __mode: __mode_t) c_int;
+pub extern fn fchmodat(__fd: c_int, __file: [*c]const u8, __mode: __mode_t, __flag: c_int) c_int;
+pub extern fn umask(__mask: __mode_t) __mode_t;
+pub extern fn mkdir(__path: [*c]const u8, __mode: __mode_t) c_int;
+pub extern fn mkdirat(__fd: c_int, __path: [*c]const u8, __mode: __mode_t) c_int;
+pub extern fn mknod(__path: [*c]const u8, __mode: __mode_t, __dev: __dev_t) c_int;
+pub extern fn mknodat(__fd: c_int, __path: [*c]const u8, __mode: __mode_t, __dev: __dev_t) c_int;
+pub extern fn mkfifo(__path: [*c]const u8, __mode: __mode_t) c_int;
+pub extern fn mkfifoat(__fd: c_int, __path: [*c]const u8, __mode: __mode_t) c_int;
+pub extern fn utimensat(__fd: c_int, __path: [*c]const u8, __times: [*c]const struct_timespec, __flags: c_int) c_int;
+pub extern fn futimens(__fd: c_int, __times: [*c]const struct_timespec) c_int;
+pub extern fn __fxstat(__ver: c_int, __fildes: c_int, __stat_buf: [*c]struct_stat) c_int;
+pub extern fn __xstat(__ver: c_int, __filename: [*c]const u8, __stat_buf: [*c]struct_stat) c_int;
+pub extern fn __lxstat(__ver: c_int, __filename: [*c]const u8, __stat_buf: [*c]struct_stat) c_int;
+pub extern fn __fxstatat(__ver: c_int, __fildes: c_int, __filename: [*c]const u8, __stat_buf: [*c]struct_stat, __flag: c_int) c_int;
+pub extern fn __xmknod(__ver: c_int, __path: [*c]const u8, __mode: __mode_t, __dev: [*c]__dev_t) c_int;
+pub extern fn __xmknodat(__ver: c_int, __fd: c_int, __path: [*c]const u8, __mode: __mode_t, __dev: [*c]__dev_t) c_int;
+pub const struct_ev_loop = opaque {};
+pub const EV_UNDEF: c_int = -1;
+pub const EV_NONE: c_int = 0;
+pub const EV_READ: c_int = 1;
+pub const EV_WRITE: c_int = 2;
+pub const EV__IOFDSET: c_int = 128;
+pub const EV_IO: c_int = 1;
+pub const EV_TIMER: c_int = 256;
+pub const EV_TIMEOUT: c_int = 256;
+pub const EV_PERIODIC: c_int = 512;
+pub const EV_SIGNAL: c_int = 1024;
+pub const EV_CHILD: c_int = 2048;
+pub const EV_STAT: c_int = 4096;
+pub const EV_IDLE: c_int = 8192;
+pub const EV_PREPARE: c_int = 16384;
+pub const EV_CHECK: c_int = 32768;
+pub const EV_EMBED: c_int = 65536;
+pub const EV_FORK: c_int = 131072;
+pub const EV_CLEANUP: c_int = 262144;
+pub const EV_ASYNC: c_int = 524288;
+pub const EV_CUSTOM: c_int = 16777216;
+pub const EV_ERROR: c_int = -2147483648;
+const enum_unnamed_65 = c_int;
+pub const struct_ev_watcher = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_watcher, c_int) callconv(.C) void,
+};
+pub const ev_watcher = struct_ev_watcher;
+pub const struct_ev_watcher_list = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_watcher_list, c_int) callconv(.C) void,
+    next: [*c]struct_ev_watcher_list,
+};
+pub const ev_watcher_list = struct_ev_watcher_list;
+pub const struct_ev_watcher_time = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_watcher_time, c_int) callconv(.C) void,
+    at: ev_tstamp,
+};
+pub const ev_watcher_time = struct_ev_watcher_time;
+pub const struct_ev_io = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_io, c_int) callconv(.C) void,
+    next: [*c]struct_ev_watcher_list,
+    fd: c_int,
+    events: c_int,
+};
+pub const ev_io = struct_ev_io;
+pub const struct_ev_timer = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_timer, c_int) callconv(.C) void,
+    at: ev_tstamp,
+    repeat: ev_tstamp,
+};
+pub const ev_timer = struct_ev_timer;
+pub const struct_ev_periodic = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_periodic, c_int) callconv(.C) void,
+    at: ev_tstamp,
+    offset: ev_tstamp,
+    interval: ev_tstamp,
+    reschedule_cb: ?*const fn ([*c]struct_ev_periodic, ev_tstamp) callconv(.C) ev_tstamp,
+};
+pub const ev_periodic = struct_ev_periodic;
+pub const struct_ev_signal = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_signal, c_int) callconv(.C) void,
+    next: [*c]struct_ev_watcher_list,
+    signum: c_int,
+};
+pub const ev_signal = struct_ev_signal;
+pub const struct_ev_child = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_child, c_int) callconv(.C) void,
+    next: [*c]struct_ev_watcher_list,
+    flags: c_int,
+    pid: c_int,
+    rpid: c_int,
+    rstatus: c_int,
+};
+pub const ev_child = struct_ev_child;
+pub const ev_statdata = struct_stat;
+pub const struct_ev_stat = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_stat, c_int) callconv(.C) void,
+    next: [*c]struct_ev_watcher_list,
+    timer: ev_timer,
+    interval: ev_tstamp,
+    path: [*c]const u8,
+    prev: ev_statdata,
+    attr: ev_statdata,
+    wd: c_int,
+};
+pub const ev_stat = struct_ev_stat;
+pub const struct_ev_idle = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_idle, c_int) callconv(.C) void,
+};
+pub const ev_idle = struct_ev_idle;
+pub const struct_ev_prepare = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_prepare, c_int) callconv(.C) void,
+};
+pub const ev_prepare = struct_ev_prepare;
+pub const struct_ev_check = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_check, c_int) callconv(.C) void,
+};
+pub const ev_check = struct_ev_check;
+pub const struct_ev_fork = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_fork, c_int) callconv(.C) void,
+};
+pub const ev_fork = struct_ev_fork;
+pub const struct_ev_cleanup = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_cleanup, c_int) callconv(.C) void,
+};
+pub const ev_cleanup = struct_ev_cleanup;
+pub const struct_ev_embed = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_embed, c_int) callconv(.C) void,
+    other: ?*struct_ev_loop,
+    io: ev_io,
+    prepare: ev_prepare,
+    check: ev_check,
+    timer: ev_timer,
+    periodic: ev_periodic,
+    idle: ev_idle,
+    fork: ev_fork,
+    cleanup: ev_cleanup,
+};
+pub const ev_embed = struct_ev_embed;
+pub const struct_ev_async = extern struct {
+    active: c_int,
+    pending: c_int,
+    priority: c_int,
+    data: ?*anyopaque,
+    cb: ?*const fn (?*struct_ev_loop, [*c]struct_ev_async, c_int) callconv(.C) void,
+    sent: sig_atomic_t,
+};
+pub const ev_async = struct_ev_async;
+pub const union_ev_any_watcher = extern union {
+    w: struct_ev_watcher,
+    wl: struct_ev_watcher_list,
+    io: struct_ev_io,
+    timer: struct_ev_timer,
+    periodic: struct_ev_periodic,
+    signal: struct_ev_signal,
+    child: struct_ev_child,
+    stat: struct_ev_stat,
+    idle: struct_ev_idle,
+    prepare: struct_ev_prepare,
+    check: struct_ev_check,
+    fork: struct_ev_fork,
+    cleanup: struct_ev_cleanup,
+    embed: struct_ev_embed,
+    @"async": struct_ev_async,
+};
+pub const EVFLAG_AUTO: c_int = 0;
+pub const EVFLAG_NOENV: c_int = 16777216;
+pub const EVFLAG_FORKCHECK: c_int = 33554432;
+pub const EVFLAG_NOINOTIFY: c_int = 1048576;
+pub const EVFLAG_NOSIGFD: c_int = 0;
+pub const EVFLAG_SIGNALFD: c_int = 2097152;
+pub const EVFLAG_NOSIGMASK: c_int = 4194304;
+pub const EVFLAG_NOTIMERFD: c_int = 8388608;
+const enum_unnamed_66 = c_uint;
+pub const EVBACKEND_SELECT: c_int = 1;
+pub const EVBACKEND_POLL: c_int = 2;
+pub const EVBACKEND_EPOLL: c_int = 4;
+pub const EVBACKEND_KQUEUE: c_int = 8;
+pub const EVBACKEND_DEVPOLL: c_int = 16;
+pub const EVBACKEND_PORT: c_int = 32;
+pub const EVBACKEND_LINUXAIO: c_int = 64;
+pub const EVBACKEND_IOURING: c_int = 128;
+pub const EVBACKEND_ALL: c_int = 255;
+pub const EVBACKEND_MASK: c_int = 65535;
+const enum_unnamed_67 = c_uint;
+pub extern fn ev_version_major() c_int;
+pub extern fn ev_version_minor() c_int;
+pub extern fn ev_supported_backends() c_uint;
+pub extern fn ev_recommended_backends() c_uint;
+pub extern fn ev_embeddable_backends() c_uint;
+pub extern fn ev_time() ev_tstamp;
+pub extern fn ev_sleep(delay: ev_tstamp) void;
+pub extern fn ev_set_allocator(cb: ?*const fn (?*anyopaque, c_long) callconv(.C) ?*anyopaque) void;
+pub extern fn ev_set_syserr_cb(cb: ?*const fn ([*c]const u8) callconv(.C) void) void;
+pub extern fn ev_default_loop(flags: c_uint) ?*struct_ev_loop;
+extern var ev_default_loop_ptr: ?*struct_ev_loop;
+pub fn ev_default_loop_uc_() callconv(.C) ?*struct_ev_loop {
+    return ev_default_loop_ptr;
+}
+pub fn ev_is_default_loop(arg_loop: ?*struct_ev_loop) callconv(.C) c_int {
+    var loop = arg_loop;
+    return @boolToInt(loop == ev_default_loop_uc_());
+}
+pub extern fn ev_loop_new(flags: c_uint) ?*struct_ev_loop;
+pub extern fn ev_now(loop: ?*struct_ev_loop) ev_tstamp;
+pub extern fn ev_loop_destroy(loop: ?*struct_ev_loop) void;
+pub extern fn ev_loop_fork(loop: ?*struct_ev_loop) void;
+pub extern fn ev_backend(loop: ?*struct_ev_loop) c_uint;
+pub extern fn ev_now_update(loop: ?*struct_ev_loop) void;
+pub const EVRUN_NOWAIT: c_int = 1;
+pub const EVRUN_ONCE: c_int = 2;
+const enum_unnamed_68 = c_uint;
+pub const EVBREAK_CANCEL: c_int = 0;
+pub const EVBREAK_ONE: c_int = 1;
+pub const EVBREAK_ALL: c_int = 2;
+const enum_unnamed_69 = c_uint;
+pub extern fn ev_run(loop: ?*struct_ev_loop, flags: c_int) c_int;
+pub extern fn ev_break(loop: ?*struct_ev_loop, how: c_int) void;
+pub extern fn ev_ref(loop: ?*struct_ev_loop) void;
+pub extern fn ev_unref(loop: ?*struct_ev_loop) void;
+pub extern fn ev_once(loop: ?*struct_ev_loop, fd: c_int, events: c_int, timeout: ev_tstamp, cb: ?*const fn (c_int, ?*anyopaque) callconv(.C) void, arg: ?*anyopaque) void;
+pub extern fn ev_invoke_pending(loop: ?*struct_ev_loop) void;
+pub extern fn ev_iteration(loop: ?*struct_ev_loop) c_uint;
+pub extern fn ev_depth(loop: ?*struct_ev_loop) c_uint;
+pub extern fn ev_verify(loop: ?*struct_ev_loop) void;
+pub extern fn ev_set_io_collect_interval(loop: ?*struct_ev_loop, interval: ev_tstamp) void;
+pub extern fn ev_set_timeout_collect_interval(loop: ?*struct_ev_loop, interval: ev_tstamp) void;
+pub extern fn ev_set_userdata(loop: ?*struct_ev_loop, data: ?*anyopaque) void;
+pub extern fn ev_userdata(loop: ?*struct_ev_loop) ?*anyopaque;
+pub const ev_loop_callback = ?*const fn (?*struct_ev_loop) callconv(.C) void;
+pub extern fn ev_set_invoke_pending_cb(loop: ?*struct_ev_loop, invoke_pending_cb: ev_loop_callback) void;
+pub extern fn ev_set_loop_release_cb(loop: ?*struct_ev_loop, release: ?*const fn (?*struct_ev_loop) callconv(.C) void, acquire: ?*const fn (?*struct_ev_loop) callconv(.C) void) void;
+pub extern fn ev_pending_count(loop: ?*struct_ev_loop) c_uint;
+pub extern fn ev_suspend(loop: ?*struct_ev_loop) void;
+pub extern fn ev_resume(loop: ?*struct_ev_loop) void;
+pub extern fn ev_feed_event(loop: ?*struct_ev_loop, w: ?*anyopaque, revents: c_int) void;
+pub extern fn ev_feed_fd_event(loop: ?*struct_ev_loop, fd: c_int, revents: c_int) void;
+pub extern fn ev_feed_signal(signum: c_int) void;
+pub extern fn ev_feed_signal_event(loop: ?*struct_ev_loop, signum: c_int) void;
+pub extern fn ev_invoke(loop: ?*struct_ev_loop, w: ?*anyopaque, revents: c_int) void;
+pub extern fn ev_clear_pending(loop: ?*struct_ev_loop, w: ?*anyopaque) c_int;
+pub extern fn ev_io_start(loop: ?*struct_ev_loop, w: [*c]ev_io) void;
+pub extern fn ev_io_stop(loop: ?*struct_ev_loop, w: [*c]ev_io) void;
+pub extern fn ev_timer_start(loop: ?*struct_ev_loop, w: [*c]ev_timer) void;
+pub extern fn ev_timer_stop(loop: ?*struct_ev_loop, w: [*c]ev_timer) void;
+pub extern fn ev_timer_again(loop: ?*struct_ev_loop, w: [*c]ev_timer) void;
+pub extern fn ev_timer_remaining(loop: ?*struct_ev_loop, w: [*c]ev_timer) ev_tstamp;
+pub extern fn ev_periodic_start(loop: ?*struct_ev_loop, w: [*c]ev_periodic) void;
+pub extern fn ev_periodic_stop(loop: ?*struct_ev_loop, w: [*c]ev_periodic) void;
+pub extern fn ev_periodic_again(loop: ?*struct_ev_loop, w: [*c]ev_periodic) void;
+pub extern fn ev_signal_start(loop: ?*struct_ev_loop, w: [*c]ev_signal) void;
+pub extern fn ev_signal_stop(loop: ?*struct_ev_loop, w: [*c]ev_signal) void;
+pub extern fn ev_child_start(loop: ?*struct_ev_loop, w: [*c]ev_child) void;
+pub extern fn ev_child_stop(loop: ?*struct_ev_loop, w: [*c]ev_child) void;
+pub extern fn ev_stat_start(loop: ?*struct_ev_loop, w: [*c]ev_stat) void;
+pub extern fn ev_stat_stop(loop: ?*struct_ev_loop, w: [*c]ev_stat) void;
+pub extern fn ev_stat_stat(loop: ?*struct_ev_loop, w: [*c]ev_stat) void;
+pub extern fn ev_idle_start(loop: ?*struct_ev_loop, w: [*c]ev_idle) void;
+pub extern fn ev_idle_stop(loop: ?*struct_ev_loop, w: [*c]ev_idle) void;
+pub extern fn ev_prepare_start(loop: ?*struct_ev_loop, w: [*c]ev_prepare) void;
+pub extern fn ev_prepare_stop(loop: ?*struct_ev_loop, w: [*c]ev_prepare) void;
+pub extern fn ev_check_start(loop: ?*struct_ev_loop, w: [*c]ev_check) void;
+pub extern fn ev_check_stop(loop: ?*struct_ev_loop, w: [*c]ev_check) void;
+pub extern fn ev_fork_start(loop: ?*struct_ev_loop, w: [*c]ev_fork) void;
+pub extern fn ev_fork_stop(loop: ?*struct_ev_loop, w: [*c]ev_fork) void;
+pub extern fn ev_cleanup_start(loop: ?*struct_ev_loop, w: [*c]ev_cleanup) void;
+pub extern fn ev_cleanup_stop(loop: ?*struct_ev_loop, w: [*c]ev_cleanup) void;
+pub extern fn ev_embed_start(loop: ?*struct_ev_loop, w: [*c]ev_embed) void;
+pub extern fn ev_embed_stop(loop: ?*struct_ev_loop, w: [*c]ev_embed) void;
+pub extern fn ev_embed_sweep(loop: ?*struct_ev_loop, w: [*c]ev_embed) void;
+pub extern fn ev_async_start(loop: ?*struct_ev_loop, w: [*c]ev_async) void;
+pub extern fn ev_async_stop(loop: ?*struct_ev_loop, w: [*c]ev_async) void;
+pub extern fn ev_async_send(loop: ?*struct_ev_loop, w: [*c]ev_async) void;
+pub fn ev_loop(arg_loop: ?*struct_ev_loop, arg_flags: c_int) callconv(.C) void {
+    var loop = arg_loop;
+    var flags = arg_flags;
+    _ = ev_run(loop, flags);
+}
+pub fn ev_unloop(arg_loop: ?*struct_ev_loop, arg_how: c_int) callconv(.C) void {
+    var loop = arg_loop;
+    var how = arg_how;
+    ev_break(loop, how);
+}
+pub fn ev_default_destroy() callconv(.C) void {
+    ev_loop_destroy(ev_default_loop(@bitCast(c_uint, @as(c_int, 0))));
+}
+pub fn ev_default_fork() callconv(.C) void {
+    ev_loop_fork(ev_default_loop(@bitCast(c_uint, @as(c_int, 0))));
+}
+pub fn ev_loop_count(arg_loop: ?*struct_ev_loop) callconv(.C) c_uint {
+    var loop = arg_loop;
+    return ev_iteration(loop);
+}
+pub fn ev_loop_depth(arg_loop: ?*struct_ev_loop) callconv(.C) c_uint {
+    var loop = arg_loop;
+    return ev_depth(loop);
+}
+pub fn ev_loop_verify(arg_loop: ?*struct_ev_loop) callconv(.C) void {
+    var loop = arg_loop;
+    ev_verify(loop);
+}
 pub const __INTMAX_C_SUFFIX__ = @compileError("unable to translate macro: undefined identifier `L`"); // (no file):80:9
 pub const __UINTMAX_C_SUFFIX__ = @compileError("unable to translate macro: undefined identifier `UL`"); // (no file):86:9
 pub const __FLT16_DENORM_MIN__ = @compileError("unable to translate C expr: unexpected token 'IntegerLiteral'"); // (no file):109:9
@@ -4823,16 +5741,16 @@ pub const __va_copy = @compileError("unable to translate macro: undefined identi
 pub const va_copy = @compileError("unable to translate macro: undefined identifier `__builtin_va_copy`"); // /usr/local/lib/zig/include/stdarg.h:27:9
 pub const __getc_unlocked_body = @compileError("TODO postfix inc/dec expr"); // /usr/include/aarch64-linux-gnu/bits/types/struct_FILE.h:102:9
 pub const __putc_unlocked_body = @compileError("TODO postfix inc/dec expr"); // /usr/include/aarch64-linux-gnu/bits/types/struct_FILE.h:106:9
-pub const ATTRIBUTE = @compileError("unable to translate macro: undefined identifier `__attribute__`"); // include/rk_common.h:31:9
-pub const COMPAT_POINTER = @compileError("unable to translate macro: undefined identifier `ulAddr`"); // include/rk_common.h:33:9
-pub const RK_ASSERT = @compileError("unable to translate macro: undefined identifier `__FUNCTION__`"); // include/rk_debug.h:63:13
-pub const RK_TRACE = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_debug.h:78:13
-pub const RK_LOGE = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_debug.h:88:9
-pub const RK_LOGW = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_debug.h:89:9
-pub const RK_LOGI = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_debug.h:90:9
-pub const RK_LOGD = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_debug.h:91:9
-pub const RK_LOGV = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_debug.h:92:9
-pub const RK_TRACE_SYS = @compileError("unable to translate C expr: expected ')' instead got '...'"); // include/rk_comm_sys.h:34:9
+pub const ATTRIBUTE = @compileError("unable to translate macro: undefined identifier `__attribute__`"); // /home/firefly/Code/mpi_test/include/rk_common.h:31:9
+pub const COMPAT_POINTER = @compileError("unable to translate macro: undefined identifier `ulAddr`"); // /home/firefly/Code/mpi_test/include/rk_common.h:33:9
+pub const RK_ASSERT = @compileError("unable to translate macro: undefined identifier `__FUNCTION__`"); // /home/firefly/Code/mpi_test/include/rk_debug.h:63:13
+pub const RK_TRACE = @compileError("unable to translate C expr: expected ')' instead got '...'"); // /home/firefly/Code/mpi_test/include/rk_debug.h:78:13
+pub const RK_LOGE = @compileError("unable to translate C expr: expected ')' instead got '...'"); // /home/firefly/Code/mpi_test/include/rk_debug.h:88:9
+pub const RK_LOGW = @compileError("unable to translate C expr: expected ')' instead got '...'"); // /home/firefly/Code/mpi_test/include/rk_debug.h:89:9
+pub const RK_LOGI = @compileError("unable to translate C expr: expected ')' instead got '...'"); // /home/firefly/Code/mpi_test/include/rk_debug.h:90:9
+pub const RK_LOGD = @compileError("unable to translate C expr: expected ')' instead got '...'"); // /home/firefly/Code/mpi_test/include/rk_debug.h:91:9
+pub const RK_LOGV = @compileError("unable to translate C expr: expected ')' instead got '...'"); // /home/firefly/Code/mpi_test/include/rk_debug.h:92:9
+pub const RK_TRACE_SYS = @compileError("unable to translate C expr: expected ')' instead got '...'"); // /home/firefly/Code/mpi_test/include/rk_comm_sys.h:34:9
 pub const __FD_ZERO = @compileError("unable to translate macro: undefined identifier `__i`"); // /usr/include/aarch64-linux-gnu/bits/select.h:25:9
 pub const __FD_SET = @compileError("unable to translate C expr: expected ')' instead got '|='"); // /usr/include/aarch64-linux-gnu/bits/select.h:32:9
 pub const __FD_CLR = @compileError("unable to translate C expr: expected ')' instead got '&='"); // /usr/include/aarch64-linux-gnu/bits/select.h:34:9
@@ -4844,6 +5762,82 @@ pub const __struct_group = @compileError("unable to translate C expr: expected '
 pub const __aligned_u64 = @compileError("unable to translate macro: undefined identifier `__attribute__`"); // /usr/include/linux/types.h:43:9
 pub const __aligned_be64 = @compileError("unable to translate macro: undefined identifier `__attribute__`"); // /usr/include/linux/types.h:44:9
 pub const __aligned_le64 = @compileError("unable to translate macro: undefined identifier `__attribute__`"); // /usr/include/linux/types.h:45:9
+pub const EV_CPP = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:51:10
+pub const si_pid = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:128:9
+pub const si_uid = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:129:9
+pub const si_timerid = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:130:9
+pub const si_overrun = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:131:9
+pub const si_status = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:132:9
+pub const si_utime = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:133:9
+pub const si_stime = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:134:9
+pub const si_value = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:135:9
+pub const si_int = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:136:9
+pub const si_ptr = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:137:9
+pub const si_addr = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:138:9
+pub const si_addr_lsb = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:139:9
+pub const si_lower = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:140:9
+pub const si_upper = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:141:9
+pub const si_pkey = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:142:9
+pub const si_band = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:143:9
+pub const si_fd = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:144:9
+pub const si_call_addr = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:146:10
+pub const si_syscall = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:147:10
+pub const si_arch = @compileError("unable to translate macro: undefined identifier `_sifields`"); // /usr/include/aarch64-linux-gnu/bits/types/siginfo_t.h:148:10
+pub const sigev_notify_function = @compileError("unable to translate macro: undefined identifier `_sigev_un`"); // /usr/include/aarch64-linux-gnu/bits/types/sigevent_t.h:45:9
+pub const sigev_notify_attributes = @compileError("unable to translate macro: undefined identifier `_sigev_un`"); // /usr/include/aarch64-linux-gnu/bits/types/sigevent_t.h:46:9
+pub const sa_handler = @compileError("unable to translate macro: undefined identifier `__sigaction_handler`"); // /usr/include/aarch64-linux-gnu/bits/sigaction.h:39:10
+pub const sa_sigaction = @compileError("unable to translate macro: undefined identifier `__sigaction_handler`"); // /usr/include/aarch64-linux-gnu/bits/sigaction.h:40:10
+pub const __PTHREAD_MUTEX_INITIALIZER = @compileError("unable to translate C expr: unexpected token '{'"); // /usr/include/aarch64-linux-gnu/bits/struct_mutex.h:77:10
+pub const EV_ATOMIC_T = @compileError("unable to translate C expr: unexpected token 'volatile'"); // /usr/local/include/ev.h:163:10
+pub const st_atime = @compileError("unable to translate macro: undefined identifier `st_atim`"); // /usr/include/aarch64-linux-gnu/bits/stat.h:82:10
+pub const st_mtime = @compileError("unable to translate macro: undefined identifier `st_mtim`"); // /usr/include/aarch64-linux-gnu/bits/stat.h:83:10
+pub const st_ctime = @compileError("unable to translate macro: undefined identifier `st_ctim`"); // /usr/include/aarch64-linux-gnu/bits/stat.h:84:10
+pub const EV_P = @compileError("unable to translate macro: undefined identifier `loop`"); // /usr/local/include/ev.h:177:10
+pub const EV_P_ = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:178:10
+pub const EV_A = @compileError("unable to translate macro: undefined identifier `loop`"); // /usr/local/include/ev.h:179:10
+pub const EV_A_ = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:180:10
+pub const EV_DEFAULT_UC_ = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:182:10
+pub const EV_DEFAULT_ = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:184:10
+pub const EV_INLINE = @compileError("unable to translate C expr: unexpected token 'static'"); // /usr/local/include/ev.h:199:10
+pub const EV_API_DECL = @compileError("unable to translate C expr: unexpected token 'extern'"); // /usr/local/include/ev.h:207:10
+pub const EV_COMMON = @compileError("unable to translate macro: undefined identifier `data`"); // /usr/local/include/ev.h:249:10
+pub const EV_CB_DECLARE = @compileError("unable to translate macro: undefined identifier `cb`"); // /usr/local/include/ev.h:253:10
+pub const EV_CB = @compileError("unable to translate macro: undefined identifier `ev_`"); // /usr/local/include/ev.h:260:9
+pub const EV_DECL_PRIORITY = @compileError("unable to translate macro: undefined identifier `priority`"); // /usr/local/include/ev.h:282:10
+pub const EV_WATCHER = @compileError("unable to translate macro: undefined identifier `active`"); // /usr/local/include/ev.h:286:9
+pub const EV_WATCHER_LIST = @compileError("unable to translate macro: undefined identifier `next`"); // /usr/local/include/ev.h:293:9
+pub const EV_WATCHER_TIME = @compileError("unable to translate macro: undefined identifier `at`"); // /usr/local/include/ev.h:297:9
+pub const ev_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:690:9
+pub const ev_io_modify = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:697:9
+pub const ev_io_set = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:698:9
+pub const ev_timer_set = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:699:9
+pub const ev_periodic_set = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:700:9
+pub const ev_signal_set = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:701:9
+pub const ev_child_set = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:702:9
+pub const ev_stat_set = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:703:9
+pub const ev_idle_set = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:704:9
+pub const ev_prepare_set = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:705:9
+pub const ev_check_set = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:706:9
+pub const ev_embed_set = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:707:9
+pub const ev_fork_set = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:708:9
+pub const ev_cleanup_set = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:709:9
+pub const ev_async_set = @compileError("unable to translate C expr: unexpected token 'Eof'"); // /usr/local/include/ev.h:710:9
+pub const ev_io_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:712:9
+pub const ev_timer_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:713:9
+pub const ev_periodic_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:714:9
+pub const ev_signal_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:715:9
+pub const ev_child_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:716:9
+pub const ev_stat_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:717:9
+pub const ev_idle_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:718:9
+pub const ev_prepare_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:719:9
+pub const ev_check_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:720:9
+pub const ev_embed_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:721:9
+pub const ev_fork_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:722:9
+pub const ev_cleanup_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:723:9
+pub const ev_async_init = @compileError("unable to translate C expr: unexpected token 'do'"); // /usr/local/include/ev.h:724:9
+pub const ev_cb = @compileError("unable to translate C expr: expected ')' instead got '('"); // /usr/local/include/ev.h:730:9
+pub const ev_set_priority = @compileError("unable to translate C expr: unexpected token '='"); // /usr/local/include/ev.h:737:10
+pub const ev_set_cb = @compileError("unable to translate C expr: expected ')' instead got '='"); // /usr/local/include/ev.h:744:10
 pub const __llvm__ = @as(c_int, 1);
 pub const __clang__ = @as(c_int, 1);
 pub const __clang_major__ = @as(c_int, 15);
@@ -7229,6 +8223,475 @@ pub const F_TEST = @as(c_int, 3);
 pub const LIBV4L_PUBLIC = "";
 pub const V4L2_DISABLE_CONVERSION = @as(c_int, 0x01);
 pub const V4L2_ENABLE_ENUM_FMT_EMULATION = @as(c_int, 0x02);
+pub const EV_H_ = "";
+pub const EV_NOEXCEPT = "";
+pub const EV_THROW = EV_NOEXCEPT;
+pub const EV_COMPAT3 = @as(c_int, 1);
+pub const EV_FEATURES = @as(c_int, 0x7f);
+pub const EV_FEATURE_CODE = EV_FEATURES & @as(c_int, 1);
+pub const EV_FEATURE_DATA = EV_FEATURES & @as(c_int, 2);
+pub const EV_FEATURE_CONFIG = EV_FEATURES & @as(c_int, 4);
+pub const EV_FEATURE_API = EV_FEATURES & @as(c_int, 8);
+pub const EV_FEATURE_WATCHERS = EV_FEATURES & @as(c_int, 16);
+pub const EV_FEATURE_BACKENDS = EV_FEATURES & @as(c_int, 32);
+pub const EV_FEATURE_OS = EV_FEATURES & @as(c_int, 64);
+pub const EV_MINPRI = if (EV_FEATURE_CONFIG) -@as(c_int, 2) else @as(c_int, 0);
+pub const EV_MAXPRI = if (EV_FEATURE_CONFIG) @as(c_int, 2) else @as(c_int, 0);
+pub const EV_MULTIPLICITY = EV_FEATURE_CONFIG;
+pub const EV_PERIODIC_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_STAT_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_PREPARE_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_CHECK_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_IDLE_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_FORK_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_CLEANUP_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_SIGNAL_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_CHILD_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_ASYNC_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_EMBED_ENABLE = EV_FEATURE_WATCHERS;
+pub const EV_WALK_ENABLE = @as(c_int, 0);
+pub const EV_TSTAMP_T = f64;
+pub const _STRING_H = @as(c_int, 1);
+pub const _BITS_TYPES_LOCALE_T_H = @as(c_int, 1);
+pub const _BITS_TYPES___LOCALE_T_H = @as(c_int, 1);
+pub const _STRINGS_H = @as(c_int, 1);
+pub const _SIGNAL_H = "";
+pub const _BITS_SIGNUM_H = @as(c_int, 1);
+pub const _BITS_SIGNUM_GENERIC_H = @as(c_int, 1);
+pub const SIG_ERR = @import("std").zig.c_translation.cast(__sighandler_t, -@as(c_int, 1));
+pub const SIG_DFL = @import("std").zig.c_translation.cast(__sighandler_t, @as(c_int, 0));
+pub const SIG_IGN = @import("std").zig.c_translation.cast(__sighandler_t, @as(c_int, 1));
+pub const SIGINT = @as(c_int, 2);
+pub const SIGILL = @as(c_int, 4);
+pub const SIGABRT = @as(c_int, 6);
+pub const SIGFPE = @as(c_int, 8);
+pub const SIGSEGV = @as(c_int, 11);
+pub const SIGTERM = @as(c_int, 15);
+pub const SIGHUP = @as(c_int, 1);
+pub const SIGQUIT = @as(c_int, 3);
+pub const SIGTRAP = @as(c_int, 5);
+pub const SIGKILL = @as(c_int, 9);
+pub const SIGBUS = @as(c_int, 10);
+pub const SIGSYS = @as(c_int, 12);
+pub const SIGPIPE = @as(c_int, 13);
+pub const SIGALRM = @as(c_int, 14);
+pub const SIGURG = @as(c_int, 16);
+pub const SIGSTOP = @as(c_int, 17);
+pub const SIGTSTP = @as(c_int, 18);
+pub const SIGCONT = @as(c_int, 19);
+pub const SIGCHLD = @as(c_int, 20);
+pub const SIGTTIN = @as(c_int, 21);
+pub const SIGTTOU = @as(c_int, 22);
+pub const SIGPOLL = @as(c_int, 23);
+pub const SIGXCPU = @as(c_int, 24);
+pub const SIGXFSZ = @as(c_int, 25);
+pub const SIGVTALRM = @as(c_int, 26);
+pub const SIGPROF = @as(c_int, 27);
+pub const SIGUSR1 = @as(c_int, 30);
+pub const SIGUSR2 = @as(c_int, 31);
+pub const SIGWINCH = @as(c_int, 28);
+pub const SIGIO = SIGPOLL;
+pub const SIGIOT = SIGABRT;
+pub const SIGCLD = SIGCHLD;
+pub const __SIGRTMIN = @as(c_int, 32);
+pub const __SIGRTMAX = __SIGRTMIN;
+pub const _NSIG = __SIGRTMAX + @as(c_int, 1);
+pub const SIGSTKFLT = @as(c_int, 16);
+pub const SIGPWR = @as(c_int, 30);
+pub const __sig_atomic_t_defined = @as(c_int, 1);
+pub const __siginfo_t_defined = @as(c_int, 1);
+pub const ____sigval_t_defined = "";
+pub const __SI_MAX_SIZE = @as(c_int, 128);
+pub const __SI_PAD_SIZE = @import("std").zig.c_translation.MacroArithmetic.div(__SI_MAX_SIZE, @import("std").zig.c_translation.sizeof(c_int)) - @as(c_int, 4);
+pub const _BITS_SIGINFO_ARCH_H = @as(c_int, 1);
+pub const __SI_ALIGNMENT = "";
+pub const __SI_BAND_TYPE = c_long;
+pub const __SI_CLOCK_T = __clock_t;
+pub const __SI_ERRNO_THEN_CODE = @as(c_int, 1);
+pub const __SI_HAVE_SIGSYS = @as(c_int, 1);
+pub const __SI_SIGFAULT_ADDL = "";
+pub const _BITS_SIGINFO_CONSTS_H = @as(c_int, 1);
+pub const __SI_ASYNCIO_AFTER_SIGIO = @as(c_int, 1);
+pub const __sigval_t_defined = "";
+pub const __sigevent_t_defined = @as(c_int, 1);
+pub const __SIGEV_MAX_SIZE = @as(c_int, 64);
+pub const __SIGEV_PAD_SIZE = @import("std").zig.c_translation.MacroArithmetic.div(__SIGEV_MAX_SIZE, @import("std").zig.c_translation.sizeof(c_int)) - @as(c_int, 4);
+pub const __have_pthread_attr_t = @as(c_int, 1);
+pub const _BITS_SIGEVENT_CONSTS_H = @as(c_int, 1);
+pub inline fn sigmask(sig: anytype) c_int {
+    return @import("std").zig.c_translation.cast(c_int, @as(c_uint, 1) << (sig - @as(c_int, 1)));
+}
+pub const NSIG = _NSIG;
+pub const _BITS_SIGACTION_H = @as(c_int, 1);
+pub const SA_NOCLDSTOP = @as(c_int, 1);
+pub const SA_NOCLDWAIT = @as(c_int, 2);
+pub const SA_SIGINFO = @as(c_int, 4);
+pub const SA_ONSTACK = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x08000000, .hexadecimal);
+pub const SA_RESTART = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x10000000, .hexadecimal);
+pub const SA_NODEFER = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x40000000, .hexadecimal);
+pub const SA_RESETHAND = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x80000000, .hexadecimal);
+pub const SA_INTERRUPT = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x20000000, .hexadecimal);
+pub const SA_NOMASK = SA_NODEFER;
+pub const SA_ONESHOT = SA_RESETHAND;
+pub const SA_STACK = SA_ONSTACK;
+pub const SIG_BLOCK = @as(c_int, 0);
+pub const SIG_UNBLOCK = @as(c_int, 1);
+pub const SIG_SETMASK = @as(c_int, 2);
+pub const _BITS_SIGCONTEXT_H = @as(c_int, 1);
+pub const sigcontext_struct = sigcontext;
+pub const __ASM_SIGCONTEXT_H = "";
+pub const FPSIMD_MAGIC = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x46508001, .hexadecimal);
+pub const ESR_MAGIC = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x45535201, .hexadecimal);
+pub const EXTRA_MAGIC = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x45585401, .hexadecimal);
+pub const SVE_MAGIC = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0x53564501, .hexadecimal);
+pub const __ASM_SVE_CONTEXT_H = "";
+pub const __SVE_VQ_BYTES = @as(c_int, 16);
+pub const __SVE_VQ_MIN = @as(c_int, 1);
+pub const __SVE_VQ_MAX = @as(c_int, 512);
+pub const __SVE_VL_MIN = __SVE_VQ_MIN * __SVE_VQ_BYTES;
+pub const __SVE_VL_MAX = __SVE_VQ_MAX * __SVE_VQ_BYTES;
+pub const __SVE_NUM_ZREGS = @as(c_int, 32);
+pub const __SVE_NUM_PREGS = @as(c_int, 16);
+pub inline fn __sve_vl_valid(vl: anytype) @TypeOf(((@import("std").zig.c_translation.MacroArithmetic.rem(vl, __SVE_VQ_BYTES) == @as(c_int, 0)) and (vl >= __SVE_VL_MIN)) and (vl <= __SVE_VL_MAX)) {
+    return ((@import("std").zig.c_translation.MacroArithmetic.rem(vl, __SVE_VQ_BYTES) == @as(c_int, 0)) and (vl >= __SVE_VL_MIN)) and (vl <= __SVE_VL_MAX);
+}
+pub inline fn __sve_vq_from_vl(vl: anytype) @TypeOf(@import("std").zig.c_translation.MacroArithmetic.div(vl, __SVE_VQ_BYTES)) {
+    return @import("std").zig.c_translation.MacroArithmetic.div(vl, __SVE_VQ_BYTES);
+}
+pub inline fn __sve_vl_from_vq(vq: anytype) @TypeOf(vq * __SVE_VQ_BYTES) {
+    return vq * __SVE_VQ_BYTES;
+}
+pub inline fn __SVE_ZREG_SIZE(vq: anytype) @TypeOf(@import("std").zig.c_translation.cast(__u32, vq) * __SVE_VQ_BYTES) {
+    return @import("std").zig.c_translation.cast(__u32, vq) * __SVE_VQ_BYTES;
+}
+pub inline fn __SVE_PREG_SIZE(vq: anytype) @TypeOf(@import("std").zig.c_translation.cast(__u32, vq) * @import("std").zig.c_translation.MacroArithmetic.div(__SVE_VQ_BYTES, @as(c_int, 8))) {
+    return @import("std").zig.c_translation.cast(__u32, vq) * @import("std").zig.c_translation.MacroArithmetic.div(__SVE_VQ_BYTES, @as(c_int, 8));
+}
+pub inline fn __SVE_FFR_SIZE(vq: anytype) @TypeOf(__SVE_PREG_SIZE(vq)) {
+    return __SVE_PREG_SIZE(vq);
+}
+pub const __SVE_ZREGS_OFFSET = @as(c_int, 0);
+pub inline fn __SVE_ZREG_OFFSET(vq: anytype, n: anytype) @TypeOf(__SVE_ZREGS_OFFSET + (__SVE_ZREG_SIZE(vq) * n)) {
+    return __SVE_ZREGS_OFFSET + (__SVE_ZREG_SIZE(vq) * n);
+}
+pub inline fn __SVE_ZREGS_SIZE(vq: anytype) @TypeOf(__SVE_ZREG_OFFSET(vq, __SVE_NUM_ZREGS) - __SVE_ZREGS_OFFSET) {
+    return __SVE_ZREG_OFFSET(vq, __SVE_NUM_ZREGS) - __SVE_ZREGS_OFFSET;
+}
+pub inline fn __SVE_PREGS_OFFSET(vq: anytype) @TypeOf(__SVE_ZREGS_OFFSET + __SVE_ZREGS_SIZE(vq)) {
+    return __SVE_ZREGS_OFFSET + __SVE_ZREGS_SIZE(vq);
+}
+pub inline fn __SVE_PREG_OFFSET(vq: anytype, n: anytype) @TypeOf(__SVE_PREGS_OFFSET(vq) + (__SVE_PREG_SIZE(vq) * n)) {
+    return __SVE_PREGS_OFFSET(vq) + (__SVE_PREG_SIZE(vq) * n);
+}
+pub inline fn __SVE_PREGS_SIZE(vq: anytype) @TypeOf(__SVE_PREG_OFFSET(vq, __SVE_NUM_PREGS) - __SVE_PREGS_OFFSET(vq)) {
+    return __SVE_PREG_OFFSET(vq, __SVE_NUM_PREGS) - __SVE_PREGS_OFFSET(vq);
+}
+pub inline fn __SVE_FFR_OFFSET(vq: anytype) @TypeOf(__SVE_PREGS_OFFSET(vq) + __SVE_PREGS_SIZE(vq)) {
+    return __SVE_PREGS_OFFSET(vq) + __SVE_PREGS_SIZE(vq);
+}
+pub const SVE_VQ_BYTES = __SVE_VQ_BYTES;
+pub const SVE_VQ_MIN = __SVE_VQ_MIN;
+pub const SVE_VQ_MAX = __SVE_VQ_MAX;
+pub const SVE_VL_MIN = __SVE_VL_MIN;
+pub const SVE_VL_MAX = __SVE_VL_MAX;
+pub const SVE_NUM_ZREGS = __SVE_NUM_ZREGS;
+pub const SVE_NUM_PREGS = __SVE_NUM_PREGS;
+pub inline fn sve_vl_valid(vl: anytype) @TypeOf(__sve_vl_valid(vl)) {
+    return __sve_vl_valid(vl);
+}
+pub inline fn sve_vq_from_vl(vl: anytype) @TypeOf(__sve_vq_from_vl(vl)) {
+    return __sve_vq_from_vl(vl);
+}
+pub inline fn sve_vl_from_vq(vq: anytype) @TypeOf(__sve_vl_from_vq(vq)) {
+    return __sve_vl_from_vq(vq);
+}
+pub inline fn SVE_SIG_ZREG_SIZE(vq: anytype) @TypeOf(__SVE_ZREG_SIZE(vq)) {
+    return __SVE_ZREG_SIZE(vq);
+}
+pub inline fn SVE_SIG_PREG_SIZE(vq: anytype) @TypeOf(__SVE_PREG_SIZE(vq)) {
+    return __SVE_PREG_SIZE(vq);
+}
+pub inline fn SVE_SIG_FFR_SIZE(vq: anytype) @TypeOf(__SVE_FFR_SIZE(vq)) {
+    return __SVE_FFR_SIZE(vq);
+}
+pub const SVE_SIG_REGS_OFFSET = @import("std").zig.c_translation.MacroArithmetic.div(@import("std").zig.c_translation.sizeof(struct_sve_context) + (__SVE_VQ_BYTES - @as(c_int, 1)), __SVE_VQ_BYTES) * __SVE_VQ_BYTES;
+pub const SVE_SIG_ZREGS_OFFSET = SVE_SIG_REGS_OFFSET + __SVE_ZREGS_OFFSET;
+pub inline fn SVE_SIG_ZREG_OFFSET(vq: anytype, n: anytype) @TypeOf(SVE_SIG_REGS_OFFSET + __SVE_ZREG_OFFSET(vq, n)) {
+    return SVE_SIG_REGS_OFFSET + __SVE_ZREG_OFFSET(vq, n);
+}
+pub inline fn SVE_SIG_ZREGS_SIZE(vq: anytype) @TypeOf(__SVE_ZREGS_SIZE(vq)) {
+    return __SVE_ZREGS_SIZE(vq);
+}
+pub inline fn SVE_SIG_PREGS_OFFSET(vq: anytype) @TypeOf(SVE_SIG_REGS_OFFSET + __SVE_PREGS_OFFSET(vq)) {
+    return SVE_SIG_REGS_OFFSET + __SVE_PREGS_OFFSET(vq);
+}
+pub inline fn SVE_SIG_PREG_OFFSET(vq: anytype, n: anytype) @TypeOf(SVE_SIG_REGS_OFFSET + __SVE_PREG_OFFSET(vq, n)) {
+    return SVE_SIG_REGS_OFFSET + __SVE_PREG_OFFSET(vq, n);
+}
+pub inline fn SVE_SIG_PREGS_SIZE(vq: anytype) @TypeOf(__SVE_PREGS_SIZE(vq)) {
+    return __SVE_PREGS_SIZE(vq);
+}
+pub inline fn SVE_SIG_FFR_OFFSET(vq: anytype) @TypeOf(SVE_SIG_REGS_OFFSET + __SVE_FFR_OFFSET(vq)) {
+    return SVE_SIG_REGS_OFFSET + __SVE_FFR_OFFSET(vq);
+}
+pub inline fn SVE_SIG_REGS_SIZE(vq: anytype) @TypeOf(__SVE_FFR_OFFSET(vq) + __SVE_FFR_SIZE(vq)) {
+    return __SVE_FFR_OFFSET(vq) + __SVE_FFR_SIZE(vq);
+}
+pub inline fn SVE_SIG_CONTEXT_SIZE(vq: anytype) @TypeOf(SVE_SIG_REGS_OFFSET + SVE_SIG_REGS_SIZE(vq)) {
+    return SVE_SIG_REGS_OFFSET + SVE_SIG_REGS_SIZE(vq);
+}
+pub const __stack_t_defined = @as(c_int, 1);
+pub const _SYS_UCONTEXT_H = @as(c_int, 1);
+pub inline fn __ctx(fld: anytype) @TypeOf(fld) {
+    return fld;
+}
+pub const _SYS_PROCFS_H = @as(c_int, 1);
+pub const _SYS_TYPES_H = @as(c_int, 1);
+pub const __u_char_defined = "";
+pub const __ino_t_defined = "";
+pub const __dev_t_defined = "";
+pub const __mode_t_defined = "";
+pub const __nlink_t_defined = "";
+pub const __id_t_defined = "";
+pub const __daddr_t_defined = "";
+pub const __key_t_defined = "";
+pub const __clock_t_defined = @as(c_int, 1);
+pub const __clockid_t_defined = @as(c_int, 1);
+pub const __timer_t_defined = @as(c_int, 1);
+pub const __BIT_TYPES_DEFINED__ = @as(c_int, 1);
+pub const _ENDIAN_H = @as(c_int, 1);
+pub const LITTLE_ENDIAN = __LITTLE_ENDIAN;
+pub const BIG_ENDIAN = __BIG_ENDIAN;
+pub const PDP_ENDIAN = __PDP_ENDIAN;
+pub const BYTE_ORDER = __BYTE_ORDER;
+pub const _BITS_BYTESWAP_H = @as(c_int, 1);
+pub inline fn __bswap_constant_16(x: anytype) __uint16_t {
+    return @import("std").zig.c_translation.cast(__uint16_t, ((x >> @as(c_int, 8)) & @as(c_int, 0xff)) | ((x & @as(c_int, 0xff)) << @as(c_int, 8)));
+}
+pub inline fn __bswap_constant_32(x: anytype) @TypeOf(((((x & @import("std").zig.c_translation.promoteIntLiteral(c_uint, 0xff000000, .hexadecimal)) >> @as(c_int, 24)) | ((x & @import("std").zig.c_translation.promoteIntLiteral(c_uint, 0x00ff0000, .hexadecimal)) >> @as(c_int, 8))) | ((x & @as(c_uint, 0x0000ff00)) << @as(c_int, 8))) | ((x & @as(c_uint, 0x000000ff)) << @as(c_int, 24))) {
+    return ((((x & @import("std").zig.c_translation.promoteIntLiteral(c_uint, 0xff000000, .hexadecimal)) >> @as(c_int, 24)) | ((x & @import("std").zig.c_translation.promoteIntLiteral(c_uint, 0x00ff0000, .hexadecimal)) >> @as(c_int, 8))) | ((x & @as(c_uint, 0x0000ff00)) << @as(c_int, 8))) | ((x & @as(c_uint, 0x000000ff)) << @as(c_int, 24));
+}
+pub inline fn __bswap_constant_64(x: anytype) @TypeOf(((((((((x & @as(c_ulonglong, 0xff00000000000000)) >> @as(c_int, 56)) | ((x & @as(c_ulonglong, 0x00ff000000000000)) >> @as(c_int, 40))) | ((x & @as(c_ulonglong, 0x0000ff0000000000)) >> @as(c_int, 24))) | ((x & @as(c_ulonglong, 0x000000ff00000000)) >> @as(c_int, 8))) | ((x & @as(c_ulonglong, 0x00000000ff000000)) << @as(c_int, 8))) | ((x & @as(c_ulonglong, 0x0000000000ff0000)) << @as(c_int, 24))) | ((x & @as(c_ulonglong, 0x000000000000ff00)) << @as(c_int, 40))) | ((x & @as(c_ulonglong, 0x00000000000000ff)) << @as(c_int, 56))) {
+    return ((((((((x & @as(c_ulonglong, 0xff00000000000000)) >> @as(c_int, 56)) | ((x & @as(c_ulonglong, 0x00ff000000000000)) >> @as(c_int, 40))) | ((x & @as(c_ulonglong, 0x0000ff0000000000)) >> @as(c_int, 24))) | ((x & @as(c_ulonglong, 0x000000ff00000000)) >> @as(c_int, 8))) | ((x & @as(c_ulonglong, 0x00000000ff000000)) << @as(c_int, 8))) | ((x & @as(c_ulonglong, 0x0000000000ff0000)) << @as(c_int, 24))) | ((x & @as(c_ulonglong, 0x000000000000ff00)) << @as(c_int, 40))) | ((x & @as(c_ulonglong, 0x00000000000000ff)) << @as(c_int, 56));
+}
+pub const _BITS_UINTN_IDENTITY_H = @as(c_int, 1);
+pub inline fn htobe16(x: anytype) @TypeOf(__bswap_16(x)) {
+    return __bswap_16(x);
+}
+pub inline fn htole16(x: anytype) @TypeOf(__uint16_identity(x)) {
+    return __uint16_identity(x);
+}
+pub inline fn be16toh(x: anytype) @TypeOf(__bswap_16(x)) {
+    return __bswap_16(x);
+}
+pub inline fn le16toh(x: anytype) @TypeOf(__uint16_identity(x)) {
+    return __uint16_identity(x);
+}
+pub inline fn htobe32(x: anytype) @TypeOf(__bswap_32(x)) {
+    return __bswap_32(x);
+}
+pub inline fn htole32(x: anytype) @TypeOf(__uint32_identity(x)) {
+    return __uint32_identity(x);
+}
+pub inline fn be32toh(x: anytype) @TypeOf(__bswap_32(x)) {
+    return __bswap_32(x);
+}
+pub inline fn le32toh(x: anytype) @TypeOf(__uint32_identity(x)) {
+    return __uint32_identity(x);
+}
+pub inline fn htobe64(x: anytype) @TypeOf(__bswap_64(x)) {
+    return __bswap_64(x);
+}
+pub inline fn htole64(x: anytype) @TypeOf(__uint64_identity(x)) {
+    return __uint64_identity(x);
+}
+pub inline fn be64toh(x: anytype) @TypeOf(__bswap_64(x)) {
+    return __bswap_64(x);
+}
+pub inline fn le64toh(x: anytype) @TypeOf(__uint64_identity(x)) {
+    return __uint64_identity(x);
+}
+pub const __blksize_t_defined = "";
+pub const __blkcnt_t_defined = "";
+pub const __fsblkcnt_t_defined = "";
+pub const __fsfilcnt_t_defined = "";
+pub const _BITS_PTHREADTYPES_COMMON_H = @as(c_int, 1);
+pub const _THREAD_SHARED_TYPES_H = @as(c_int, 1);
+pub const _BITS_PTHREADTYPES_ARCH_H = @as(c_int, 1);
+pub const __SIZEOF_PTHREAD_ATTR_T = @as(c_int, 64);
+pub const __SIZEOF_PTHREAD_MUTEX_T = @as(c_int, 48);
+pub const __SIZEOF_PTHREAD_MUTEXATTR_T = @as(c_int, 8);
+pub const __SIZEOF_PTHREAD_CONDATTR_T = @as(c_int, 8);
+pub const __SIZEOF_PTHREAD_RWLOCK_T = @as(c_int, 56);
+pub const __SIZEOF_PTHREAD_BARRIER_T = @as(c_int, 32);
+pub const __SIZEOF_PTHREAD_BARRIERATTR_T = @as(c_int, 8);
+pub const __SIZEOF_PTHREAD_COND_T = @as(c_int, 48);
+pub const __SIZEOF_PTHREAD_RWLOCKATTR_T = @as(c_int, 8);
+pub const __LOCK_ALIGNMENT = "";
+pub const __ONCE_ALIGNMENT = "";
+pub const _THREAD_MUTEX_INTERNAL_H = @as(c_int, 1);
+pub const __PTHREAD_MUTEX_HAVE_PREV = @as(c_int, 1);
+pub const _RWLOCK_INTERNAL_H = "";
+pub inline fn __PTHREAD_RWLOCK_INITIALIZER(__flags: anytype) @TypeOf(__flags) {
+    return blk: {
+        _ = @as(c_int, 0);
+        _ = @as(c_int, 0);
+        _ = @as(c_int, 0);
+        _ = @as(c_int, 0);
+        _ = @as(c_int, 0);
+        _ = @as(c_int, 0);
+        _ = @as(c_int, 0);
+        _ = @as(c_int, 0);
+        _ = @as(c_int, 0);
+        _ = @as(c_int, 0);
+        break :blk __flags;
+    };
+}
+pub const _SYS_USER_H = @as(c_int, 1);
+pub const ELF_NGREG = @import("std").zig.c_translation.MacroArithmetic.div(@import("std").zig.c_translation.sizeof(struct_user_regs_struct), @import("std").zig.c_translation.sizeof(elf_greg_t));
+pub const ELF_PRARGSZ = @as(c_int, 80);
+pub const _BITS_SIGSTACK_H = @as(c_int, 1);
+pub const MINSIGSTKSZ = @as(c_int, 5120);
+pub const SIGSTKSZ = @as(c_int, 16384);
+pub const _BITS_SS_FLAGS_H = @as(c_int, 1);
+pub const __sigstack_defined = @as(c_int, 1);
+pub const _BITS_SIGTHREAD_H = @as(c_int, 1);
+pub const SIGRTMIN = __libc_current_sigrtmin();
+pub const SIGRTMAX = __libc_current_sigrtmax();
+pub const _SYS_STAT_H = @as(c_int, 1);
+pub const _BITS_STAT_H = @as(c_int, 1);
+pub const _STAT_VER_KERNEL = @as(c_int, 0);
+pub const _STAT_VER_LINUX = @as(c_int, 0);
+pub const _STAT_VER = _STAT_VER_KERNEL;
+pub const _MKNOD_VER_LINUX = @as(c_int, 0);
+pub inline fn __field64(@"type": anytype, type64: anytype, name: anytype) @TypeOf(@"type" ++ name) {
+    _ = @TypeOf(type64);
+    return @"type" ++ name;
+}
+pub const _STATBUF_ST_BLKSIZE = "";
+pub const _STATBUF_ST_RDEV = "";
+pub const _STATBUF_ST_NSEC = "";
+pub const __S_IFMT = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0o170000, .octal);
+pub const __S_IFDIR = @as(c_int, 0o040000);
+pub const __S_IFCHR = @as(c_int, 0o020000);
+pub const __S_IFBLK = @as(c_int, 0o060000);
+pub const __S_IFREG = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0o100000, .octal);
+pub const __S_IFIFO = @as(c_int, 0o010000);
+pub const __S_IFLNK = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0o120000, .octal);
+pub const __S_IFSOCK = @import("std").zig.c_translation.promoteIntLiteral(c_int, 0o140000, .octal);
+pub inline fn __S_TYPEISMQ(buf: anytype) @TypeOf(buf.*.st_mode - buf.*.st_mode) {
+    return buf.*.st_mode - buf.*.st_mode;
+}
+pub inline fn __S_TYPEISSEM(buf: anytype) @TypeOf(buf.*.st_mode - buf.*.st_mode) {
+    return buf.*.st_mode - buf.*.st_mode;
+}
+pub inline fn __S_TYPEISSHM(buf: anytype) @TypeOf(buf.*.st_mode - buf.*.st_mode) {
+    return buf.*.st_mode - buf.*.st_mode;
+}
+pub const __S_ISUID = @as(c_int, 0o4000);
+pub const __S_ISGID = @as(c_int, 0o2000);
+pub const __S_ISVTX = @as(c_int, 0o1000);
+pub const __S_IREAD = @as(c_int, 0o400);
+pub const __S_IWRITE = @as(c_int, 0o200);
+pub const __S_IEXEC = @as(c_int, 0o100);
+pub const UTIME_NOW = (@as(c_long, 1) << @as(c_int, 30)) - @as(c_long, 1);
+pub const UTIME_OMIT = (@as(c_long, 1) << @as(c_int, 30)) - @as(c_long, 2);
+pub const S_IFMT = __S_IFMT;
+pub const S_IFDIR = __S_IFDIR;
+pub const S_IFCHR = __S_IFCHR;
+pub const S_IFBLK = __S_IFBLK;
+pub const S_IFREG = __S_IFREG;
+pub const S_IFIFO = __S_IFIFO;
+pub const S_IFLNK = __S_IFLNK;
+pub const S_IFSOCK = __S_IFSOCK;
+pub inline fn __S_ISTYPE(mode: anytype, mask: anytype) @TypeOf((mode & __S_IFMT) == mask) {
+    return (mode & __S_IFMT) == mask;
+}
+pub inline fn S_ISDIR(mode: anytype) @TypeOf(__S_ISTYPE(mode, __S_IFDIR)) {
+    return __S_ISTYPE(mode, __S_IFDIR);
+}
+pub inline fn S_ISCHR(mode: anytype) @TypeOf(__S_ISTYPE(mode, __S_IFCHR)) {
+    return __S_ISTYPE(mode, __S_IFCHR);
+}
+pub inline fn S_ISBLK(mode: anytype) @TypeOf(__S_ISTYPE(mode, __S_IFBLK)) {
+    return __S_ISTYPE(mode, __S_IFBLK);
+}
+pub inline fn S_ISREG(mode: anytype) @TypeOf(__S_ISTYPE(mode, __S_IFREG)) {
+    return __S_ISTYPE(mode, __S_IFREG);
+}
+pub inline fn S_ISFIFO(mode: anytype) @TypeOf(__S_ISTYPE(mode, __S_IFIFO)) {
+    return __S_ISTYPE(mode, __S_IFIFO);
+}
+pub inline fn S_ISLNK(mode: anytype) @TypeOf(__S_ISTYPE(mode, __S_IFLNK)) {
+    return __S_ISTYPE(mode, __S_IFLNK);
+}
+pub inline fn S_ISSOCK(mode: anytype) @TypeOf(__S_ISTYPE(mode, __S_IFSOCK)) {
+    return __S_ISTYPE(mode, __S_IFSOCK);
+}
+pub inline fn S_TYPEISMQ(buf: anytype) @TypeOf(__S_TYPEISMQ(buf)) {
+    return __S_TYPEISMQ(buf);
+}
+pub inline fn S_TYPEISSEM(buf: anytype) @TypeOf(__S_TYPEISSEM(buf)) {
+    return __S_TYPEISSEM(buf);
+}
+pub inline fn S_TYPEISSHM(buf: anytype) @TypeOf(__S_TYPEISSHM(buf)) {
+    return __S_TYPEISSHM(buf);
+}
+pub const S_ISUID = __S_ISUID;
+pub const S_ISGID = __S_ISGID;
+pub const S_ISVTX = __S_ISVTX;
+pub const S_IRUSR = __S_IREAD;
+pub const S_IWUSR = __S_IWRITE;
+pub const S_IXUSR = __S_IEXEC;
+pub const S_IRWXU = (__S_IREAD | __S_IWRITE) | __S_IEXEC;
+pub const S_IREAD = S_IRUSR;
+pub const S_IWRITE = S_IWUSR;
+pub const S_IEXEC = S_IXUSR;
+pub const S_IRGRP = S_IRUSR >> @as(c_int, 3);
+pub const S_IWGRP = S_IWUSR >> @as(c_int, 3);
+pub const S_IXGRP = S_IXUSR >> @as(c_int, 3);
+pub const S_IRWXG = S_IRWXU >> @as(c_int, 3);
+pub const S_IROTH = S_IRGRP >> @as(c_int, 3);
+pub const S_IWOTH = S_IWGRP >> @as(c_int, 3);
+pub const S_IXOTH = S_IXGRP >> @as(c_int, 3);
+pub const S_IRWXO = S_IRWXG >> @as(c_int, 3);
+pub const ACCESSPERMS = (S_IRWXU | S_IRWXG) | S_IRWXO;
+pub const ALLPERMS = ((((S_ISUID | S_ISGID) | S_ISVTX) | S_IRWXU) | S_IRWXG) | S_IRWXO;
+pub const DEFFILEMODE = ((((S_IRUSR | S_IWUSR) | S_IRGRP) | S_IWGRP) | S_IROTH) | S_IWOTH;
+pub const S_BLKSIZE = @as(c_int, 512);
+pub const _MKNOD_VER = @as(c_int, 0);
+pub const EV_DEFAULT_UC = ev_default_loop_uc_();
+pub const EV_DEFAULT = ev_default_loop(@as(c_int, 0));
+pub const EV_PROTOTYPES = @as(c_int, 1);
+pub const EV_VERSION_MAJOR = @as(c_int, 4);
+pub const EV_VERSION_MINOR = @as(c_int, 33);
+pub inline fn EV_CB_INVOKE(watcher: anytype, revents: anytype) @TypeOf(watcher.*.cb(EV_A_(watcher), revents)) {
+    return watcher.*.cb(EV_A_(watcher), revents);
+}
+pub const EV_IO_ENABLE = @as(c_int, 1);
+pub inline fn ev_async_pending(w: anytype) @TypeOf(w.*.sent) {
+    return w.*.sent;
+}
+pub inline fn ev_is_pending(ev: anytype) @TypeOf(@as(c_int, 0) + @import("std").zig.c_translation.cast([*c]ev_watcher, @import("std").zig.c_translation.cast(?*anyopaque, ev)).*.pending) {
+    return @as(c_int, 0) + @import("std").zig.c_translation.cast([*c]ev_watcher, @import("std").zig.c_translation.cast(?*anyopaque, ev)).*.pending;
+}
+pub inline fn ev_is_active(ev: anytype) @TypeOf(@as(c_int, 0) + @import("std").zig.c_translation.cast([*c]ev_watcher, @import("std").zig.c_translation.cast(?*anyopaque, ev)).*.active) {
+    return @as(c_int, 0) + @import("std").zig.c_translation.cast([*c]ev_watcher, @import("std").zig.c_translation.cast(?*anyopaque, ev)).*.active;
+}
+pub inline fn ev_cb_(ev: anytype) @TypeOf(ev.*.cb) {
+    return ev.*.cb;
+}
+pub inline fn ev_priority(ev: anytype) @TypeOf(@import("std").zig.c_translation.cast([*c]ev_watcher, @import("std").zig.c_translation.cast(?*anyopaque, ev)).*.priority) {
+    return @import("std").zig.c_translation.cast([*c]ev_watcher, @import("std").zig.c_translation.cast(?*anyopaque, ev)).*.priority;
+}
+pub inline fn ev_periodic_at(ev: anytype) @TypeOf(@import("std").zig.c_translation.cast([*c]ev_watcher_time, ev).*.at) {
+    return @import("std").zig.c_translation.cast([*c]ev_watcher_time, ev).*.at;
+}
+pub const EVLOOP_NONBLOCK = EVRUN_NOWAIT;
+pub const EVLOOP_ONESHOT = EVRUN_ONCE;
+pub const EVUNLOOP_CANCEL = EVBREAK_CANCEL;
+pub const EVUNLOOP_ONE = EVBREAK_ONE;
+pub const EVUNLOOP_ALL = EVBREAK_ALL;
 pub const rkERR_LEVEL_E = enum_rkERR_LEVEL_E;
 pub const rkEN_ERR_CODE_E = enum_rkEN_ERR_CODE_E;
 pub const rkMB_UID_E = enum_rkMB_UID_E;
@@ -7674,3 +9137,24 @@ pub const v4l2_dbg_match = struct_v4l2_dbg_match;
 pub const v4l2_dbg_register = struct_v4l2_dbg_register;
 pub const v4l2_dbg_chip_info = struct_v4l2_dbg_chip_info;
 pub const v4l2_create_buffers = struct_v4l2_create_buffers;
+pub const __locale_data = struct___locale_data;
+pub const __locale_struct = struct___locale_struct;
+pub const sigval = union_sigval;
+pub const sigevent = struct_sigevent;
+pub const sigcontext = struct_sigcontext;
+pub const _aarch64_ctx = struct__aarch64_ctx;
+pub const fpsimd_context = struct_fpsimd_context;
+pub const esr_context = struct_esr_context;
+pub const extra_context = struct_extra_context;
+pub const sve_context = struct_sve_context;
+pub const __pthread_internal_list = struct___pthread_internal_list;
+pub const __pthread_internal_slist = struct___pthread_internal_slist;
+pub const __pthread_mutex_s = struct___pthread_mutex_s;
+pub const __pthread_rwlock_arch_t = struct___pthread_rwlock_arch_t;
+pub const __pthread_cond_s = struct___pthread_cond_s;
+pub const user_regs_struct = struct_user_regs_struct;
+pub const user_fpsimd_struct = struct_user_fpsimd_struct;
+pub const elf_siginfo = struct_elf_siginfo;
+pub const elf_prstatus = struct_elf_prstatus;
+pub const elf_prpsinfo = struct_elf_prpsinfo;
+pub const ev_any_watcher = union_ev_any_watcher;
