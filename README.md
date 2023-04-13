@@ -16,4 +16,5 @@ v4l2-ctl --all
 # https://work-blog.readthedocs.io/en/latest/v4l2%20intro.html
 # https://stackoverflow.com/questions/4009439/v4l2-very-simple-example
 # https://github.com/csete/uvccapture
+# http://pod.tst.eu/http://cvs.schmorp.de/libev/ev.pod
 ```

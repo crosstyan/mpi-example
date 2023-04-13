@@ -59,7 +59,7 @@ const mmap = c.v4l2_mmap;
 const munmap = c.v4l2_munmap;
 const fd_t = std.os.fd_t;
 const mem = std.mem;
-const num_buffer = 16;
+pub const num_buffer = 16;
 const l = std.os.linux;
 
 ///  `v4l2_fd_open`: open an already opened fd for further use through
@@ -110,12 +110,11 @@ pub const V4l2Vi = struct {
     device: [64]u8,
     width: u32,
     height: u32,
-    file_desc: std.os.fd_t,
+    fd: std.os.fd_t,
     /// addr and length
     mems: [num_buffer][]align(mem.page_size) u8,
     fps: u32,
     format: u32,
-    out_path: ?[]const u8 = null,
     allocator: std.mem.Allocator,
     no_cvt: bool = false,
 
@@ -131,7 +130,6 @@ pub const V4l2Vi = struct {
         self.allocator = allocator;
         self.fps = opts.fps;
         self.format = format2V4l2(opts.format);
-        self.out_path = opts.@"out-path";
         self.no_cvt = opts.@"no-cvt";
         return self;
     }
@@ -140,7 +138,7 @@ pub const V4l2Vi = struct {
     ///
     /// `mmap` is called here
     pub fn queryBuffer(self: *@This()) !void {
-        var fd = self.file_desc;
+        var fd = self.fd;
         for (0..num_buffer) |i| {
             var buf = std.mem.zeroes(c.v4l2_buffer);
             buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -167,7 +165,7 @@ pub const V4l2Vi = struct {
     pub fn v4l2_test(self: *@This(), opts: *const V4l2TestOptions) !void {
         try self.init();
         defer self.deinit();
-        try self.videoEnable();
+        try self.enableVideo();
         const epoll_fd = @intCast(i32, l.epoll_create());
         defer std.os.close(epoll_fd);
 
@@ -176,7 +174,7 @@ pub const V4l2Vi = struct {
         var poll_fds: [max_poll_fd]std.os.pollfd = .{};
         var poll_fd = std.mem.zeroes(os.pollfd);
         poll_fd.events = os.POLL.IN;
-        poll_fd.fd = self.file_desc;
+        poll_fd.fd = self.fd;
         poll_fds[0] = poll_fd;
 
         var file: ?std.fs.File = null;
@@ -222,7 +220,7 @@ pub const V4l2Vi = struct {
 
     /// called in `init`
     pub fn queueBuffer(self: *@This()) !void {
-        var fd = self.file_desc;
+        var fd = self.fd;
         for (0..num_buffer) |i| {
             var buf = std.mem.zeroes(c.v4l2_buffer);
             buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -237,7 +235,7 @@ pub const V4l2Vi = struct {
 
     /// https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-parm.html?highlight=vidioc_s_parm
     fn setCaptureParm(self: *@This(), fps: u32) !void {
-        var fd = self.file_desc;
+        var fd = self.fd;
         var parm = std.mem.zeroes(c.v4l2_streamparm);
         parm.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
         parm.parm.capture.timeperframe.numerator = 1;
@@ -258,7 +256,7 @@ pub const V4l2Vi = struct {
     /// NOTE: the function return only part of the stack variable.
     /// Could this works...?
     pub fn getCapturePram(self: *@This()) ?c.v4l2_captureparm {
-        const fd = self.file_desc;
+        const fd = self.fd;
         var stream = std.mem.zeroes(c.v4l2_streamparm);
         // have to specify the type
         stream.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -272,15 +270,15 @@ pub const V4l2Vi = struct {
         return cap.*;
     }
 
-    fn videoEnable(self: *@This()) !void {
+    fn enableVideo(self: *@This()) !void {
         if (self._is_capturing) return;
-        try videoEnableFd(self.file_desc);
+        try enableVideoFd(self.fd);
         self._is_capturing = true;
     }
 
-    fn videoDisable(self: *@This()) !void {
+    fn disableVideo(self: *@This()) !void {
         if (!self._is_capturing) return;
-        try videoDisableFd(self.file_desc);
+        try disableVideoFd(self.fd);
         self._is_capturing = false;
     }
 
@@ -289,21 +287,21 @@ pub const V4l2Vi = struct {
         log.info("Try to open {s}", .{p});
 
         // NOTE: NONBLOCK
-        self.file_desc = try std.os.openZ(p, std.os.linux.O.RDWR | std.os.linux.O.NONBLOCK, 0);
+        self.fd = try std.os.openZ(p, std.os.linux.O.RDWR | std.os.linux.O.NONBLOCK, 0);
         var flag: i32 = 0;
         if (self.no_cvt) {
             flag |= c.V4L2_DISABLE_CONVERSION;
             log.info("Disable `libv4lconvert`", .{});
         }
         // Do check by `libv4l2`
-        var ret = fd_open(self.file_desc, flag);
+        var ret = fd_open(self.fd, flag);
         if (ret == -1) {
             const eno = os.errno(ret);
             log.err("v4l2_fd_open: {?}", .{eno});
             return V4lError.NoDevice;
         }
-        const raw_cap = getCapabilityFdRaw(self.file_desc).?;
-        const cap = getCapabilityFd(self.file_desc).?;
+        const raw_cap = getCapabilityFdRaw(self.fd).?;
+        const cap = getCapabilityFd(self.fd).?;
         log.info("Device        : {s}", .{p});
         log.info("Driver name   : {s}", .{cap.driver});
         log.info("Card type     : {s}", .{cap.card});
@@ -323,12 +321,12 @@ pub const V4l2Vi = struct {
         format.fmt.pix.height = self.height;
         format.fmt.pix.pixelformat = self.format;
         format.fmt.pix.field = c.V4L2_FIELD_NONE;
-        var res = ioctl(self.file_desc, c.VIDIOC_S_FMT, @ptrToInt(&format));
+        var res = ioctl(self.fd, c.VIDIOC_S_FMT, @ptrToInt(&format));
         if (res == -1) {
             return V4lError.NoSetFmt;
         }
 
-        var fmt = getFmtFd(self.file_desc);
+        var fmt = getFmtFd(self.fd);
         if (fmt) |f| {
             if (f.fmt.pix.width != self.width or f.fmt.pix.height != self.height) {
                 log.err("width or height not match. expect {}x{} but get {}x{}", .{ self.width, self.height, f.fmt.pix.width, f.fmt.pix.height });
@@ -358,7 +356,7 @@ pub const V4l2Vi = struct {
             log.warn("Invalid Time Per Frame: {}/{}s", .{ nu, de });
         }
 
-        try requestBuffersFd(self.file_desc, num_buffer);
+        try requestBuffersFd(self.fd, num_buffer);
         try self.queryBuffer();
         try self.queueBuffer();
     }
@@ -366,11 +364,11 @@ pub const V4l2Vi = struct {
     /// won't free the frame buffer
     /// call `destory`
     pub fn deinit(self: *@This()) void {
-        videoDisableFd(self.file_desc) catch unreachable;
+        disableVideoFd(self.fd) catch unreachable;
         for (self.mems) |m| {
             _ = munmap(m.ptr, m.len);
         }
-        _ = close(self.file_desc);
+        _ = close(self.fd);
     }
 
     pub fn destory(self: *@This()) void {
@@ -385,7 +383,7 @@ pub const V4l2Vi = struct {
         buf.type = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory = c.V4L2_MEMORY_MMAP;
         // dequeue buffer
-        const res = ioctl(self.file_desc, c.VIDIOC_DQBUF, @ptrToInt(&buf));
+        const res = ioctl(self.fd, c.VIDIOC_DQBUF, @ptrToInt(&buf));
         const E = std.os.linux.E;
         if (res == -1) {
             const e = std.os.errno(res);
@@ -407,7 +405,7 @@ pub const V4l2Vi = struct {
             r = r[0..buf.bytesused];
         }
         {
-            const ret = ioctl(self.file_desc, c.VIDIOC_QBUF, @ptrToInt(&buf));
+            const ret = ioctl(self.fd, c.VIDIOC_QBUF, @ptrToInt(&buf));
             if (ret == -1) {
                 return V4lError.NoQBuf;
             }
@@ -433,7 +431,7 @@ pub fn requestBuffersFd(fd: fd_t, count: usize) !void {
     }
 }
 
-pub fn videoEnableFd(fd: fd_t) !void {
+pub fn enableVideoFd(fd: fd_t) !void {
     var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
     const res = ioctl(fd, c.VIDIOC_STREAMON, @ptrToInt(&t));
     if (res == -1) {
@@ -443,7 +441,7 @@ pub fn videoEnableFd(fd: fd_t) !void {
     }
 }
 
-pub fn videoDisableFd(fd: fd_t) !void {
+pub fn disableVideoFd(fd: fd_t) !void {
     var t = c.V4L2_BUF_TYPE_VIDEO_CAPTURE;
     const res = ioctl(fd, c.VIDIOC_STREAMOFF, @ptrToInt(&t));
     if (res == -1) {
